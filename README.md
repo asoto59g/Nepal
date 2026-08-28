@@ -1,6 +1,6 @@
 # Nepal — Bhote Koshi, 26 agosto 2026
 
-ABC Geomática Agrícola SRL. Análisis del pulso de detritos Rasuwagadhi → Devighat HEP (Nuwakot) tras la avalancha de hielo y roca del 26 de agosto de 2026.
+Análisis del pulso de detritos Rasuwagadhi → Devighat HEP (Nuwakot) tras la avalancha de hielo y roca del 26 de agosto de 2026.
 
 Sitio: https://asoto59g.github.io/Nepal/
 

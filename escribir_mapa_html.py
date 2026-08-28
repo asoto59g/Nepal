@@ -65,7 +65,7 @@ const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   maxZoom: 18, attribution: "Esri"
 });
-const map = L.map("map", {layers: [osm]});
+const map = L.map("map", {layers: [sat]});
 function style(f) {
   const c = f.properties.clase;
   if (c === "nucleo_valle") return {color:"#7f1d1d", weight:1, fillColor:"#991b1b", fillOpacity:0.45};

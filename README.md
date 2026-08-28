@@ -2,7 +2,7 @@
 
 ABC Geomática Agrícola SRL. Análisis del pulso de detritos Rasuwagadhi → Devighat HEP (Nuwakot) tras la avalancha de hielo y roca del 26 de agosto de 2026.
 
-Sitio: [github.com/asoto59g/Nepal](https://github.com/asoto59g/Nepal)
+Sitio: https://asoto59g.github.io/Nepal/
 
 Las dos piezas para presentar son HTML estático. No hay servidor ni base de datos.
 
@@ -84,7 +84,4 @@ Rasuwagadhi 08:36 queda ~1 min antes del sismo 08:37: el tramo alto es muy pendi
 
 ---
 
-## Qué no subir
 
-- `*.tif` del DEM HMA (límite de GitHub: 100 MB por archivo). Ya está en `.gitignore`.
-- No hace falta `mapa_inundacion_bhote_koshi.html` ni `manning_alerta_dhm.html`: son copias locales; las páginas públicas son `index.html` y `tiempos.html`.

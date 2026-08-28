@@ -13,7 +13,6 @@ Las dos piezas para presentar son HTML estático. No hay servidor ni base de dat
 
 En cada página hay un enlace a la otra (Mapa / Tiempos de alerta).
 
-Para publicarlo en GitHub Pages: *Settings → Pages → Deploy from a branch → `main` / root*. La home será `index.html`.
 
 ---
 

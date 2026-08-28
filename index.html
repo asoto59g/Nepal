@@ -21,11 +21,26 @@
   .site-nav a{font-size:12px;font-weight:600;color:#52525b;text-decoration:none;padding:4px 8px;border:1px solid #e4e4e7}
   .site-nav a.is-on{background:#18181b;color:#fff;border-color:#18181b}
   .leaflet-tooltip.lab{background:#fff;border:0;box-shadow:none;font-size:11px;font-weight:600}
+  .panel-toggle{display:none;position:absolute;z-index:1100;top:12px;left:12px;
+    background:#fff;border:1px solid #e4e4e7;padding:8px 12px;font-size:13px;
+    font-weight:600;cursor:pointer;font-family:inherit;color:#18181b}
+  .panel-close{display:none;float:right;margin:-4px -4px 6px 8px;border:0;background:transparent;
+    font-size:22px;line-height:1;cursor:pointer;color:#52525b;padding:0 4px}
+  @media (max-width:720px){
+    .panel-toggle{display:block}
+    .panel{display:none;top:52px;left:8px;right:8px;max-width:none;
+      max-height:calc(100dvh - 64px);overflow:auto;box-sizing:border-box}
+    .panel.is-open{display:block}
+    .panel-close{display:block}
+    .leaflet-tooltip.lab{display:none}
+  }
 </style>
 </head>
 <body>
 <div id="map"></div>
-<aside class="panel">
+<button type="button" class="panel-toggle" id="panelToggle" aria-expanded="false" aria-controls="leyenda">Leyenda</button>
+<aside class="panel" id="leyenda">
+  <button type="button" class="panel-close" id="panelClose" aria-label="Cerrar">×</button>
   <nav class="site-nav" aria-label="Paginas">
     <a class="is-on" href="index.html">Mapa</a>
     <a href="tiempos.html">Tiempos de alerta</a>
@@ -104,6 +119,17 @@ L.control.layers(
   {"Curvas 10 m (HMA)": curvasLayer}
 ).addTo(map);
 map.fitBounds(gj.getBounds().pad(0.08));
+(function(){
+  const panel = document.getElementById("leyenda");
+  const openBtn = document.getElementById("panelToggle");
+  const closeBtn = document.getElementById("panelClose");
+  function setOpen(open){
+    panel.classList.toggle("is-open", open);
+    openBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  openBtn.addEventListener("click", function(){ setOpen(true); });
+  closeBtn.addEventListener("click", function(){ setOpen(false); });
+})();
 </script>
 </body>
 </html>

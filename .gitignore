@@ -1,0 +1,12 @@
+# DEM NASA HMA (~348 MB). No cabe en GitHub (límite 100 MB).
+*.tif
+*.tif.aux.xml
+
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Copias locales; en el repo el mapa es index.html y los tiempos son tiempos.html
+mapa_inundacion_bhote_koshi.html
+manning_alerta_dhm.html

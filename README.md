@@ -9,7 +9,7 @@ Las dos piezas para presentar son HTML estático. No hay servidor ni base de dat
 
 | Página | Archivo | Qué muestra |
 | --- | --- | --- |
-| Inicio | [index.html](index.html) | Mapa de inundación estimada y curvas de nivel |
+| Inicio | [index.html](index.html) | Mapa: mancha HAND, curvas 10 m, polígonos e imágenes EMSR927 al 28 ago 2026 |
 | Segunda | [tiempos.html](tiempos.html) | Curva x(t), Manning 1 km y minutos de alerta perdidos |
 
 En cada página hay un enlace a la otra (Mapa / Tiempos de alerta).
@@ -23,14 +23,34 @@ Fuente de la página: este HTML (Leaflet 1.9, datos embebidos). No llama a una A
 
 **Qué se ve**
 
-- Núcleo de valle (~3.2 km²) y runup en ladera (~5.1 km²) entre Rasuwagadhi y Devighat HEP (Nuwakot), 58.7 km de cauce.
+- Núcleo de valle (~3.2 km²) y runup en ladera (~5.1 km²) entre Rasuwagadhi y Devighat HEP (Nuwakot), 58.7 km de cauce. **Estimación HAND**, no es la delineación Copernicus.
+- Polígonos y edificios de [Copernicus EMSR927](https://mapping.emergency.copernicus.eu/activations/EMSR927/) GRA **al 28 de agosto de 2026**: deslizamientos fotointerpretados en Syapru Besi y Timure (WorldView-3 / Legion, 27 ago 05:05 UTC). Capas apagables en el control de la esquina.
+- Mapas GRA oficiales en el panel (AOI01 y AOI02). Bidur (AOI03) y Bharatpur (AOI04) aún no tenían producto publicado en esa fecha.
 - Eje del río, comunidades con hora de llegada (NPT) y minutos de alerta perdidos.
 - Límite del modelo en Devighat HEP: el frente siguió hacia Galchhi, Malekhu, Muglin y **Devghat (Chitwan) ~15:20**. No confundir Devighat HEP (Nuwakot) con Devghat.
-- Curvas de nivel cada 10 m (índice cada 50 m), capa encendible y apagable en el control de capas (arriba a la derecha). Clic en una curva muestra la cota.
+- Curvas de nivel cada 10 m (índice cada 50 m), capa encendible y apagable. Clic en una curva muestra la cota.
 
-**Cómo se construyó**
+**Copernicus EMSR927 (corte 28 ago 2026)**
 
-No hay vector público de Copernicus EMSR927 al momento del análisis. La mancha es un HAND aproximado sobre el DEM NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84):
+Ya hay vector público GRA para las dos AOI de cabecera. El evento CEMS es `6-Mass Movement` / landslide, no una mancha de llanura.
+
+| AOI | Localidad | Estado al 28 ago | Producto | Área deslizamiento | Edificios (dest. / dañ. / pos. dañ.) |
+| --- | --- | --- | --- | --- | --- |
+| 01 | Syapru Besi | Publicado (F) | GRA v1, WorldView-3 | **111 ha** | 323 / 32 / 78 |
+| 02 | Timure | Publicado (F) | GRA v2, Legion | **129 ha** | 372 / 33 / 26 |
+| 03 | Bidur | En curso (I) | — | — | — |
+| 04 | Bharatpur | En espera (W) | Legion 29 ago (previsto) | — | — |
+
+En el repo: `emsr927_hasta_hoy.geojson` y `media/emsr927_aoi01_syapru_besi.jpg`, `media/emsr927_aoi02_timure.jpg`.
+
+<p align="center">
+<img src="media/emsr927_aoi01_syapru_besi.jpg" alt="EMSR927 AOI01 Syapru Besi GRA" width="48%" />
+<img src="media/emsr927_aoi02_timure.jpg" alt="EMSR927 AOI02 Timure GRA" width="48%" />
+</p>
+
+**Cómo se construyó la mancha HAND**
+
+La mancha naranja/roja es un HAND aproximado sobre el DEM NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84). No sustituye a EMSR927: cubre todo el corredor hasta Devighat; CEMS solo ha publicado las AOI de cabecera.
 
 | Tramo | Núcleo (H / ancho) | Runup (H / ancho) |
 | --- | --- | --- |
@@ -40,13 +60,16 @@ No hay vector público de Copernicus EMSR927 al momento del análisis. La mancha
 
 Curvas: contornos cada 10 m del mismo DEM, recortados a ~1.5 km del cauce.
 
+Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78 % nubes) **no** delinean el corredor: el cambio S1 fiable es ~3 ha frente a ~830 ha HAND.
+
 **Scripts que regeneran esta página**
 
 1. `generar_mapa_inundacion.py` → `inundacion_bhote_koshi.geojson`
 2. `generar_curvas_10m.py` → `curvas_10m_hma.geojson`
-3. `escribir_mapa_html.py` → `index.html`
+3. `preparar_emsr927.py` → `emsr927_hasta_hoy.geojson` + JPEG en `media/`
+4. `escribir_mapa_html.py` → `index.html`
 
-El GeoTIFF HMA no va en el repositorio (~348 MB, Earthdata). Hace falta en local para volver a generar curvas o la mancha.
+El GeoTIFF HMA no va en el repositorio (~348 MB, Earthdata). Hace falta en local para volver a generar curvas o la mancha. Los zips GRA de CEMS tampoco van al repo.
 
 ---
 

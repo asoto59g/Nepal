@@ -7,6 +7,8 @@ gj = json.loads((here / "inundacion_bhote_koshi.geojson").read_text(encoding="ut
 blob = json.dumps(gj, separators=(",", ":"), ensure_ascii=False)
 curvas = json.loads((here / "curvas_10m_hma.geojson").read_text(encoding="utf-8"))
 curvas_blob = json.dumps(curvas, separators=(",", ":"), ensure_ascii=False)
+ems = json.loads((here / "emsr927_hasta_hoy.geojson").read_text(encoding="utf-8"))
+ems_blob = json.dumps(ems, separators=(",", ":"), ensure_ascii=False)
 
 html = """<!DOCTYPE html>
 <html lang="es">
@@ -27,10 +29,14 @@ html = """<!DOCTYPE html>
   .legend{margin:8px 0 0;padding:0;list-style:none}
   .legend li{margin:4px 0}
   .note{font-size:11px;color:#71717a;margin-top:8px}
+  .note a{color:#1d4ed8}
   .leaflet-tooltip.lab{background:#fff;border:0;box-shadow:none;font-size:11px;font-weight:600}
   .site-nav{display:flex;gap:4px;margin:0 0 10px}
   .site-nav a{font-size:12px;font-weight:600;color:#52525b;text-decoration:none;padding:4px 8px;border:1px solid #e4e4e7}
   .site-nav a.is-on{background:#18181b;color:#fff;border-color:#18181b}
+  .ems-imgs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 4px}
+  .ems-imgs img{width:100%;height:auto;border:1px solid #e4e4e7;display:block}
+  .ems-imgs span{display:block;font-size:10px;color:#71717a;margin-top:2px}
   .panel-toggle{display:none;position:absolute;z-index:1100;top:12px;left:12px;
     background:#fff;border:1px solid #e4e4e7;padding:8px 12px;font-size:13px;
     font-weight:600;cursor:pointer;font-family:inherit;color:#18181b}
@@ -57,23 +63,33 @@ html = """<!DOCTYPE html>
   </nav>
   <h1>Hasta donde llego la avalancha</h1>
   <p>Tramo analizado Rasuwagadhi → Devighat HEP (Nuwakot), 58.7 km.
-  Mancha estimada con NASA HMA 8 m: fondo de valle (9–12 m sobre el cauce)
-  y runup en ladera. No es delineacion satelital Copernicus EMSR927.</p>
+  Mancha naranja/roja: estimacion HAND sobre NASA HMA 8 m (fondo de valle 9–12 m y runup en ladera).</p>
+  <p>Magenta: Copernicus <a href="https://mapping.emergency.copernicus.eu/activations/EMSR927/">EMSR927</a>
+  GRA al 28 ago 2026. Fotointerpretacion WorldView-3 / Legion 27 ago 05:05 UTC:
+  deslizamientos Syapru Besi 111 ha y Timure 129 ha. Bidur y Bharatpur aun no publicados.</p>
+  <div class="ems-imgs">
+    <a href="media/emsr927_aoi01_syapru_besi.jpg"><img src="media/emsr927_aoi01_syapru_besi_thumb.jpg" alt="Mapa GRA EMSR927 Syapru Besi"/><span>AOI01 Syapru Besi</span></a>
+    <a href="media/emsr927_aoi02_timure.jpg"><img src="media/emsr927_aoi02_timure_thumb.jpg" alt="Mapa GRA EMSR927 Timure"/><span>AOI02 Timure</span></a>
+  </div>
   <ul class="legend">
-    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle (3.2 km²)</li>
-    <li><span class="sw" style="background:#f97316"></span>Runup en ladera (5.1 km²)</li>
+    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (3.2 km²)</li>
+    <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (5.1 km²)</li>
+    <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (240 ha, 2 AOI)</li>
+    <li><span class="sw" style="background:#b91c1c"></span>Edificio destruido / dañado (CEMS)</li>
     <li><span class="sw" style="background:#1d4ed8"></span>Eje del cauce</li>
     <li><span class="sw" style="background:#111"></span>Comunidades y hora de llegada</li>
     <li><span class="sw" style="background:#b91c1c"></span>Limite del modelo (el frente siguio a Devghat)</li>
     <li><span class="sw" style="background:#92400e;height:2px;width:18px"></span>Curvas de nivel 10 m (indice cada 50 m). Capa apagable.</li>
   </ul>
   <p class="note">El DHM situa el frente en Devghat (Chitwan) ~15:20, fuera de este mapa.
-  Copernicus reporto ~7 m en estaciones; en laderas el runup puede ser mayor.</p>
+  EMSR927 clasifica el daño como mass movement / landslide, no como mancha de llanura.
+  Sentinel-1/2 no delinean el corredor (GRD sin RTC; optico nublado). Corte: 28 ago 2026.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const DATA = PLACEHOLDER;
 const CURVAS = CURVAS_PLACEHOLDER;
+const EMS = EMS_PLACEHOLDER;
 const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 18, attribution: "&copy; OpenStreetMap"
 });
@@ -124,9 +140,42 @@ const curvasLayer = L.geoJSON(CURVAS, {
     layer.bindPopup("Curva "+e+" m"+(f.properties.indice ? " (indice 50 m)" : ""));
   }
 }).addTo(map);
+const emsSlide = L.geoJSON(EMS, {
+  filter(f){ return f.properties.clase === "emsr_deslizamiento"; },
+  style(){ return {color:"#5b21b6", weight:1.2, fillColor:"#7c3aed", fillOpacity:0.45}; },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    layer.bindPopup("<b>EMSR927 "+p.aoi+"</b><br>"+p.obj_desc+" · "+p.area_ha+" ha<br>"+p.sensor+"<br>fotointerpretacion Copernicus GRA");
+  }
+}).addTo(map);
+const emsBuild = L.geoJSON(EMS, {
+  filter(f){ return f.properties.clase === "emsr_edificio"; },
+  pointToLayer(f, latlng){
+    const d = f.properties.damage_gra;
+    const fill = d === "Destroyed" ? "#b91c1c" : (d === "Damaged" ? "#ea580c" : "#ca8a04");
+    return L.circleMarker(latlng, {radius:3.5, color:"#fff", weight:0.6, fillColor:fill, fillOpacity:0.95});
+  },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    layer.bindPopup(p.damage_gra+" · "+(p.simplified||"edificio")+"<br>EMSR927 "+p.aoi);
+  }
+}).addTo(map);
+const emsAoi = L.geoJSON(EMS, {
+  filter(f){ return f.properties.clase === "emsr_aoi"; },
+  style(){ return {color:"#2563eb", weight:2, dashArray:"6 4", fillOpacity:0}; },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    layer.bindPopup("<b>AOI0"+p.aoi_n+" "+p.locality+"</b><br>EMSR927 "+p.map_type+"<br>"+p.estado);
+  }
+});
 L.control.layers(
   {OSM: osm, Satelite: sat},
-  {"Curvas 10 m (HMA)": curvasLayer}
+  {
+    "Curvas 10 m (HMA)": curvasLayer,
+    "EMSR927 deslizamientos": emsSlide,
+    "EMSR927 edificios": emsBuild,
+    "EMSR927 AOI (hasta hoy)": emsAoi
+  }
 ).addTo(map);
 map.fitBounds(gj.getBounds().pad(0.08));
 (function(){
@@ -144,7 +193,10 @@ map.fitBounds(gj.getBounds().pad(0.08));
 </body>
 </html>
 """
-html = html.replace("CURVAS_PLACEHOLDER", curvas_blob).replace("PLACEHOLDER", blob)
+html = (html
+  .replace("EMS_PLACEHOLDER", ems_blob)
+  .replace("CURVAS_PLACEHOLDER", curvas_blob)
+  .replace("PLACEHOLDER", blob))
 dest = here / "index.html"
 dest.write_text(html, encoding="utf-8")
 print("wrote", dest, dest.stat().st_size)

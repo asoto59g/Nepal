@@ -10,3 +10,9 @@ Thumbs.db
 # Copias locales; en el repo el mapa es index.html y los tiempos son tiempos.html
 mapa_inundacion_bhote_koshi.html
 manning_alerta_dhm.html
+
+# Productos CEMS completos (shp/lyr/zip). En el repo: emsr927_hasta_hoy.geojson + media/
+emsr927_aoi01/
+emsr927_aoi02/
+EMSR927_*.zip
+EMSR927_AOI*_GRA_PRODUCT_observedEventA_v*.json

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Compact Copernicus EMSR927 GRA (AOI01+AOI02, 28 ago 2026) and export map JPEGs."""
+"""Compact Copernicus EMSR927 GRA (AOI01–AOI03 al 29 ago 2026) and export map JPEGs."""
 from __future__ import annotations
 
 import io
@@ -74,6 +74,7 @@ def main():
             "jpg": MEDIA / "emsr927_aoi01_syapru_besi.jpg",
             "thumb": MEDIA / "emsr927_aoi01_syapru_besi_thumb.jpg",
             "sensor": "WorldView-3 27 ago 2026 05:05 UTC",
+            "publicado": "publicado 27 ago 2026",
         },
         {
             "aoi_n": 2,
@@ -85,6 +86,19 @@ def main():
             "jpg": MEDIA / "emsr927_aoi02_timure.jpg",
             "thumb": MEDIA / "emsr927_aoi02_timure_thumb.jpg",
             "sensor": "Legion 27 ago 2026 05:05 UTC",
+            "publicado": "publicado 28 ago 2026",
+        },
+        {
+            "aoi_n": 3,
+            "aoi": "Bidur",
+            "event": HERE / "emsr927_aoi03" / "EMSR927_AOI03_GRA_PRODUCT_observedEventA_v1.json",
+            "aoi_path": HERE / "emsr927_aoi03" / "EMSR927_AOI03_GRA_PRODUCT_areaOfInterestA_v1.json",
+            "built": HERE / "emsr927_aoi03" / "EMSR927_AOI03_GRA_PRODUCT_builtUpP_v1.json",
+            "pdf": HERE / "emsr927_aoi03" / "Maps" / "EMSR927_AOI03_GRA_PRODUCT_31000_map_v1.pdf",
+            "jpg": MEDIA / "emsr927_aoi03_bidur.jpg",
+            "thumb": MEDIA / "emsr927_aoi03_bidur_thumb.jpg",
+            "sensor": "BlackSky 27 ago 12:09 UTC / Satellogic 27 ago 04:22 UTC",
+            "publicado": "publicado 29 ago 2026",
         },
     ]
 
@@ -124,7 +138,7 @@ def main():
                     "locality": p.get("locality") or src["aoi"],
                     "emsr_id": p.get("emsr_id", "EMSR927"),
                     "map_type": p.get("map_type"),
-                    "estado": "publicado 28 ago 2026",
+                    "estado": src.get("publicado", "publicado"),
                     "fuente": "Copernicus EMSR927 GRA",
                 },
                 f["geometry"],
@@ -156,10 +170,10 @@ def main():
         "type": "FeatureCollection",
         "name": "emsr927_hasta_hoy",
         "properties": {
-            "corte": "2026-08-28",
+            "corte": "2026-08-29",
             "activacion": "EMSR927",
-            "publicado": ["AOI01 Syapru Besi GRA v1", "AOI02 Timure GRA v2"],
-            "pendiente": ["AOI03 Bidur (en curso)", "AOI04 Bharatpur (en espera)"],
+            "publicado": [f"AOI{int(s['aoi_n']):02d} {s['aoi']}" for s in sources],
+            "pendiente": ["AOI04 Bharatpur (en espera)"],
             "area_deslizamiento_ha": round(ha_tot, 2),
             "edificios": dict(buildings),
             "url": "https://mapping.emergency.copernicus.eu/activations/EMSR927/",

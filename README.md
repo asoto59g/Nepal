@@ -9,7 +9,7 @@ Las dos piezas para presentar son HTML estático. No hay servidor ni base de dat
 
 | Página | Archivo | Qué muestra |
 | --- | --- | --- |
-| Inicio | [index.html](index.html) | Mapa: mancha HAND, curvas 10 m, polígonos e imágenes EMSR927 al 28 ago 2026 |
+| Inicio | [index.html](index.html) | Mapa: mancha HAND, curvas 10 m, polígonos e imágenes EMSR927 al 29 ago 2026 |
 | Segunda | [tiempos.html](tiempos.html) | Curva x(t), Manning 1 km y minutos de alerta perdidos |
 
 En cada página hay un enlace a la otra (Mapa / Tiempos de alerta).
@@ -25,33 +25,34 @@ Fuente de la página: este HTML (Leaflet 1.9, datos embebidos). No llama a una A
 
 - Núcleo de valle (~3.2 km²) y runup en ladera (~5.1 km²) entre Rasuwagadhi y Devighat HEP (Nuwakot), 58.7 km de cauce. **Estimación HAND**, no es la delineación Copernicus. Capa encendible y apagable en el cajetín de capas (arriba a la derecha).
 - Barra de escala métrica en la esquina inferior izquierda, pegada al borde.
-- Polígonos y edificios de [Copernicus EMSR927](https://mapping.emergency.copernicus.eu/activations/EMSR927/) GRA **al 28 de agosto de 2026**: deslizamientos fotointerpretados en Syapru Besi y Timure (WorldView-3 / Legion, 27 ago 05:05 UTC). Capas apagables en el control de la esquina.
-- Mapas GRA oficiales en el panel (AOI01 y AOI02). Bidur (AOI03) y Bharatpur (AOI04) aún no tenían producto publicado en esa fecha.
+- Polígonos y edificios de [Copernicus EMSR927](https://mapping.emergency.copernicus.eu/activations/EMSR927/) GRA **al 29 de agosto de 2026**: deslizamientos fotointerpretados en Syapru Besi, Timure y Bidur. Capas apagables en el control de la esquina.
+- Mapas GRA oficiales en el panel (AOI01, AOI02 y AOI03). Bharatpur (AOI04) aún no tenía producto publicado.
 - Eje del río, comunidades con hora de llegada (NPT) y minutos de alerta perdidos.
 - Límite del modelo en Devighat HEP: el frente siguió hacia Galchhi, Malekhu, Muglin y **Devghat (Chitwan) ~15:20**. No confundir Devighat HEP (Nuwakot) con Devghat.
 - Curvas de nivel cada 10 m (índice cada 50 m), capa encendible y apagable. Clic en una curva muestra la cota.
 
-**Copernicus EMSR927 (corte 28 ago 2026)**
+**Copernicus EMSR927 (corte 29 ago 2026)**
 
-Ya hay vector público GRA para las dos AOI de cabecera. El evento CEMS es `6-Mass Movement` / landslide, no una mancha de llanura.
+Ya hay vector público GRA para las tres AOI del corredor alto y medio. El evento CEMS es `6-Mass Movement` / landslide, no una mancha de llanura. Total **829 ha**.
 
-| AOI | Localidad | Estado al 28 ago | Producto | Área deslizamiento | Edificios (dest. / dañ. / pos. dañ.) |
+| AOI | Localidad | Estado al 29 ago | Producto | Área deslizamiento | Edificios (dest. / dañ. / pos. dañ.) |
 | --- | --- | --- | --- | --- | --- |
-| 01 | Syapru Besi | Publicado (F) | GRA v1, WorldView-3 | **111 ha** | 323 / 32 / 78 |
-| 02 | Timure | Publicado (F) | GRA v2, Legion | **129 ha** | 372 / 33 / 26 |
-| 03 | Bidur | En curso (I) | — | — | — |
+| 01 | Syapru Besi | Publicado (F) | GRA v1, WorldView-3 27 ago 05:05 UTC | **111 ha** | 323 / 32 / 78 |
+| 02 | Timure | Publicado (F) | GRA v2, Legion 27 ago 05:05 UTC | **129 ha** | 372 / 33 / 26 |
+| 03 | Bidur | Publicado (F) | GRA v1, BlackSky 12:09 UTC / Satellogic 04:22 UTC (27 ago) | **589 ha** | 1826 / 220 / 297 |
 | 04 | Bharatpur | En espera (W) | Legion 29 ago (previsto) | — | — |
 
-En el repo: `emsr927_hasta_hoy.geojson` y `media/emsr927_aoi01_syapru_besi.jpg`, `media/emsr927_aoi02_timure.jpg`.
+En el repo: `emsr927_hasta_hoy.geojson` y JPEG en `media/`.
 
 <p align="center">
-<img src="media/emsr927_aoi01_syapru_besi.jpg" alt="EMSR927 AOI01 Syapru Besi GRA" width="48%" />
-<img src="media/emsr927_aoi02_timure.jpg" alt="EMSR927 AOI02 Timure GRA" width="48%" />
+<img src="media/emsr927_aoi01_syapru_besi.jpg" alt="EMSR927 AOI01 Syapru Besi GRA" width="32%" />
+<img src="media/emsr927_aoi02_timure.jpg" alt="EMSR927 AOI02 Timure GRA" width="32%" />
+<img src="media/emsr927_aoi03_bidur.jpg" alt="EMSR927 AOI03 Bidur GRA" width="32%" />
 </p>
 
 **Cómo se construyó la mancha HAND**
 
-La mancha naranja/roja es un HAND aproximado sobre el DEM NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84). No sustituye a EMSR927: cubre todo el corredor hasta Devighat; CEMS solo ha publicado las AOI de cabecera.
+La mancha naranja/roja es un HAND aproximado sobre el DEM NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84). No sustituye a EMSR927: cubre todo el corredor hasta Devighat; CEMS al 29 ago cubre Syapru Besi, Timure y Bidur (**829 ha**). Bharatpur sigue pendiente.
 
 | Tramo | Núcleo (H / ancho) | Runup (H / ancho) |
 | --- | --- | --- |
@@ -110,7 +111,7 @@ Rasuwagadhi 08:36 queda ~1 min antes del sismo 08:37: el tramo alto es muy pendi
 
 ## Aviso cuando EMSR927 publique algo nuevo
 
-Un workflow de GitHub Actions (`Vigilar EMSR927`) consulta la API de Copernicus cada 2 h. Si Bidur, Bharatpur u otra AOI cambia de estado, sube de versión o aparece el zip GRA:
+Un workflow de GitHub Actions (`Vigilar EMSR927`) consulta la API de Copernicus cada 2 h. Si Bharatpur u otra AOI cambia de estado, sube de versión o aparece el zip GRA:
 
 1. Abre un [issue](https://github.com/asoto59g/Nepal/issues) con etiqueta `emsr927` y te lo asigna (notificación GitHub; el correo de GitHub llega si tienes Issues activado en [notification settings](https://github.com/settings/notifications)).
 2. Envía un correo a `oasotob@yahoo.com`.

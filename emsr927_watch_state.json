@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:I:noz:BlackSky,Satellogic|4:GRA:v1:W:noz:Legion",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:BlackSky,Satellogic|4:GRA:v1:W:noz:Legion",
   "aois": [
     {
       "number": 1,
@@ -52,11 +52,11 @@
         {
           "type": "GRA",
           "version": 1,
-          "status": "I",
-          "deliveryTime": null,
+          "status": "F",
+          "deliveryTime": "2026-08-29T02:57:09.641898",
           "expectedDelivery": "2026-08-28T19:30:00",
-          "download": false,
-          "downloadPath": "",
+          "download": true,
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI03/GRA_PRODUCT/EMSR927_AOI03_GRA_PRODUCT_v1.zip",
           "sensors": [
             "BlackSky",
             "Satellogic"

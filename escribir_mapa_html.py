@@ -34,7 +34,7 @@ html = """<!DOCTYPE html>
   .site-nav{display:flex;gap:4px;margin:0 0 10px}
   .site-nav a{font-size:12px;font-weight:600;color:#52525b;text-decoration:none;padding:4px 8px;border:1px solid #e4e4e7}
   .site-nav a.is-on{background:#18181b;color:#fff;border-color:#18181b}
-  .ems-imgs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 4px}
+  .ems-imgs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0 4px}
   .ems-imgs img{width:100%;height:auto;border:1px solid #e4e4e7;display:block}
   .ems-imgs span{display:block;font-size:10px;color:#71717a;margin-top:2px}
   .panel-toggle{display:none;position:absolute;z-index:1100;top:12px;left:12px;
@@ -83,16 +83,17 @@ html = """<!DOCTYPE html>
   <p>Tramo analizado Rasuwagadhi → Devighat HEP (Nuwakot), 58.7 km.
   Mancha naranja/roja: estimacion HAND sobre NASA HMA 8 m (fondo de valle 9–12 m y runup en ladera).</p>
   <p>Magenta: Copernicus <a href="https://mapping.emergency.copernicus.eu/activations/EMSR927/">EMSR927</a>
-  GRA al 28 ago 2026. Fotointerpretacion WorldView-3 / Legion 27 ago 05:05 UTC:
-  deslizamientos Syapru Besi 111 ha y Timure 129 ha. Bidur y Bharatpur aun no publicados.</p>
+  GRA al 29 ago 2026. Fotointerpretacion 27 ago: Syapru Besi 111 ha (WorldView-3),
+  Timure 129 ha (Legion) y Bidur 589 ha (BlackSky / Satellogic). Bharatpur aun no publicado.</p>
   <div class="ems-imgs">
     <a href="media/emsr927_aoi01_syapru_besi.jpg"><img src="media/emsr927_aoi01_syapru_besi_thumb.jpg" alt="Mapa GRA EMSR927 Syapru Besi"/><span>AOI01 Syapru Besi</span></a>
     <a href="media/emsr927_aoi02_timure.jpg"><img src="media/emsr927_aoi02_timure_thumb.jpg" alt="Mapa GRA EMSR927 Timure"/><span>AOI02 Timure</span></a>
+    <a href="media/emsr927_aoi03_bidur.jpg"><img src="media/emsr927_aoi03_bidur_thumb.jpg" alt="Mapa GRA EMSR927 Bidur"/><span>AOI03 Bidur</span></a>
   </div>
   <ul class="legend">
     <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (3.2 km²). Capa apagable.</li>
     <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (5.1 km²). Capa apagable.</li>
-    <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (240 ha, 2 AOI)</li>
+    <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (829 ha, 3 AOI)</li>
     <li><span class="sw" style="background:#b91c1c"></span>Edificio destruido / dañado (CEMS)</li>
     <li><span class="sw" style="background:#1d4ed8"></span>Eje del cauce</li>
     <li><span class="sw" style="background:#111"></span>Comunidades y hora de llegada</li>
@@ -101,7 +102,7 @@ html = """<!DOCTYPE html>
   </ul>
   <p class="note">El DHM situa el frente en Devghat (Chitwan) ~15:20, fuera de este mapa.
   EMSR927 clasifica el daño como mass movement / landslide, no como mancha de llanura.
-  Sentinel-1/2 no delinean el corredor (GRD sin RTC; optico nublado). Corte: 28 ago 2026.</p>
+  Sentinel-1/2 no delinean el corredor (GRD sin RTC; optico nublado). Corte: 29 ago 2026.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -178,6 +179,7 @@ const emsSlide = L.geoJSON(EMS, {
   }
 }).addTo(map);
 const emsBuild = L.geoJSON(EMS, {
+  renderer: L.canvas({padding: 0.5}),
   filter(f){ return f.properties.clase === "emsr_edificio"; },
   pointToLayer(f, latlng){
     const d = f.properties.damage_gra;

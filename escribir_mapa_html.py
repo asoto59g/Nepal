@@ -2,13 +2,65 @@
 import json
 from pathlib import Path
 
+import requests
+from shapely import wkt
+from shapely.geometry import mapping
+
 here = Path(__file__).resolve().parent
 gj = json.loads((here / "inundacion_bhote_koshi.geojson").read_text(encoding="utf-8"))
+man = json.loads((here / "resultado_manning.json").read_text(encoding="utf-8"))
 blob = json.dumps(gj, separators=(",", ":"), ensure_ascii=False)
 curvas = json.loads((here / "curvas_10m_hma.geojson").read_text(encoding="utf-8"))
 curvas_blob = json.dumps(curvas, separators=(",", ":"), ensure_ascii=False)
 ems = json.loads((here / "emsr927_hasta_hoy.geojson").read_text(encoding="utf-8"))
+
+have_aoi4 = any(
+    (f.get("properties") or {}).get("aoi_n") == 4
+    for f in ems.get("features", [])
+)
+if not have_aoi4:
+    try:
+        r = requests.get(
+            "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
+            timeout=60,
+            headers={"User-Agent": "ABCGeomatica-HMA/1.0"},
+        )
+        r.raise_for_status()
+        for aoi in r.json()["results"][0]["aois"]:
+            if aoi.get("number") != 4:
+                continue
+            geom = mapping(wkt.loads(aoi["extent"]))
+            ems.setdefault("features", []).append(
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "clase": "emsr_aoi",
+                        "aoi": "Bharatpur",
+                        "aoi_n": 4,
+                        "locality": "Bharatpur",
+                        "emsr_id": "EMSR927",
+                        "map_type": "GRA",
+                        "estado": "en espera (W) — Legion 29 ago 04:01 UTC, entrega prevista 17:01 UTC",
+                        "fuente": "Copernicus EMSR927 API",
+                    },
+                    "geometry": geom,
+                }
+            )
+            print("AOI04 Bharatpur (espera) añadido al geojson embebido")
+    except Exception as ex:
+        print("AOI04 no se pudo añadir:", ex)
+
 ems_blob = json.dumps(ems, separators=(",", ":"), ensure_ascii=False)
+
+a_n = a_r = 0.0
+for f in gj.get("features", []):
+    c = (f.get("properties") or {}).get("clase")
+    if c == "nucleo_valle":
+        a_n = (f["properties"] or {}).get("area_km2") or 0
+    if c == "runup_ladera":
+        a_r = (f["properties"] or {}).get("area_km2") or 0
+km_tot = man.get("longitud_km", 0)
+ha_ems = (ems.get("properties") or {}).get("area_deslizamiento_ha", 829)
 
 html = """<!DOCTYPE html>
 <html lang="es">
@@ -80,29 +132,28 @@ html = """<!DOCTYPE html>
     <a href="tiempos.html">Tiempos de alerta</a>
   </nav>
   <h1>Hasta donde llego la avalancha</h1>
-  <p>Tramo analizado Rasuwagadhi → Devighat HEP (Nuwakot), 58.7 km.
-  Mancha naranja/roja: estimacion HAND sobre NASA HMA 8 m (fondo de valle 9–12 m y runup en ladera).</p>
+  <p>Tramo analizado Rasuwagadhi → Bharatpur (Narayani), PANEL_KM km.
+  Mancha naranja/roja: estimacion HAND (HMA 8 m + COP30 al oeste). Garganta 9–12 m; valle medio y llanura mas bajo y ancho.</p>
   <p>Magenta: Copernicus <a href="https://mapping.emergency.copernicus.eu/activations/EMSR927/">EMSR927</a>
   GRA al 29 ago 2026. Fotointerpretacion 27 ago: Syapru Besi 111 ha (WorldView-3),
-  Timure 129 ha (Legion) y Bidur 589 ha (BlackSky / Satellogic). Bharatpur aun no publicado.</p>
+  Timure 129 ha (Legion) y Bidur 589 ha (BlackSky / Satellogic). Bharatpur (AOI04) en espera (Legion 29 ago, entrega prevista ~17:01 UTC).</p>
   <div class="ems-imgs">
     <a href="media/emsr927_aoi01_syapru_besi.jpg"><img src="media/emsr927_aoi01_syapru_besi_thumb.jpg" alt="Mapa GRA EMSR927 Syapru Besi"/><span>AOI01 Syapru Besi</span></a>
     <a href="media/emsr927_aoi02_timure.jpg"><img src="media/emsr927_aoi02_timure_thumb.jpg" alt="Mapa GRA EMSR927 Timure"/><span>AOI02 Timure</span></a>
     <a href="media/emsr927_aoi03_bidur.jpg"><img src="media/emsr927_aoi03_bidur_thumb.jpg" alt="Mapa GRA EMSR927 Bidur"/><span>AOI03 Bidur</span></a>
   </div>
   <ul class="legend">
-    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (3.2 km²). Capa apagable.</li>
-    <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (5.1 km²). Capa apagable.</li>
-    <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (829 ha, 3 AOI)</li>
+    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (PANEL_NUCLEO km²). Capa apagable.</li>
+    <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (PANEL_RUNUP km²). Capa apagable.</li>
+    <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (PANEL_HA ha, 3 AOI publicadas)</li>
     <li><span class="sw" style="background:#b91c1c"></span>Edificio destruido / dañado (CEMS)</li>
     <li><span class="sw" style="background:#1d4ed8"></span>Eje del cauce</li>
     <li><span class="sw" style="background:#111"></span>Comunidades y hora de llegada</li>
-    <li><span class="sw" style="background:#b91c1c"></span>Limite del modelo (el frente siguio a Devghat)</li>
-    <li><span class="sw" style="background:#92400e;height:2px;width:18px"></span>Curvas de nivel 10 m (indice cada 50 m). Capa apagable.</li>
+    <li><span class="sw" style="background:#b91c1c"></span>Fin del eje (Bharatpur / Narayani)</li>
+    <li><span class="sw" style="background:#92400e;height:2px;width:18px"></span>Curvas de nivel (10 m garganta, 20 m valle bajo). Capa apagable.</li>
   </ul>
-  <p class="note">El DHM situa el frente en Devghat (Chitwan) ~15:20, fuera de este mapa.
-  EMSR927 clasifica el daño como mass movement / landslide, no como mancha de llanura.
-  Sentinel-1/2 no delinean el corredor (GRD sin RTC; optico nublado). Corte: 29 ago 2026.</p>
+  <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). El DHM situó el frente en Devghat ~15:20; el modelo de dos tramos ancla ese reloj. AOI04 Bharatpur es el recuadro azul discontinuo, sin polígonos GRA aún.
+  EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -232,6 +283,10 @@ map.fitBounds(handLayer.getBounds().extend(gj.getBounds()).pad(0.08));
 </html>
 """
 html = (html
+  .replace("PANEL_KM", f"{km_tot:.1f}")
+  .replace("PANEL_NUCLEO", f"{a_n:.1f}")
+  .replace("PANEL_RUNUP", f"{a_r:.1f}")
+  .replace("PANEL_HA", f"{float(ha_ems):.0f}")
   .replace("EMS_PLACEHOLDER", ems_blob)
   .replace("CURVAS_PLACEHOLDER", curvas_blob)
   .replace("PLACEHOLDER", blob))

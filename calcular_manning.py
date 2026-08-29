@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Perfil DEM + Manning cada 1 km: Rasuwagadhi → Devighat HEP (Nuwakot)."""
+"""Perfil DEM + Manning cada 1 km: Rasuwagadhi → Bharatpur (Narayani)."""
 from __future__ import annotations
 
 import heapq
@@ -25,12 +25,29 @@ from rasterio.warp import transform as rio_transform
 from shapely.geometry import LineString, mapping
 
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
-BBOX = (27.86, 85.10, 28.32, 85.42)  # S, W, N, E
+# Alto Himalaya + Trishuli medio + Narayani en Chitwan (Bharatpur).
+BBOXES = [
+    (27.86, 85.10, 28.32, 85.42),  # Rasuwagadhi → Devighat HEP
+    (27.64, 84.38, 27.95, 85.16),  # Devighat → Devghat / Bharatpur
+]
 HMA_NAME = "HMA_DEM8m_MOS_20170716_tile-675.tif"
 HMA_URL = (
     "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/"
     "HMA/HMA_DEM8m_MOS/1/2002/01/28/HMA_DEM8m_MOS_20170716_tile-675.tif"
 )
+COP30_NAME = "Copernicus_DSM_COG_10_N27_00_E084_00_DEM.tif"
+COP30_URLS = [
+    (
+        "https://copernicus-dem-30m.s3.amazonaws.com/"
+        "Copernicus_DSM_COG_10_N27_00_E084_00_DEM/"
+        "Copernicus_DSM_COG_10_N27_00_E084_00_DEM.tif"
+    ),
+    (
+        "https://copernicus-dem-30m.s3.eu-central-1.amazonaws.com/"
+        "Copernicus_DSM_COG_10_N27_00_E084_00_DEM/"
+        "Copernicus_DSM_COG_10_N27_00_E084_00_DEM.tif"
+    ),
+]
 OSM_CACHE = os.path.join(OUT_DIR, "rios_overpass.json")
 HEADERS = {"User-Agent": "ABCGeomatica-HMA/1.0 (flood-analysis Nepal 2026)"}
 
@@ -40,9 +57,11 @@ T_BET = datetime(2026, 8, 26, 9, 20)
 T_SMS = datetime(2026, 8, 26, 9, 16)
 T_SISMO = datetime(2026, 8, 26, 8, 37)
 T_AUTO = datetime(2026, 8, 26, 8, 38)
+T_DEVGHAT = datetime(2026, 8, 26, 15, 20)  # DHM: frente en Devghat (Chitwan)
 N_MANN = 0.040  # cauce de montaña con bloques / flujo hiperconcentrado
 
-# Puntos de comunidad (lat, lon) — Nominatim / Wikipedia / GEM
+# Puntos de comunidad (lat, lon) — Nominatim / Wikipedia / Wikidata
+# Bharatpur: punto sobre el Narayani (no el centro urbano, a ~2 km del cauce).
 PLACES = [
     {"id": "rasuwagadhi", "nombre": "Rasuwagadhi", "lat": 28.2777749, "lon": 85.3777789},
     {"id": "timure", "nombre": "Timure", "lat": 28.2528483, "lon": 85.3666715},
@@ -53,7 +72,29 @@ PLACES = [
     {"id": "trishuli", "nombre": "Trishuli HEP / Bazar", "lat": 27.9227451, "lon": 85.1461726},
     {"id": "bidur", "nombre": "Bidur", "lat": 27.8952600, "lon": 85.1464460},
     {"id": "devighat", "nombre": "Devighat HEP (Nuwakot)", "lat": 27.8881907, "lon": 85.1340051},
+    {"id": "galchhi", "nombre": "Galchhi", "lat": 27.7959056, "lon": 85.0002861},
+    {"id": "malekhu", "nombre": "Malekhu", "lat": 27.8097, "lon": 84.8290},
+    {"id": "muglin", "nombre": "Muglin", "lat": 27.8544, "lon": 84.5561},
+    {"id": "devghat", "nombre": "Devghat (Chitwan)", "lat": 27.739167, "lon": 84.425278},
+    {"id": "bharatpur", "nombre": "Bharatpur (Narayani)", "lat": 27.7050, "lon": 84.4320},
 ]
+# El camino más corto Rasuwagadhi→Bharatpur se sale de la garganta. Forzar hitos.
+WAYPOINTS = [
+    "rasuwagadhi",
+    "syabrubesi",
+    "mailung",
+    "betrawati",
+    "devighat",
+    "malekhu",
+    "muglin",
+    "devghat",
+    "bharatpur",
+]
+HMA_AEA = (
+    "+proj=aea +lat_1=25 +lat_2=47 +lat_0=36 +lon_0=85 "
+    "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+)
+WGS84 = "+proj=longlat +datum=WGS84 +no_defs"
 
 
 def haversine_m(lat1, lon1, lat2, lon2):
@@ -69,43 +110,67 @@ def round_node(lat, lon, nd=5):
     return (round(lat, nd), round(lon, nd))
 
 
-def fetch_overpass():
-    if os.path.exists(OSM_CACHE) and os.path.getsize(OSM_CACHE) > 1000:
-        with open(OSM_CACHE, encoding="utf-8") as f:
-            data = json.load(f)
-        print(f"OSM cache: {len(data.get('elements', []))} ways")
-        return data
-    s, w, n, e = BBOX
-    query = f"""
+def _overpass_query(s, w, n, e):
+    return f"""
     [out:json][timeout:180];
     (
       way["waterway"="river"]({s},{w},{n},{e});
     );
     out geom;
     """
+
+
+def fetch_overpass():
+    # Cache viejo (~corredor alto) no sirve para Bharatpur: exigir bbox bajo.
+    if os.path.exists(OSM_CACHE) and os.path.getsize(OSM_CACHE) > 1000:
+        with open(OSM_CACHE, encoding="utf-8") as f:
+            data = json.load(f)
+        lons = []
+        for el in data.get("elements", []):
+            for g in el.get("geometry") or []:
+                lons.append(g.get("lon"))
+        if lons and min(lons) < 84.55:
+            print(f"OSM cache: {len(data.get('elements', []))} ways  lon {min(lons):.3f}–{max(lons):.3f}")
+            return data
+        print("OSM cache no cubre Bharatpur; se vuelve a consultar Overpass")
+
     urls = [
         "https://overpass-api.de/api/interpreter",
         "https://overpass.osm.ch/api/interpreter",
         "https://overpass.kumi.systems/api/interpreter",
     ]
+    by_id = {}
     last = None
-    for url in urls:
-        try:
-            r = requests.post(
-                url, data={"data": query}, headers=HEADERS, timeout=180
-            )
-            r.raise_for_status()
-            data = r.json()
-            nways = len(data.get("elements", []))
-            print(f"Overpass {url}: {nways} ways")
-            if nways:
-                with open(OSM_CACHE, "w", encoding="utf-8") as f:
-                    json.dump(data, f)
-                return data
-        except Exception as ex:
-            last = ex
-            print("Overpass fail", url, ex)
-    raise RuntimeError(f"Overpass failed: {last}")
+    for bbox in BBOXES:
+        s, w, n, e = bbox
+        query = _overpass_query(s, w, n, e)
+        got = None
+        for url in urls:
+            try:
+                r = requests.post(
+                    url, data={"data": query}, headers=HEADERS, timeout=180
+                )
+                r.raise_for_status()
+                chunk = r.json()
+                nways = len(chunk.get("elements", []))
+                print(f"Overpass {url} bbox {bbox}: {nways} ways")
+                if nways:
+                    got = chunk
+                    break
+            except Exception as ex:
+                last = ex
+                print("Overpass fail", url, ex)
+        if not got:
+            raise RuntimeError(f"Overpass failed bbox {bbox}: {last}")
+        for el in got.get("elements", []):
+            eid = el.get("id")
+            if eid is not None:
+                by_id[eid] = el
+    data = {"elements": list(by_id.values())}
+    with open(OSM_CACHE, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+    print(f"OSM merge: {len(data['elements'])} ways")
+    return data
 
 
 def build_graph(osm):
@@ -146,7 +211,7 @@ def build_graph(osm):
                     if q <= p:
                         continue
                     d = haversine_m(p[0], p[1], q[0], q[1])
-                    if 0 < d < 80:
+                    if 0 < d < 150:
                         adj[p].append((q, d))
                         adj[q].append((p, d))
     print(f"Grafo: {len(adj)} nodos")
@@ -160,6 +225,28 @@ def nearest_node(adj, lat, lon):
         if d < bd:
             best, bd = p, d
     return best, bd
+
+
+def path_via_waypoints(adj, places, waypoint_ids):
+    by_id = {p["id"]: p for p in places}
+    snapped = []
+    for wid in waypoint_ids:
+        pl = by_id[wid]
+        node, d = nearest_node(adj, pl["lat"], pl["lon"])
+        print(f"  hito {pl['nombre']}: snap {d:.0f} m")
+        if d > 4000:
+            raise RuntimeError(f"Hito {wid} queda a {d:.0f} m del grafo OSM")
+        snapped.append(node)
+    path = [snapped[0]]
+    total = 0.0
+    for a, b in zip(snapped, snapped[1:]):
+        if a == b:
+            continue
+        seg, length = dijkstra(adj, a, b)
+        path.extend(seg[1:])
+        total += length
+        print(f"  tramo {length/1000:.1f} km")
+    return path, total
 
 
 def dijkstra(adj, start, end):
@@ -181,7 +268,7 @@ def dijkstra(adj, start, end):
                 prev[v] = u
                 heapq.heappush(pq, (nd, v))
     if end not in dist:
-        raise RuntimeError("No hay camino fluvial entre Rasuwagadhi y Devighat")
+        raise RuntimeError("No hay camino fluvial entre Rasuwagadhi y Bharatpur")
     path = []
     cur = end
     while cur is not None:
@@ -235,7 +322,7 @@ def download_dem():
         earthaccess.login(strategy="netrc")
         results = earthaccess.search_data(
             short_name="HMA_DEM8m_MOS",
-            bounding_box=(85.10, 27.86, 85.42, 28.32),
+            bounding_box=(84.38, 27.64, 85.42, 28.32),
             count=5,
         )
         if not results:
@@ -254,36 +341,104 @@ def download_dem():
     )
 
 
-def sample_z(dem_src, pts):
-    """Muestrea el DEM (HMA está en Albers custom). Evita rasterio EPSG/PROJ.db."""
+def download_cop30():
+    """Copernicus GLO-30 (N27 E084) para el borde oeste del HMA, cerca de Bharatpur."""
+    dest = os.path.join(OUT_DIR, COP30_NAME)
+    if os.path.exists(dest) and os.path.getsize(dest) > 5e6:
+        print("COP30 local:", dest, round(os.path.getsize(dest) / 1e6, 1), "MB")
+        return dest
+    last = None
+    for url in COP30_URLS:
+        try:
+            print("Descargando COP30", url)
+            r = requests.get(url, headers=HEADERS, timeout=300, stream=True)
+            r.raise_for_status()
+            tmp = dest + ".part"
+            n = 0
+            with open(tmp, "wb") as f:
+                for chunk in r.iter_content(1024 * 1024):
+                    if chunk:
+                        f.write(chunk)
+                        n += len(chunk)
+            os.replace(tmp, dest)
+            print("COP30 escrito", round(n / 1e6, 1), "MB")
+            return dest
+        except Exception as ex:
+            last = ex
+            print("COP30 fail", url, ex)
+    print("AVISO: no se pudo bajar COP30:", last)
+    return None
+
+
+def sample_profile(hma_path, cop_path, pts):
+    """HMA (elipsoide) donde cubre; COP30 orthométrico desplazado al datum HMA."""
+    z_hma = sample_z(hma_path, pts)
+    z = np.array(z_hma, dtype=float)
+    if not cop_path:
+        return z, "NASA HMA 8 m mosaic tile-675 (Shean 2017; elipsoide WGS84)", 0.0
+    z_cop = sample_z(cop_path, pts, force_crs=WGS84)
+    # Solape real: lon en el borde oeste HMA ∩ COP30 N27E084.
+    lons = np.array([p[1] for p in pts])
+    lats = np.array([p[0] for p in pts])
+    overlap = (
+        np.isfinite(z)
+        & np.isfinite(z_cop)
+        & (lons > 84.46)
+        & (lons < 84.95)
+        & (lats > 27.55)
+        & (lats < 27.95)
+    )
+    if overlap.sum() >= 10:
+        offset = float(np.nanmedian(z[overlap] - z_cop[overlap]))
+        print(f"COP30→HMA offset (mediana HMA-COP30): {offset:.1f} m  n={int(overlap.sum())}")
+        if abs(offset) > 120:
+            print("AVISO: offset implausible; se ignora COP30")
+            return z, "NASA HMA 8 m mosaic tile-675 (Shean 2017; elipsoide WGS84)", 0.0
+    else:
+        offset = 0.0
+        print("AVISO: poco solape HMA/COP30; no se desplaza COP30")
+    fill = ~np.isfinite(z) & np.isfinite(z_cop)
+    z[fill] = z_cop[fill] + offset
+    print(f"Puntos COP30 (fuera de HMA): {int(fill.sum())}")
+    fuente = (
+        "NASA HMA 8 m tile-675 (elipsoide WGS84); COP30 N27E084 en el borde oeste "
+        f"(offset {offset:.1f} m al datum HMA)"
+    )
+    return z, fuente, offset
+
+
+def sample_z(dem_src, pts, force_crs=None):
+    """Muestrea el DEM. force_crs: proj4/EPSG; si no, CRS del raster o Albers HMA."""
     from pyproj import Transformer
 
-    hma_aea = (
-        "+proj=aea +lat_1=25 +lat_2=47 +lat_0=36 +lon_0=85 "
-        "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-    )
-    wgs84 = "+proj=longlat +datum=WGS84 +no_defs"
+    wgs84 = WGS84
     paths = dem_src if isinstance(dem_src, list) else [dem_src]
     zs = np.full(len(pts), np.nan)
     remaining = set(range(len(pts)))
     for path in paths:
         with rasterio.open(path) as src:
-            dst = hma_aea
-            try:
-                p4 = src.crs.to_proj4() if src.crs else ""
-                if p4 and "+proj=" in p4:
-                    dst = p4
-            except Exception:
-                pass
+            dst = force_crs or HMA_AEA
+            if force_crs is None:
+                try:
+                    p4 = src.crs.to_proj4() if src.crs else ""
+                    if p4 and "+proj=" in p4:
+                        dst = p4
+                    elif src.crs and src.crs.is_geographic:
+                        dst = wgs84
+                except Exception:
+                    pass
             tf = Transformer.from_crs(wgs84, dst, always_xy=True)
             nodata = src.nodata
+            b = src.bounds
             idx = sorted(remaining)
             lats = [pts[i][0] for i in idx]
             lons = [pts[i][1] for i in idx]
             xs, ys = tf.transform(lons, lats)
             xy = list(zip(xs, ys))
             vals = list(src.sample(xy))
-            for i, v in zip(idx, vals):
+            for i, (x, y), v in zip(idx, xy, vals):
+                if x < b.left or x > b.right or y < b.bottom or y > b.top:
+                    continue
                 z = float(v[0]) if v is not None else np.nan
                 if nodata is not None and np.isfinite(z) and abs(z - float(nodata)) < 0.5:
                     continue
@@ -293,7 +448,7 @@ def sample_z(dem_src, pts):
                     zs[i] = z
                     remaining.discard(i)
     if remaining:
-        print(f"AVISO: {len(remaining)} puntos sin elevación HMA")
+        print(f"AVISO: {len(remaining)} puntos sin elevación ({os.path.basename(paths[0])})")
     return zs
 
 
@@ -343,16 +498,15 @@ def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     osm = fetch_overpass()
     adj = build_graph(osm)
-    start_p, ds = nearest_node(adj, PLACES[0]["lat"], PLACES[0]["lon"])
-    end_p, de = nearest_node(adj, PLACES[-1]["lat"], PLACES[-1]["lon"])
-    print(f"Start snap {ds:.0f} m  End snap {de:.0f} m")
-    path, length = dijkstra(adj, start_p, end_p)
+    print("Camino por hitos Bhote Koshi → Trishuli → Narayani")
+    path, length = path_via_waypoints(adj, PLACES, WAYPOINTS)
     print(f"Camino {len(path)} nodos, {length/1000:.2f} km")
     dense = densify(path, 50.0)
     print(f"Densificado {len(dense)} pts")
 
     dem = download_dem()
-    z_raw = sample_z(dem, dense)
+    cop = download_cop30()
+    z_raw, fuente_dem, cop_offset = sample_profile(dem, cop, dense)
     z_arr = np.array(z_raw, dtype=float)
     ok = np.isfinite(z_arr)
     if (~ok).any() and ok.any():
@@ -408,7 +562,7 @@ def main():
     if i1 <= i0:
         raise RuntimeError("Syabrubesi no está aguas arriba de Betrawati en el perfil")
 
-    # Calibrar R para que Syabrubesi→Betrawati = 30 min
+    # Calibrar R1 para que Syabrubesi→Betrawati = 30 min
     # dt = n * dx / (R^(2/3) * sqrt(S))
     suma = 0.0
     for seg in segs[i0:i1]:
@@ -416,18 +570,74 @@ def main():
     # 1800 = n * suma / R^(2/3)
     r23 = N_MANN * suma / 1800.0
     R = r23 ** 1.5
-    print(f"R calibrado n={N_MANN}: {R:.2f} m  (Syabrubesi->Betrawati = 30 min)")
+    print(f"R1 calibrado n={N_MANN}: {R:.2f} m  (Syabrubesi->Betrawati = 30 min)")
 
-    # velocidades y tiempos acumulados desde km 0
+    R_bajo = R
+    nota_r2 = (
+        "Aguas abajo de Devighat HEP se usa el mismo R mientras el Manning de "
+        "garganta no llegue a Devghat antes de las 15:20 DHM."
+    )
+    try:
+        devighat = next(c for c in comm if c["id"] == "devighat")
+        devghat = next(c for c in comm if c["id"] == "devghat")
+        i_hi, i_lo = devighat["idx"], devghat["idx"]
+    except StopIteration:
+        i_hi, i_lo = None, None
+        devighat = devghat = None
+
+    # velocidades: tramo alto con R1. Si R1 llega a Devghat demasiado pronto
+    # vs 15:20 DHM, calibrar R2 en Devighat→Devghat.
+    def apply_R(seg_slice, Ruse):
+        for seg in seg_slice:
+            v = (1.0 / N_MANN) * (Ruse ** (2.0 / 3.0)) * math.sqrt(seg["S"])
+            dt = seg["dx_m"] / v
+            seg["R_m"] = round(Ruse, 2)
+            seg["V_mps"] = round(v, 2)
+            seg["V_kmh"] = round(v * 3.6, 1)
+            seg["dt_s"] = round(dt, 1)
+
+    apply_R(segs, R)
+
+    if i_hi is not None and i_lo is not None and i_lo > i_hi:
+        t_hi = sum(s["dt_s"] for s in segs[:i_hi])
+        t_lo_r1 = sum(s["dt_s"] for s in segs[:i_lo])
+        # ancla Syabrubesi aún no aplicada; sólo duraciones relativas
+        # Tras anclar, t_devghat = T_SYA + (t_lo - t_sya)
+        # Aquí t_sya aún no; se calcula después. Usamos duraciones.
+        t_sya_rel = sum(s["dt_s"] for s in segs[:i0])
+        llegada_devghat_r1 = T_SYA + timedelta(seconds=t_lo_r1 - t_sya_rel)
+        print("Llegada Devghat con R1:", llegada_devghat_r1.strftime("%H:%M"))
+        dt_r1 = (llegada_devghat_r1 - T_DEVGHAT).total_seconds()
+        if abs(dt_r1) > 15 * 60:
+            suma2 = 0.0
+            for seg in segs[i_hi:i_lo]:
+                suma2 += seg["dx_m"] / math.sqrt(seg["S"])
+            t_hi_rel = t_hi - t_sya_rel
+            dt_objetivo = (T_DEVGHAT - T_SYA).total_seconds() - t_hi_rel
+            if dt_objetivo > 60 and suma2 > 0:
+                r23b = N_MANN * suma2 / dt_objetivo
+                R_bajo = r23b ** 1.5
+                apply_R(segs[i_hi:], R_bajo)
+                nota_r2 = (
+                    f"Tramo Devighat HEP → Devghat/Bharatpur: R2={R_bajo:.2f} m "
+                    f"(n={N_MANN}) para que el frente coincida con DHM Devghat ~15:20. "
+                    f"Con R1 de garganta el modelo llega {llegada_devghat_r1.strftime('%H:%M')} "
+                    "(el valle es más tendido y Manning de montaña se queda corto o largo)."
+                )
+                print(f"R2 calibrado Devighat->Devghat: {R_bajo:.2f} m  dt={dt_objetivo/60:.1f} min")
+            else:
+                print("No se calibra R2: dt objetivo no positivo")
+        else:
+            nota_r2 = (
+                f"R1 basta: llegada modelo a Devghat {llegada_devghat_r1.strftime('%H:%M')} "
+                "frente a DHM ~15:20."
+            )
+
+    # tiempos acumulados desde km 0
     t_s = 0.0
     for seg in segs:
-        v = (1.0 / N_MANN) * (R ** (2.0 / 3.0)) * math.sqrt(seg["S"])
-        dt = seg["dx_m"] / v
-        seg["V_mps"] = round(v, 2)
-        seg["V_kmh"] = round(v * 3.6, 1)
-        seg["dt_s"] = round(dt, 1)
         seg["t_ini_s"] = t_s
-        t_s += dt
+        t_s += seg["dt_s"]
         seg["t_fin_s"] = t_s
 
     # tiempo en cada estación km (inicio de tramo)
@@ -506,6 +716,13 @@ def main():
         ("09:30", datetime(2026, 8, 26, 9, 30)),
         ("09:40", datetime(2026, 8, 26, 9, 40)),
         ("10:00", datetime(2026, 8, 26, 10, 0)),
+        ("11:00", datetime(2026, 8, 26, 11, 0)),
+        ("12:00", datetime(2026, 8, 26, 12, 0)),
+        ("13:00", datetime(2026, 8, 26, 13, 0)),
+        ("14:00", datetime(2026, 8, 26, 14, 0)),
+        ("15:00", datetime(2026, 8, 26, 15, 0)),
+        ("15:20", T_DEVGHAT),
+        ("16:00", datetime(2026, 8, 26, 16, 0)),
     ]
     frente = []
     for label, t in horas_clave:
@@ -514,7 +731,7 @@ def main():
         if target < t_at[0] - 1:
             km_f, estado = None, "antes de Rasuwagadhi (aún en Tíbet / Lhende)"
         elif target > t_at[-1] + 1:
-            km_f, estado = round(float(km[-1]) / 1000, 2), "ya pasó Devighat HEP"
+            km_f, estado = round(float(km[-1]) / 1000, 2), "ya pasó Bharatpur"
         else:
             km_f = round(float(np.interp(target, t_at, km) / 1000.0), 2)
             estado = f"km {km_f}"
@@ -525,20 +742,23 @@ def main():
     z0, z1 = float(zs[0]), float(zs[-1])
 
     summary = {
-        "fuente_dem": "NASA HMA 8 m mosaic tile-675 (Shean 2017; elipsoide WGS84)",
-        "cauce": "OpenStreetMap waterway=river, camino mínimo Rasuwagadhi→Devighat HEP",
+        "fuente_dem": fuente_dem,
+        "cauce": "OpenStreetMap waterway=river, camino mínimo Rasuwagadhi→Bharatpur (Narayani)",
         "longitud_km": round(float(km[-1]) / 1000.0, 2),
         "z_rasuwagadhi_m": round(z0, 1),
-        "z_devighat_m": round(z1, 1),
+        "z_final_m": round(z1, 1),
+        "z_devighat_m": round(float(next(c["z"] for c in comm if c["id"] == "devighat")), 1),
         "desnivel_m": round(z0 - z1, 1),
         "pendiente_media_pct": round(100.0 * (z0 - z1) / float(km[-1]), 3),
         "n_manning": N_MANN,
         "R_calibrado_m": round(R, 2),
+        "R_tramo_bajo_m": round(R_bajo, 2),
         "calibracion": (
-            "R ajustado para que el tiempo modelo Syabrubesi→Betrawati sea 30 min "
+            "R1 ajustado para que el tiempo modelo Syabrubesi→Betrawati sea 30 min "
             "(estación Syabrubesi deja de transmitir 08:50; Betrawati 09:20). "
             "Última lectura Syabrubesi 08:40 = 1.62 m (bajo umbral); el frente "
-            "llegó entre 08:40 y 08:50."
+            "llegó entre 08:40 y 08:50. "
+            + nota_r2
         ),
         "v_obs_syabrubesi_betrawati_mps": round(v_obs, 2),
         "v_obs_kmh": round(v_obs * 3.6, 1),
@@ -546,9 +766,13 @@ def main():
         "sms_dhm": "09:15–09:16 NPT, 679.295 mensajes (informe técnico DHM / Kathmandu Post 27 ago 2026)",
         "alerta_auto_hipotetica": "08:38 NPT (90 s tras señal sísmica 08:37)",
         "nota_devighat": (
-            "Devighat HEP en Nuwakot (27.888°N, 85.134°E), NO Devghat (Chitwan) "
-            "donde el pico fue a las 16:00 y el frente ~15:20."
+            "Devighat HEP en Nuwakot (27.888°N, 85.134°E) es un punto intermedio. "
+            "Devghat (Chitwan) es la confluencia Trishuli–Kali Gandaki; el DHM "
+            "situó el frente ~15:20 y el pico ~16:00. Bharatpur (AOI04 EMSR927) "
+            "queda ~5–8 km aguas abajo sobre el Narayani."
         ),
+        "cop30_offset_m": round(cop_offset, 2),
+        "dhm_devghat": "15:20 NPT (frente, informe técnico DHM)",
         "comunidades": comm,
         "frente_por_hora": frente,
         "curva_1km": curva,
@@ -560,13 +784,13 @@ def main():
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
     # GeoJSON del eje
-    line = LineString([(xy[1], xy[0]) for xy in zip(lons, lats)])
+    line = LineString([(float(lo), float(la)) for la, lo in zip(lats, lons)])
     gj = {
         "type": "FeatureCollection",
         "features": [
             {
                 "type": "Feature",
-                "properties": {"name": "eje Bhote Koshi–Trishuli", "km": summary["longitud_km"]},
+                "properties": {"name": "eje Bhote Koshi–Trishuli–Narayani", "km": summary["longitud_km"]},
                 "geometry": mapping(line),
             }
         ],

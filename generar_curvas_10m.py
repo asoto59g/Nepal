@@ -47,7 +47,7 @@ def main():
     with rasterio.open(HMA) as src:
         aff = src.transform
         nodata = src.nodata if src.nodata is not None else -9999.0
-        pad = 1600.0
+        pad = 1800.0
         xmin, xmax = river[:, 0].min() - pad, river[:, 0].max() + pad
         ymin, ymax = river[:, 1].min() - pad, river[:, 1].max() + pad
         col0, row0 = ~aff * (xmin, ymax)
@@ -69,13 +69,14 @@ def main():
     ys = win_aff.f + (cc + 0.5) * win_aff.d + (rr + 0.5) * win_aff.e
     dist, _ = tree.query(np.column_stack([xs.ravel(), ys.ravel()]), k=1)
     dist = dist.reshape(rows, cols)
-    z = np.where(dist <= 1500.0, z, np.nan)
+    z = np.where(dist <= 1200.0, z, np.nan)
 
     zmin = np.nanmin(z)
-    zmax = np.nanmax(z)
-    z0 = int(np.floor(zmin / 10.0) * 10)
-    z1 = int(np.ceil(zmax / 10.0) * 10)
-    levels = np.arange(z0, z1 + 10, 10, dtype=float)
+    zmax = min(float(np.nanmax(z)), 2200.0)
+    high = np.arange(max(400, int(np.floor(zmin / 10.0) * 10)), int(np.ceil(zmax / 10.0) * 10) + 10, 10)
+    low = np.arange(int(np.floor(zmin / 20.0) * 20), 400, 20) if zmin < 400 else []
+    levels = np.unique(np.concatenate([np.array(low, dtype=float), np.array(high, dtype=float)]))
+    levels = levels[(levels >= zmin - 5) & (levels <= zmax + 5)]
     print("z", zmin, zmax, "n_levels", len(levels))
 
     fig, ax = plt.subplots()
@@ -93,7 +94,7 @@ def main():
             line = LineString(np.column_stack([lon, lat]))
             if line.length < 1e-5:
                 continue
-            line = line.simplify(0.0001, preserve_topology=True)  # ~11 m
+            line = line.simplify(0.00015, preserve_topology=True)  # ~16 m
             if line.is_empty or line.length < 1e-5:
                 continue
             n_seg += 1

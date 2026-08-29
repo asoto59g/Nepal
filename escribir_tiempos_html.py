@@ -118,19 +118,40 @@ def bars_svg(items):
     )
 
 
-def line_svg(xs, ys, xlabels, ylabel, color="#b42318", y_max=None, val_fmt="{:.0f}"):
-    left, right, top, bot = 70, 870, 20, 210
-    n = len(xs)
-    ymax = y_max if y_max is not None else max(ys) * 1.08
-    if ymax <= 0:
-        ymax = 1
+def _xy_pts(ys, n, left, right, top, bot, ymax):
     pts = []
     for i, yv in enumerate(ys):
         x = left + i * (right - left) / (n - 1)
-        y = bot - (yv / ymax) * (bot - top)
-        pts.append((x, y, yv))
-    poly = " ".join(f"{x:.1f},{y:.1f}" for x, y, _ in pts)
-    area = f"{pts[0][0]:.1f},{bot} " + poly + f" {pts[-1][0]:.1f},{bot}"
+        y = bot - (float(yv) / ymax) * (bot - top)
+        pts.append((x, y, float(yv)))
+    return pts
+
+
+def _hex_rgb(color):
+    return int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+
+
+def line_svg(
+    xs,
+    ys,
+    xlabels,
+    ylabel,
+    color="#b42318",
+    y_max=None,
+    val_fmt="{:.0f}",
+    xlabels2=None,
+    series=None,
+):
+    """Una o más series. series=[{ys, color, fmt, label}] si se quiere dual."""
+    left, right, top, bot = 70, 870, 20, 210
+    n = len(xlabels)
+    series = series or [{"ys": ys, "color": color, "fmt": val_fmt}]
+    ymax = y_max
+    if ymax is None:
+        ymax = max(max(s["ys"]) for s in series) * 1.08
+    if ymax <= 0:
+        ymax = 1
+    view_h = 290 if xlabels2 else 268
     yticks = 5
     step = ymax / yticks
     grid = []
@@ -150,38 +171,65 @@ def line_svg(xs, ys, xlabels, ylabel, color="#b42318", y_max=None, val_fmt="{:.0
     grid.append(
         f'<line class="axis-line" stroke="#a1a1aa" fill="none" x1="{left}" y1="{bot}" x2="{right}" y2="{bot}" />'
     )
-    circles = "<g fill='%s'>" % color + "".join(
-        f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.5" />' for x, y, _ in pts
-    ) + "</g>"
-    vals = ['<g text-anchor="middle">']
-    for x, y, v in pts:
-        vals.append(
-            f'<text class="val val-danger" x="{x:.1f}" y="{y-8:.1f}" fill="{color}">{val_fmt.format(v)}</text>'
+    drawn = []
+    for si, s in enumerate(series):
+        col = s["color"]
+        fmt = s.get("fmt", val_fmt)
+        pts = _xy_pts(s["ys"], n, left, right, top, bot, ymax)
+        poly = " ".join(f"{x:.1f},{y:.1f}" for x, y, _ in pts)
+        area = f"{pts[0][0]:.1f},{bot} " + poly + f" {pts[-1][0]:.1f},{bot}"
+        r, g, b = _hex_rgb(col)
+        circles = f"<g fill='{col}'>" + "".join(
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3.5" />' for x, y, _ in pts
+        ) + "</g>"
+        vals = ['<g text-anchor="middle">']
+        dy = -8 if si == 0 else 14
+        for x, y, v in pts:
+            vals.append(
+                f'<text class="val" x="{x:.1f}" y="{y+dy:.1f}" fill="{col}">{fmt.format(v)}</text>'
+            )
+        vals.append("</g>")
+        drawn.append(
+            f'<polyline fill="rgba({r},{g},{b},0.10)" stroke="none" points="{area}" />'
+            f'<polyline fill="none" stroke="{col}" stroke-width="2.5" points="{poly}" />'
+            f"{circles}{''.join(vals)}"
         )
-    vals.append("</g>")
     xlab = [
-        '<g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif" text-anchor="middle">'
+        '<g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle">'
     ]
     for i, lab in enumerate(xlabels):
         x = left + i * (right - left) / (n - 1)
-        xlab.append(f'<text x="{x:.1f}" y="{bot+22}">{lab}</text>')
+        xlab.append(f'<text x="{x:.1f}" y="{bot+20}">{lab}</text>')
     xlab.append("</g>")
-    fill = color.replace(")", ",0.12)").replace("rgb", "rgba") if color.startswith("rgb") else None
-    # simple rgba from hex
-    r = int(color[1:3], 16)
-    g = int(color[3:5], 16)
-    b = int(color[5:7], 16)
-    return f"""<svg viewBox="0 0 900 268" role="img">
+    if xlabels2:
+        xlab.append(
+            '<g fill="#71717a" font-size="9" font-family="Segoe UI, sans-serif" text-anchor="middle">'
+        )
+        for i, lab in enumerate(xlabels2):
+            x = left + i * (right - left) / (n - 1)
+            xlab.append(f'<text x="{x:.1f}" y="{bot+34}">{lab}</text>')
+        xlab.append("</g>")
+    return f"""<svg viewBox="0 0 900 {view_h}" role="img">
         <g>
         {"".join(grid)}
         </g>
         {"".join(ylab)}
-        <polyline fill="rgba({r},{g},{b},0.12)" stroke="none" points="{area}" />
-        <polyline fill="none" stroke="{color}" stroke-width="2.5" points="{poly}" />
-        {circles}
-        {"".join(vals)}
+        {"".join(drawn)}
         {"".join(xlab)}
         </svg>"""
+
+
+def h_hand_m(km):
+    """Tirante de valle usado en la mancha HAND (no es R de Manning)."""
+    if km < 20:
+        return 12.0
+    if km < 40:
+        return 10.0
+    if km < 60:
+        return 9.0
+    if km < 100:
+        return 7.0
+    return 5.0
 
 
 rows = []
@@ -218,6 +266,21 @@ for p in curva:
     vel_u.append(p)
 if curva[-1] not in vel_u:
     vel_u.append(curva[-1])
+
+tramos = man.get("tramos") or []
+r_by_km = {round(float(t["km_ini"]), 2): float(t["R_m"]) for t in tramos if "R_m" in t}
+r_last = float(tramos[-1]["R_m"]) if tramos else R1
+
+def r_at(p):
+    k = round(float(p["km"]), 2)
+    if k in r_by_km:
+        return r_by_km[k]
+    # último punto del perfil (km no entero)
+    nearest = min(r_by_km, key=lambda x: abs(x - k)) if r_by_km else None
+    if nearest is not None and abs(nearest - k) < 0.8:
+        return r_by_km[nearest]
+    return r_last
+
 svg_vel = line_svg(
     [p["km"] for p in vel_u],
     [p["V_mps"] for p in vel_u],
@@ -226,6 +289,27 @@ svg_vel = line_svg(
     "#175cd3",
     y_max=max(5, max(p["V_mps"] for p in vel_u) * 1.15),
     val_fmt="{:.1f}",
+    xlabels2=[p["hora"] for p in vel_u],
+)
+svg_tirante = line_svg(
+    [p["km"] for p in vel_u],
+    None,
+    [f"{p['km']:.0f}" for p in vel_u],
+    "m",
+    y_max=22,
+    xlabels2=[p["hora"] for p in vel_u],
+    series=[
+        {
+            "ys": [r_at(p) for p in vel_u],
+            "color": "#7c3aed",
+            "fmt": "{:.1f}",
+        },
+        {
+            "ys": [h_hand_m(p["km"]) for p in vel_u],
+            "color": "#0f766e",
+            "fmt": "{:.0f}",
+        },
+    ],
 )
 
 dev = by_id.get("devghat") or {}
@@ -283,6 +367,8 @@ html = f"""<!DOCTYPE html>
     .sw-ok::before {{ background: var(--success); }}
     .sw-danger::before {{ background: var(--danger); }}
     .sw-info::before {{ background: var(--info); }}
+    .sw-tirante::before {{ background: #7c3aed; }}
+    .sw-hand::before {{ background: #0f766e; }}
     .cards {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }}
     .card {{ background: var(--card); border: 1px solid var(--line); padding: 16px; }}
     .card h3 {{ margin: 0 0 8px; font-size: 14px; }}
@@ -389,12 +475,31 @@ html = f"""<!DOCTYPE html>
       R2 = {R2:.2f} m después (con R1 el frente llegaría a Devghat ~18:19;
       R2 adelanta el tramo bajo a la ancla DHM 15:20).
       Picos locales son ruido del DEM, no un segundo pulso.
+      Segunda fila del eje X: hora NPT de llegada del frente a ese km.
     </p>
     <div class="chart">
       <div class="legend">
         <span class="sw-info">Velocidad (m/s)</span>
       </div>
       {svg_vel}
+    </div>
+
+    <h2>Tirante hidráulico en el cauce (mismos km / horas)</h2>
+    <p class="caption">
+      Mismos puntos que el gráfico de velocidad (cada 10 km). Eje X inferior:
+      hora NPT en la que el frente llega a ese km.
+      En cauce ancho el radio hidráulico R ≈ tirante. R de Manning es constante
+      por tramo ({R1:.1f} m garganta, {R2:.1f} m valle) porque se calibra a tiempos
+      observados, no a aforos. El tirante HAND es la profundidad de valle de la
+      mancha (12→5 m), distinta de R: describe el relleno del valle, no el
+      radio usado en V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup>.
+    </p>
+    <div class="chart">
+      <div class="legend">
+        <span class="sw-tirante">R Manning ≈ tirante de cauce (m)</span>
+        <span class="sw-hand">Tirante HAND de valle (m)</span>
+      </div>
+      {svg_tirante}
     </div>
 
     <div class="cards">

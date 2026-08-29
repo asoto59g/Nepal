@@ -120,6 +120,8 @@ A las 09:16 el frente está ~km 42. Aguas abajo de ~km 42 los minutos perdidos s
 
 Rasuwagadhi 08:36 queda ~1 min antes del sismo 08:37: el tramo alto es muy pendiente y el reloj está anclado en Syabrubesi 08:50. Manning de agua clara es de primer orden; el evento fue un flujo de detritos.
 
+En [tiempos.html](tiempos.html) el gráfico de velocidad (cada 10 km) lleva la hora NPT de llegada del frente. Debajo, el **tirante hidráulico** en los mismos puntos: R de Manning (10.05 m / 18.95 m) y tirante HAND de valle (12→5 m).
+
 **Scripts:** `calcular_manning.py` (cauce: `fetch_rios.py` / `rios_overpass.json`) y `escribir_tiempos_html.py`.
 
 ---

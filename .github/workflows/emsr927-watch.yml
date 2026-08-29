@@ -1,0 +1,57 @@
+name: Vigilar EMSR927
+
+on:
+  schedule:
+    - cron: "20 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: emsr927-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Consultar API Copernicus
+        id: watch
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.mail.yahoo.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '465' }}
+          SMTP_USER: ${{ secrets.SMTP_USER || 'oasotob@yahoo.com' }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO || 'oasotob@yahoo.com' }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM || 'oasotob@yahoo.com' }}
+        run: python vigilar_emsr927.py
+
+      - name: Issue en GitHub
+        if: steps.watch.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create emsr927 --description "Aviso Copernicus EMSR927" --color 7c3aed --force
+          gh issue create \
+            --title "${{ steps.watch.outputs.title }}" \
+            --label emsr927 \
+            --assignee "${{ github.repository_owner }}" \
+            --body-file emsr927_watch_report.md
+
+      - name: Guardar estado
+        if: steps.watch.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add emsr927_watch_state.json
+          git diff --cached --quiet && echo "sin cambios de estado" && exit 0
+          git commit -m "Record latest EMSR927 product status from Copernicus."
+          git push

@@ -1,0 +1,93 @@
+{
+  "code": "EMSR927",
+  "closed": false,
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:I:noz:BlackSky,Satellogic|4:GRA:v1:W:noz:Legion",
+  "aois": [
+    {
+      "number": 1,
+      "name": "Syapru Besi",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "F",
+          "deliveryTime": "2026-08-27T19:03:49.982313",
+          "expectedDelivery": "2026-08-27T19:41:00",
+          "download": true,
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI01/GRA_PRODUCT/EMSR927_AOI01_GRA_PRODUCT_v1.zip",
+          "sensors": [
+            "WorldView-3"
+          ],
+          "acquisition": [
+            "2026-08-27T05:05:00"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Timure",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 2,
+          "status": "F",
+          "deliveryTime": "2026-08-28T17:10:43.692032",
+          "expectedDelivery": "2026-08-27T18:55:00",
+          "download": true,
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI02/GRA_PRODUCT/EMSR927_AOI02_GRA_PRODUCT_v2.zip",
+          "sensors": [
+            "Legion"
+          ],
+          "acquisition": [
+            "2026-08-27T05:05:00"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Bidur",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "I",
+          "deliveryTime": null,
+          "expectedDelivery": "2026-08-28T19:30:00",
+          "download": false,
+          "downloadPath": "",
+          "sensors": [
+            "BlackSky",
+            "Satellogic"
+          ],
+          "acquisition": [
+            "2026-08-27T12:09:00",
+            "2026-08-27T04:22:00"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Bharatpur",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "W",
+          "deliveryTime": null,
+          "expectedDelivery": "2026-08-29T17:01:00",
+          "download": false,
+          "downloadPath": "",
+          "sensors": [
+            "Legion"
+          ],
+          "acquisition": [
+            "2026-08-29T04:01:00"
+          ]
+        }
+      ]
+    }
+  ]
+}

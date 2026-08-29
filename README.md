@@ -108,4 +108,25 @@ Rasuwagadhi 08:36 queda ~1 min antes del sismo 08:37: el tramo alto es muy pendi
 
 ---
 
+## Aviso cuando EMSR927 publique algo nuevo
+
+Un workflow de GitHub Actions (`Vigilar EMSR927`) consulta la API de Copernicus cada 2 h. Si Bidur, Bharatpur u otra AOI cambia de estado, sube de versión o aparece el zip GRA:
+
+1. Abre un [issue](https://github.com/asoto59g/Nepal/issues) con etiqueta `emsr927` y te lo asigna (notificación GitHub; el correo de GitHub llega si tienes Issues activado en [notification settings](https://github.com/settings/notifications)).
+2. Envía un correo a `oasotob@yahoo.com`.
+
+El mapa no se actualiza solo. Tras el aviso: bajar el zip GRA, `python preparar_emsr927.py` y `python escribir_mapa_html.py`.
+
+**Correo SMTP (obligatorio para el punto 2).** En el repo: Settings → Secrets and variables → Actions, crear:
+
+| Secreto | Valor |
+| --- | --- |
+| `SMTP_PASSWORD` | Contraseña de aplicación de Yahoo (no la clave normal). [Generarla](https://login.yahoo.com/account/security) con verificación en dos pasos. |
+
+Opcionales si no usas Yahoo: `SMTP_SERVER`, `SMTP_PORT`, `SMTP_USER`, `MAIL_TO`, `MAIL_FROM`.
+
+También se puede lanzar a mano: Actions → Vigilar EMSR927 → Run workflow.
+
+---
+
 

@@ -23,7 +23,8 @@ Fuente de la página: este HTML (Leaflet 1.9, datos embebidos). No llama a una A
 
 **Qué se ve**
 
-- Núcleo de valle (~3.2 km²) y runup en ladera (~5.1 km²) entre Rasuwagadhi y Devighat HEP (Nuwakot), 58.7 km de cauce. **Estimación HAND**, no es la delineación Copernicus.
+- Núcleo de valle (~3.2 km²) y runup en ladera (~5.1 km²) entre Rasuwagadhi y Devighat HEP (Nuwakot), 58.7 km de cauce. **Estimación HAND**, no es la delineación Copernicus. Capa encendible y apagable en el cajetín de capas (arriba a la derecha).
+- Barra de escala métrica en la esquina inferior izquierda, pegada al borde.
 - Polígonos y edificios de [Copernicus EMSR927](https://mapping.emergency.copernicus.eu/activations/EMSR927/) GRA **al 28 de agosto de 2026**: deslizamientos fotointerpretados en Syapru Besi y Timure (WorldView-3 / Legion, 27 ago 05:05 UTC). Capas apagables en el control de la esquina.
 - Mapas GRA oficiales en el panel (AOI01 y AOI02). Bidur (AOI03) y Bharatpur (AOI04) aún no tenían producto publicado en esa fecha.
 - Eje del río, comunidades con hora de llegada (NPT) y minutos de alerta perdidos.

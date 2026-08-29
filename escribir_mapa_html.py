@@ -42,6 +42,24 @@ html = """<!DOCTYPE html>
     font-weight:600;cursor:pointer;font-family:inherit;color:#18181b}
   .panel-close{display:none;float:right;margin:-4px -4px 6px 8px;border:0;background:transparent;
     font-size:22px;line-height:1;cursor:pointer;color:#52525b;padding:0 4px}
+  .leaflet-bottom.leaflet-left{margin:0}
+  .leaflet-control-scale{
+    margin:2px 0 2px 4px !important;
+    background:transparent;
+    padding:0;
+    border:0
+  }
+  .leaflet-control-scale-line{
+    border:2px solid #18181b;
+    border-top:none;
+    line-height:1.05;
+    font-size:10px;
+    padding:0 5px 1px;
+    margin:0;
+    color:#18181b;
+    background:rgba(255,255,255,.9)
+  }
+  .leaflet-control-attribution{margin:0 2px 2px 0 !important}
   @media (max-width:720px){
     .panel-toggle{display:block}
     .panel{display:none;top:52px;left:8px;right:8px;max-width:none;
@@ -72,8 +90,8 @@ html = """<!DOCTYPE html>
     <a href="media/emsr927_aoi02_timure.jpg"><img src="media/emsr927_aoi02_timure_thumb.jpg" alt="Mapa GRA EMSR927 Timure"/><span>AOI02 Timure</span></a>
   </div>
   <ul class="legend">
-    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (3.2 km²)</li>
-    <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (5.1 km²)</li>
+    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (3.2 km²). Capa apagable.</li>
+    <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (5.1 km²). Capa apagable.</li>
     <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (240 ha, 2 AOI)</li>
     <li><span class="sw" style="background:#b91c1c"></span>Edificio destruido / dañado (CEMS)</li>
     <li><span class="sw" style="background:#1d4ed8"></span>Eje del cauce</li>
@@ -97,6 +115,10 @@ const sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Wo
   maxZoom: 18, attribution: "Esri"
 });
 const map = L.map("map", {layers: [sat]});
+function isHand(f) {
+  const c = f.properties.clase;
+  return c === "nucleo_valle" || c === "runup_ladera";
+}
 function style(f) {
   const c = f.properties.clase;
   if (c === "nucleo_valle") return {color:"#7f1d1d", weight:1, fillColor:"#991b1b", fillOpacity:0.45};
@@ -104,7 +126,16 @@ function style(f) {
   if (c === "eje") return {color:"#1d4ed8", weight:3, opacity:0.95};
   return {};
 }
+const handLayer = L.geoJSON(DATA, {
+  filter: isHand,
+  style,
+  onEachFeature(f, layer) {
+    const p = f.properties;
+    if (p.area_km2) layer.bindPopup(p.clase+" · "+p.area_km2+" km²");
+  }
+}).addTo(map);
 const gj = L.geoJSON(DATA, {
+  filter(f) { return !isHand(f); },
   style,
   pointToLayer(f, latlng) {
     const c = f.properties.clase;
@@ -120,8 +151,6 @@ const gj = L.geoJSON(DATA, {
       layer.bindTooltip(p.nombre+" "+p.hora, {permanent:true, direction:"right", className:"lab", opacity:0.95});
     } else if (p.clase === "limite_analizado") {
       layer.bindPopup("<b>"+p.nombre+"</b><br>"+p.nota);
-    } else if (p.area_km2) {
-      layer.bindPopup(p.clase+" · "+p.area_km2+" km²");
     }
   }
 }).addTo(map);
@@ -171,13 +200,20 @@ const emsAoi = L.geoJSON(EMS, {
 L.control.layers(
   {OSM: osm, Satelite: sat},
   {
+    "Mancha HAND (naranja/roja)": handLayer,
     "Curvas 10 m (HMA)": curvasLayer,
     "EMSR927 deslizamientos": emsSlide,
     "EMSR927 edificios": emsBuild,
     "EMSR927 AOI (hasta hoy)": emsAoi
   }
 ).addTo(map);
-map.fitBounds(gj.getBounds().pad(0.08));
+L.control.scale({
+  position: "bottomleft",
+  metric: true,
+  imperial: false,
+  maxWidth: 140
+}).addTo(map);
+map.fitBounds(handLayer.getBounds().extend(gj.getBounds()).pad(0.08));
 (function(){
   const panel = document.getElementById("leyenda");
   const openBtn = document.getElementById("panelToggle");

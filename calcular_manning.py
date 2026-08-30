@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Perfil DEM + Manning cada 1 km: Rasuwagadhi → Bharatpur (Narayani)."""
+"""Perfil DEM + Manning cada 1 km: cicatriz Langtang → Bharatpur (Narayani)."""
 from __future__ import annotations
 
 import heapq
@@ -36,6 +36,7 @@ HMA_URL = (
     "HMA/HMA_DEM8m_MOS/1/2002/01/28/HMA_DEM8m_MOS_20170716_tile-675.tif"
 )
 COP30_NAME = "Copernicus_DSM_COG_10_N27_00_E084_00_DEM.tif"
+COP30_HEAD_NAME = "Copernicus_DSM_COG_10_N28_00_E085_00_DEM.tif"
 COP30_URLS = [
     (
         "https://copernicus-dem-30m.s3.amazonaws.com/"
@@ -48,21 +49,40 @@ COP30_URLS = [
         "Copernicus_DSM_COG_10_N27_00_E084_00_DEM.tif"
     ),
 ]
+COP30_HEAD_URLS = [
+    (
+        "https://copernicus-dem-30m.s3.amazonaws.com/"
+        "Copernicus_DSM_COG_10_N28_00_E085_00_DEM/"
+        "Copernicus_DSM_COG_10_N28_00_E085_00_DEM.tif"
+    ),
+    (
+        "https://copernicus-dem-30m.s3.eu-central-1.amazonaws.com/"
+        "Copernicus_DSM_COG_10_N28_00_E085_00_DEM/"
+        "Copernicus_DSM_COG_10_N28_00_E085_00_DEM.tif"
+    ),
+]
 OSM_CACHE = os.path.join(OUT_DIR, "rios_overpass.json")
 HEADERS = {"User-Agent": "ABCGeomatica-HMA/1.0 (flood-analysis Nepal 2026)"}
 
-# Ancla: estación Syabrubesi deja de transmitir (informe técnico DHM)
-T_SYA = datetime(2026, 8, 26, 8, 50)
-T_BET = datetime(2026, 8, 26, 9, 20)
+# Reloj: colapso USGS 08:37. Lhende ~17 min hasta la frontera.
+# Caídas de estación 08:50 / 09:20 = corte de radio, no el frente.
+T_SYA_DROP = datetime(2026, 8, 26, 8, 50)
+T_BET_DROP = datetime(2026, 8, 26, 9, 20)
 T_SMS = datetime(2026, 8, 26, 9, 16)
 T_SISMO = datetime(2026, 8, 26, 8, 37)
 T_AUTO = datetime(2026, 8, 26, 8, 38)
-T_DEVGHAT = datetime(2026, 8, 26, 15, 20)  # DHM: frente en Devghat (Chitwan)
-N_MANN = 0.040  # cauce de montaña con bloques / flujo hiperconcentrado
+T_DEVGHAT = datetime(2026, 8, 26, 15, 20)
+T_RASUWA = datetime(2026, 8, 26, 8, 54)
+T_SYA = datetime(2026, 8, 26, 9, 9)
+T_BET = datetime(2026, 8, 26, 9, 40)
+T_GAL = datetime(2026, 8, 26, 11, 2)
+N_GARGANTA = 0.10
+N_MEDIO = 0.05
+N_VALLE = 0.040
+OFFSET_HMA_GLO30 = -35.5
 
-# Puntos de comunidad (lat, lon) — Nominatim / Wikipedia / Wikidata
-# Bharatpur: punto sobre el Narayani (no el centro urbano, a ~2 km del cauce).
 PLACES = [
+    {"id": "origen", "nombre": "Cicatriz Langtang (S2)", "lat": 28.28508, "lon": 85.51282},
     {"id": "rasuwagadhi", "nombre": "Rasuwagadhi", "lat": 28.2777749, "lon": 85.3777789},
     {"id": "timure", "nombre": "Timure", "lat": 28.2528483, "lon": 85.3666715},
     {"id": "chilime", "nombre": "Chilime (poblado)", "lat": 28.1836181, "lon": 85.3022373},
@@ -78,7 +98,14 @@ PLACES = [
     {"id": "devghat", "nombre": "Devghat (Chitwan)", "lat": 27.739167, "lon": 84.425278},
     {"id": "bharatpur", "nombre": "Bharatpur (Narayani)", "lat": 27.7050, "lon": 84.4320},
 ]
-# El camino más corto Rasuwagadhi→Bharatpur se sale de la garganta. Forzar hitos.
+LHENDE_PTS = [
+    (28.28508, 85.51282),
+    (28.306196, 85.501033),
+    (28.333514, 85.474347),
+    (28.33057, 85.42909),
+    (28.30211, 85.403417),
+    (28.2777749, 85.3777789),
+]
 WAYPOINTS = [
     "rasuwagadhi",
     "syabrubesi",
@@ -89,6 +116,18 @@ WAYPOINTS = [
     "muglin",
     "devghat",
     "bharatpur",
+]
+PICO_CTRL = [
+    ("origen", 80.0),
+    ("rasuwagadhi", 95.7),
+    ("timure", 72.7),
+    ("syabrubesi", 39.9),
+    ("betrawati", 19.9),
+    ("galchhi", 9.0),
+    ("malekhu", 7.0),
+    ("muglin", 6.0),
+    ("devghat", 5.0),
+    ("bharatpur", 5.0),
 ]
 HMA_AEA = (
     "+proj=aea +lat_1=25 +lat_2=47 +lat_0=36 +lon_0=85 "
@@ -322,7 +361,7 @@ def download_dem():
         earthaccess.login(strategy="netrc")
         results = earthaccess.search_data(
             short_name="HMA_DEM8m_MOS",
-            bounding_box=(84.38, 27.64, 85.42, 28.32),
+            bounding_box=(84.38, 27.64, 85.58, 28.36),
             count=5,
         )
         if not results:
@@ -341,14 +380,13 @@ def download_dem():
     )
 
 
-def download_cop30():
-    """Copernicus GLO-30 (N27 E084) para el borde oeste del HMA, cerca de Bharatpur."""
-    dest = os.path.join(OUT_DIR, COP30_NAME)
+def download_cop_tile(name, urls):
+    dest = os.path.join(OUT_DIR, name)
     if os.path.exists(dest) and os.path.getsize(dest) > 5e6:
         print("COP30 local:", dest, round(os.path.getsize(dest) / 1e6, 1), "MB")
         return dest
     last = None
-    for url in COP30_URLS:
+    for url in urls:
         try:
             print("Descargando COP30", url)
             r = requests.get(url, headers=HEADERS, timeout=300, stream=True)
@@ -366,43 +404,47 @@ def download_cop30():
         except Exception as ex:
             last = ex
             print("COP30 fail", url, ex)
-    print("AVISO: no se pudo bajar COP30:", last)
+    print("AVISO: no se pudo bajar", name, last)
     return None
 
 
-def sample_profile(hma_path, cop_path, pts):
+def download_cop30():
+    """GLO-30 N27E084 (Bharatpur) y N28E085 (cabecera Lhende)."""
+    west = download_cop_tile(COP30_NAME, COP30_URLS)
+    head = download_cop_tile(COP30_HEAD_NAME, COP30_HEAD_URLS)
+    return [p for p in (west, head) if p]
+
+
+def sample_profile(hma_path, cop_paths, pts):
     """HMA (elipsoide) donde cubre; COP30 orthométrico desplazado al datum HMA."""
     z_hma = sample_z(hma_path, pts)
     z = np.array(z_hma, dtype=float)
-    if not cop_path:
+    cop_paths = [p for p in (cop_paths or []) if p]
+    if not cop_paths:
         return z, "NASA HMA 8 m mosaic tile-675 (Shean 2017; elipsoide WGS84)", 0.0
-    z_cop = sample_z(cop_path, pts, force_crs=WGS84)
-    # Solape real: lon en el borde oeste HMA ∩ COP30 N27E084.
+    z_cop = np.full(len(pts), np.nan)
+    for cop_path in cop_paths:
+        z_tile = sample_z(cop_path, pts, force_crs=WGS84)
+        fill_c = ~np.isfinite(z_cop) & np.isfinite(z_tile)
+        z_cop[fill_c] = z_tile[fill_c]
     lons = np.array([p[1] for p in pts])
     lats = np.array([p[0] for p in pts])
-    overlap = (
-        np.isfinite(z)
-        & np.isfinite(z_cop)
-        & (lons > 84.46)
-        & (lons < 84.95)
-        & (lats > 27.55)
-        & (lats < 27.95)
-    )
+    overlap = np.isfinite(z) & np.isfinite(z_cop)
     if overlap.sum() >= 10:
         offset = float(np.nanmedian(z[overlap] - z_cop[overlap]))
         print(f"COP30→HMA offset (mediana HMA-COP30): {offset:.1f} m  n={int(overlap.sum())}")
         if abs(offset) > 120:
-            print("AVISO: offset implausible; se ignora COP30")
-            return z, "NASA HMA 8 m mosaic tile-675 (Shean 2017; elipsoide WGS84)", 0.0
+            print("AVISO: offset implausible; se usa Geopera", OFFSET_HMA_GLO30)
+            offset = OFFSET_HMA_GLO30
     else:
-        offset = 0.0
-        print("AVISO: poco solape HMA/COP30; no se desplaza COP30")
+        offset = OFFSET_HMA_GLO30
+        print(f"Poco solape HMA/COP30; offset Geopera {offset:.1f} m")
     fill = ~np.isfinite(z) & np.isfinite(z_cop)
     z[fill] = z_cop[fill] + offset
     print(f"Puntos COP30 (fuera de HMA): {int(fill.sum())}")
     fuente = (
-        "NASA HMA 8 m tile-675 (elipsoide WGS84); COP30 N27E084 en el borde oeste "
-        f"(offset {offset:.1f} m al datum HMA)"
+        "NASA HMA 8 m tile-675 (elipsoide WGS84); COP30 N27E084 + N28E085 "
+        f"(offset {offset:.1f} m al datum HMA; ref. Geopera HMA–GLO30 {OFFSET_HMA_GLO30} m)"
     )
     return z, fuente, offset
 
@@ -494,19 +536,95 @@ def minutos(a, b):
     return (b - a).total_seconds() / 60.0
 
 
+def calibrate_R(seg_slice, n, dt_s):
+    suma = sum(seg["dx_m"] / math.sqrt(seg["S"]) for seg in seg_slice)
+    if suma <= 0 or dt_s <= 1:
+        return 10.0
+    r23 = n * suma / dt_s
+    return r23 ** 1.5
+
+
+def apply_debris(seg_slice, v_mps):
+    """Velocidad constante (avalancha), no Manning de río."""
+    v = max(float(v_mps), 0.1)
+    for seg in seg_slice:
+        dt = seg["dx_m"] / v
+        seg["n_manning"] = None
+        seg["R_m"] = None
+        seg["V_mps"] = round(v, 2)
+        seg["V_kmh"] = round(v * 3.6, 1)
+        seg["dt_s"] = round(dt, 1)
+        seg["regimen"] = "detritos"
+
+
+def apply_nR(seg_slice, n, Ruse):
+    for seg in seg_slice:
+        v = (1.0 / n) * (Ruse ** (2.0 / 3.0)) * math.sqrt(seg["S"])
+        dt = seg["dx_m"] / v
+        seg["n_manning"] = n
+        seg["R_m"] = round(Ruse, 2)
+        seg["V_mps"] = round(v, 2)
+        seg["V_kmh"] = round(v * 3.6, 1)
+        seg["dt_s"] = round(dt, 1)
+        seg["regimen"] = "manning"
+
+
+def h_hand_corredor(km_corredor):
+    """Ocupación HAND del valle (no es tirante de pico). km desde Rasuwagadhi."""
+    if km_corredor < 0:
+        return 0.0
+    if km_corredor < 20:
+        return 12.0
+    if km_corredor < 40:
+        return 10.0
+    if km_corredor < 60:
+        return 9.0
+    if km_corredor < 100:
+        return 7.0
+    return 5.0
+
+
+def interp_pico(km_along, comm):
+    by = {c["id"]: c for c in comm}
+    xs, ys = [], []
+    for pid, h in PICO_CTRL:
+        c = by.get(pid)
+        if not c:
+            continue
+        xs.append(c["km"])
+        ys.append(h)
+    if len(xs) < 2:
+        return 10.0
+    k = float(km_along)
+    if k <= xs[0]:
+        return ys[0]
+    if k >= xs[-1]:
+        return ys[-1]
+    return float(np.interp(k, xs, ys))
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     osm = fetch_overpass()
     adj = build_graph(osm)
-    print("Camino por hitos Bhote Koshi → Trishuli → Narayani")
-    path, length = path_via_waypoints(adj, PLACES, WAYPOINTS)
-    print(f"Camino {len(path)} nodos, {length/1000:.2f} km")
+    print("Lhende (valle) + OSM Bhote Koshi → Narayani")
+    path_osm, length_osm = path_via_waypoints(adj, PLACES, WAYPOINTS)
+    path_head = densify(LHENDE_PTS, 50.0)
+    # evitar duplicar Rasuwagadhi
+    path = path_head[:-1] + path_osm
+    length = 0.0
+    for a, b in zip(path, path[1:]):
+        length += haversine_m(a[0], a[1], b[0], b[1])
+    print(
+        f"Camino {len(path)} nodos, {length/1000:.2f} km "
+        f"(OSM Rasuwagadhi→Bharatpur {length_osm/1000:.1f} km)"
+    )
     dense = densify(path, 50.0)
     print(f"Densificado {len(dense)} pts")
 
     dem = download_dem()
-    cop = download_cop30()
-    z_raw, fuente_dem, cop_offset = sample_profile(dem, cop, dense)
+    cop_list = download_cop30()
+    z_raw, fuente_dem, cop_offset = sample_profile(dem, cop_list, dense)
     z_arr = np.array(z_raw, dtype=float)
     ok = np.isfinite(z_arr)
     if (~ok).any() and ok.any():
@@ -556,126 +674,102 @@ def main():
         )
         print(f"{pl['nombre']}: km {km[best_i]/1000:.2f}  snap {bd:.0f} m  z={zs[best_i]:.0f}")
 
-    sya = next(c for c in comm if c["id"] == "syabrubesi")
-    bet = next(c for c in comm if c["id"] == "betrawati")
-    i0, i1 = sya["idx"], bet["idx"]
-    if i1 <= i0:
-        raise RuntimeError("Syabrubesi no está aguas arriba de Betrawati en el perfil")
+    by = {c["id"]: c for c in comm}
+    orig = by["origen"]
+    ras = by["rasuwagadhi"]
+    sya = by["syabrubesi"]
+    bet = by["betrawati"]
+    gal = by["galchhi"]
+    dvg = by["devghat"]
+    km_rasuwa = float(ras["km"])
 
-    # Calibrar R1 para que Syabrubesi→Betrawati = 30 min
-    # dt = n * dx / (R^(2/3) * sqrt(S))
-    suma = 0.0
-    for seg in segs[i0:i1]:
-        suma += seg["dx_m"] / math.sqrt(seg["S"])
-    # 1800 = n * suma / R^(2/3)
-    r23 = N_MANN * suma / 1800.0
-    R = r23 ** 1.5
-    print(f"R1 calibrado n={N_MANN}: {R:.2f} m  (Syabrubesi->Betrawati = 30 min)")
+    def slice_segs(a, b):
+        i0, i1 = a["idx"], b["idx"]
+        if i1 <= i0:
+            raise RuntimeError(f"{a['id']} no está aguas arriba de {b['id']} en el perfil")
+        return segs[i0:i1]
 
-    R_bajo = R
-    nota_r2 = (
-        "Aguas abajo de Devighat HEP se usa el mismo R mientras el Manning de "
-        "garganta no llegue a Devghat antes de las 15:20 DHM."
+    # Reloj t=0 en la cicatriz (08:37). Caídas 08:50 / 09:20 = radio, no el frente.
+    dt_lhende = (T_RASUWA - T_SISMO).total_seconds()
+    dt_sya = (T_SYA - T_RASUWA).total_seconds()
+    dt_bet = (T_BET - T_SYA).total_seconds()
+    dt_gal = (T_GAL - T_BET).total_seconds()
+    dt_dvg = (T_DEVGHAT - T_GAL).total_seconds()
+
+    dx_lhende = sum(s["dx_m"] for s in slice_segs(orig, ras))
+    v_lhende = dx_lhende / dt_lhende if dt_lhende > 1 else 15.0
+    R1 = calibrate_R(slice_segs(ras, sya), N_GARGANTA, dt_sya)
+    R2 = calibrate_R(slice_segs(sya, bet), N_MEDIO, dt_bet)
+    R3 = calibrate_R(slice_segs(bet, gal), N_VALLE, dt_gal)
+    R4 = calibrate_R(slice_segs(gal, dvg), N_VALLE, dt_dvg)
+
+    apply_debris(segs[: ras["idx"]], v_lhende)
+    apply_nR(segs[ras["idx"] : sya["idx"]], N_GARGANTA, R1)
+    apply_nR(segs[sya["idx"] : bet["idx"]], N_MEDIO, R2)
+    apply_nR(segs[bet["idx"] : gal["idx"]], N_VALLE, R3)
+    apply_nR(segs[gal["idx"] :], N_VALLE, R4)
+
+    print(
+        f"Lhende detritos: {v_lhende:.2f} m/s ({v_lhende*3.6:.0f} km/h)  "
+        f"{dx_lhende/1000:.1f} km en 17 min (no es Manning)"
     )
-    try:
-        devighat = next(c for c in comm if c["id"] == "devighat")
-        devghat = next(c for c in comm if c["id"] == "devghat")
-        i_hi, i_lo = devighat["idx"], devghat["idx"]
-    except StopIteration:
-        i_hi, i_lo = None, None
-        devighat = devghat = None
+    print(f"R1 garganta n={N_GARGANTA}: {R1:.2f} m  (Rasuwagadhi→Syabrubesi = 15 min)")
+    print(f"R2 medio n={N_MEDIO}: {R2:.2f} m  (Syabrubesi→Betrawati = 31 min)")
+    print(f"R3 valle alto n={N_VALLE}: {R3:.2f} m  (Betrawati→Galchhi = 82 min)")
+    print(f"R4 valle bajo n={N_VALLE}: {R4:.2f} m  (Galchhi→Devghat = 15:20 DHM)")
 
-    # velocidades: tramo alto con R1. Si R1 llega a Devghat demasiado pronto
-    # vs 15:20 DHM, calibrar R2 en Devighat→Devghat.
-    def apply_R(seg_slice, Ruse):
-        for seg in seg_slice:
-            v = (1.0 / N_MANN) * (Ruse ** (2.0 / 3.0)) * math.sqrt(seg["S"])
-            dt = seg["dx_m"] / v
-            seg["R_m"] = round(Ruse, 2)
-            seg["V_mps"] = round(v, 2)
-            seg["V_kmh"] = round(v * 3.6, 1)
-            seg["dt_s"] = round(dt, 1)
-
-    apply_R(segs, R)
-
-    if i_hi is not None and i_lo is not None and i_lo > i_hi:
-        t_hi = sum(s["dt_s"] for s in segs[:i_hi])
-        t_lo_r1 = sum(s["dt_s"] for s in segs[:i_lo])
-        # ancla Syabrubesi aún no aplicada; sólo duraciones relativas
-        # Tras anclar, t_devghat = T_SYA + (t_lo - t_sya)
-        # Aquí t_sya aún no; se calcula después. Usamos duraciones.
-        t_sya_rel = sum(s["dt_s"] for s in segs[:i0])
-        llegada_devghat_r1 = T_SYA + timedelta(seconds=t_lo_r1 - t_sya_rel)
-        print("Llegada Devghat con R1:", llegada_devghat_r1.strftime("%H:%M"))
-        dt_r1 = (llegada_devghat_r1 - T_DEVGHAT).total_seconds()
-        if abs(dt_r1) > 15 * 60:
-            suma2 = 0.0
-            for seg in segs[i_hi:i_lo]:
-                suma2 += seg["dx_m"] / math.sqrt(seg["S"])
-            t_hi_rel = t_hi - t_sya_rel
-            dt_objetivo = (T_DEVGHAT - T_SYA).total_seconds() - t_hi_rel
-            if dt_objetivo > 60 and suma2 > 0:
-                r23b = N_MANN * suma2 / dt_objetivo
-                R_bajo = r23b ** 1.5
-                apply_R(segs[i_hi:], R_bajo)
-                nota_r2 = (
-                    f"Tramo Devighat HEP → Devghat/Bharatpur: R2={R_bajo:.2f} m "
-                    f"(n={N_MANN}) para que el frente coincida con DHM Devghat ~15:20. "
-                    f"Con R1 de garganta el modelo llega {llegada_devghat_r1.strftime('%H:%M')} "
-                    "(el valle es más tendido y Manning de montaña se queda corto o largo)."
-                )
-                print(f"R2 calibrado Devighat->Devghat: {R_bajo:.2f} m  dt={dt_objetivo/60:.1f} min")
-            else:
-                print("No se calibra R2: dt objetivo no positivo")
-        else:
-            nota_r2 = (
-                f"R1 basta: llegada modelo a Devghat {llegada_devghat_r1.strftime('%H:%M')} "
-                "frente a DHM ~15:20."
-            )
-
-    # tiempos acumulados desde km 0
     t_s = 0.0
     for seg in segs:
         seg["t_ini_s"] = t_s
         t_s += seg["dt_s"]
         seg["t_fin_s"] = t_s
 
-    # tiempo en cada estación km (inicio de tramo)
     t_at = [0.0]
     for seg in segs:
         t_at.append(seg["t_fin_s"])
     t_at = np.array(t_at)
 
-    # anclar: Syabrubesi = 08:50
-    t_sya = t_at[sya["idx"]]
-    t_bet_model = t_at[bet["idx"]]
+    def hora_desde_origen(t_sec):
+        return T_SISMO + timedelta(seconds=float(t_sec))
+
     print(
-        f"Modelo Syabrubesi->Betrawati: {(t_bet_model - t_sya)/60:.2f} min "
-        f"(objetivo 30)"
+        "Anclas: Rasuwagadhi",
+        fmt_hora(hora_desde_origen(t_at[ras["idx"]])),
+        "Syabrubesi",
+        fmt_hora(hora_desde_origen(t_at[sya["idx"]])),
+        "Betrawati",
+        fmt_hora(hora_desde_origen(t_at[bet["idx"]])),
+        "Galchhi",
+        fmt_hora(hora_desde_origen(t_at[gal["idx"]])),
+        "Devghat",
+        fmt_hora(hora_desde_origen(t_at[dvg["idx"]])),
     )
 
-    def hora_desde_sya(t_sec_from_origin):
-        return T_SYA + timedelta(seconds=t_sec_from_origin - t_sya)
-
-    # curva cada km
     curva = []
     for i, (k, la, lo, zz) in enumerate(zip(km, lats, lons, zs)):
-        h = hora_desde_sya(t_at[i])
-        v = segs[i]["V_mps"] if i < len(segs) else segs[-1]["V_mps"]
-        lead_sms = minutos(T_SMS, h)  # >0 si llega DESPUÉS del SMS
+        h = hora_desde_origen(t_at[i])
+        seg = segs[i] if i < len(segs) else segs[-1]
+        v = seg["V_mps"]
+        km_abs = float(k) / 1000.0
+        km_cor = km_abs - km_rasuwa
+        lead_sms = minutos(T_SMS, h)
         lead_auto = minutos(T_AUTO, h)
         actual = max(0.0, lead_sms)
         potential = max(0.0, lead_auto)
-        perdido = potential - actual
         curva.append(
             {
-                "km": round(float(k) / 1000.0, 2),
+                "km": round(km_abs, 2),
+                "km_corredor": round(km_cor, 2),
                 "lat": round(float(la), 6),
                 "lon": round(float(lo), 6),
                 "z_m": round(float(zz), 1),
-                "S_pct": segs[i]["S_pct"] if i < len(segs) else None,
+                "S_pct": seg.get("S_pct") if i < len(segs) else None,
+                "n_manning": seg["n_manning"],
+                "R_m": seg["R_m"],
                 "V_mps": v,
                 "V_kmh": round(v * 3.6, 1),
+                "h_pico_m": round(interp_pico(km_abs, comm), 1),
+                "h_hand_m": round(h_hand_corredor(km_cor), 1),
                 "hora": fmt_hora(h),
                 "hora_iso": h.isoformat(),
                 "min_desde_sismo": round(minutos(T_SISMO, h), 1),
@@ -683,17 +777,19 @@ def main():
                 "aviso_auto_min": round(lead_auto, 1),
                 "aviso_real_min": round(actual, 1),
                 "aviso_potencial_min": round(potential, 1),
-                "minutos_perdidos": round(perdido, 1),
+                "minutos_perdidos": round(potential - actual, 1),
             }
         )
 
-    # comunidades
     for c in comm:
-        h = hora_desde_sya(t_at[c["idx"]])
+        h = hora_desde_origen(t_at[c["idx"]])
+        seg = segs[c["idx"]] if c["idx"] < len(segs) else segs[-1]
         lead_sms = minutos(T_SMS, h)
         lead_auto = minutos(T_AUTO, h)
         actual = max(0.0, lead_sms)
         potential = max(0.0, lead_auto)
+        km_cor = c["km"] - km_rasuwa
+        c["km_corredor"] = round(km_cor, 2)
         c["hora_llegada"] = fmt_hora(h)
         c["min_desde_sismo"] = round(minutos(T_SISMO, h), 1)
         c["aviso_sms_min"] = round(lead_sms, 1)
@@ -701,22 +797,24 @@ def main():
         c["aviso_real_min"] = round(actual, 1)
         c["aviso_potencial_min"] = round(potential, 1)
         c["minutos_perdidos"] = round(potential - actual, 1)
-        c["V_local_mps"] = segs[c["idx"]]["V_mps"] if c["idx"] < len(segs) else segs[-1]["V_mps"]
+        c["V_local_mps"] = seg["V_mps"]
+        c["n_manning"] = seg["n_manning"]
+        c["R_m"] = seg["R_m"]
+        c["h_pico_m"] = round(interp_pico(c["km"], comm), 1)
+        c["h_hand_m"] = round(h_hand_corredor(km_cor), 1)
 
-    # frente a horas clave
     horas_clave = [
         ("08:37", T_SISMO),
         ("08:38", T_AUTO),
-        ("08:40", datetime(2026, 8, 26, 8, 40)),
-        ("08:50", T_SYA),
+        ("08:50", T_SYA_DROP),
+        ("08:54", T_RASUWA),
         ("09:00", datetime(2026, 8, 26, 9, 0)),
-        ("09:15", datetime(2026, 8, 26, 9, 15)),
+        ("09:09", T_SYA),
         ("09:16", T_SMS),
-        ("09:20", T_BET),
-        ("09:30", datetime(2026, 8, 26, 9, 30)),
-        ("09:40", datetime(2026, 8, 26, 9, 40)),
+        ("09:20", T_BET_DROP),
+        ("09:40", T_BET),
         ("10:00", datetime(2026, 8, 26, 10, 0)),
-        ("11:00", datetime(2026, 8, 26, 11, 0)),
+        ("11:02", T_GAL),
         ("12:00", datetime(2026, 8, 26, 12, 0)),
         ("13:00", datetime(2026, 8, 26, 13, 0)),
         ("14:00", datetime(2026, 8, 26, 14, 0)),
@@ -725,41 +823,68 @@ def main():
         ("16:00", datetime(2026, 8, 26, 16, 0)),
     ]
     frente = []
+    t_ras = t_at[ras["idx"]]
     for label, t in horas_clave:
-        # km donde hora_desde_sya(t_at) == t  → t_at = t_sya + (t-T_SYA)
-        target = t_sya + (t - T_SYA).total_seconds()
+        target = (t - T_SISMO).total_seconds()
         if target < t_at[0] - 1:
-            km_f, estado = None, "antes de Rasuwagadhi (aún en Tíbet / Lhende)"
+            km_f, estado = 0.0, "en la cicatriz"
         elif target > t_at[-1] + 1:
             km_f, estado = round(float(km[-1]) / 1000, 2), "ya pasó Bharatpur"
         else:
             km_f = round(float(np.interp(target, t_at, km) / 1000.0), 2)
-            estado = f"km {km_f}"
+            if target < t_ras - 1:
+                estado = f"antes de Rasuwagadhi (Lhende) km {km_f}"
+            else:
+                estado = f"km {km_f}"
         frente.append({"hora": label, "km": km_f, "donde": estado})
 
     dist_sb = (km[bet["idx"]] - km[sya["idx"]]) / 1000.0
-    v_obs = (km[bet["idx"]] - km[sya["idx"]]) / 1800.0
+    v_obs = (km[bet["idx"]] - km[sya["idx"]]) / dt_bet
     z0, z1 = float(zs[0]), float(zs[-1])
+    z_ras = float(ras["z"])
+    km_tot = float(km[-1])
+    km_corr = km_tot - km[ras["idx"]]
+
+    nota_r = (
+        f"Lhende: avalancha de detritos a {v_lhende:.1f} m/s ({v_lhende*3.6:.0f} km/h), "
+        "no Manning (Geopera inyecta el hidrograma cerca de la confluencia). "
+        f"Desde Rasuwagadhi: n = {N_GARGANTA:.2f} / {N_MEDIO:.2f} / {N_VALLE:.3f}. "
+        f"R1={R1:.2f} m, R2={R2:.2f} m, R3={R3:.2f} m, R4={R4:.2f} m. "
+        "Caídas de estación 08:50 (Syabrubesi) y 09:20 (Betrawati) son corte de radio, "
+        "no la llegada del frente (Geopera / DHM: frontera 08:54, Syabrubesi 09:09, "
+        "Betrawati 09:40, Galchhi 11:02 ~9 m / 30 min). Ancla DHM Devghat ~15:20."
+    )
 
     summary = {
         "fuente_dem": fuente_dem,
-        "cauce": "OpenStreetMap waterway=river, camino mínimo Rasuwagadhi→Bharatpur (Narayani)",
-        "longitud_km": round(float(km[-1]) / 1000.0, 2),
-        "z_rasuwagadhi_m": round(z0, 1),
-        "z_final_m": round(z1, 1),
-        "z_devighat_m": round(float(next(c["z"] for c in comm if c["id"] == "devighat")), 1),
-        "desnivel_m": round(z0 - z1, 1),
-        "pendiente_media_pct": round(100.0 * (z0 - z1) / float(km[-1]), 3),
-        "n_manning": N_MANN,
-        "R_calibrado_m": round(R, 2),
-        "R_tramo_bajo_m": round(R_bajo, 2),
-        "calibracion": (
-            "R1 ajustado para que el tiempo modelo Syabrubesi→Betrawati sea 30 min "
-            "(estación Syabrubesi deja de transmitir 08:50; Betrawati 09:20). "
-            "Última lectura Syabrubesi 08:40 = 1.62 m (bajo umbral); el frente "
-            "llegó entre 08:40 y 08:50. "
-            + nota_r2
+        "cauce": (
+            "Cicatriz Langtang (S2 28.285°N 85.513°E) por Lhende hasta Rasuwagadhi; "
+            "luego OSM waterway=river Rasuwagadhi→Bharatpur (Narayani)"
         ),
+        "longitud_km": round(km_tot / 1000.0, 2),
+        "km_rasuwagadhi": round(km_rasuwa, 2),
+        "longitud_corredor_km": round(km_corr / 1000.0, 2),
+        "z_origen_m": round(z0, 1),
+        "z_rasuwagadhi_m": round(z_ras, 1),
+        "z_final_m": round(z1, 1),
+        "z_devighat_m": round(float(by["devighat"]["z"]), 1),
+        "desnivel_m": round(z0 - z1, 1),
+        "desnivel_corredor_m": round(z_ras - z1, 1),
+        "pendiente_media_pct": round(100.0 * (z0 - z1) / km_tot, 3),
+        "n_manning": N_GARGANTA,
+        "n_garganta": N_GARGANTA,
+        "n_medio": N_MEDIO,
+        "n_valle": N_VALLE,
+        "R_lhende_m": None,
+        "v_lhende_mps": round(v_lhende, 2),
+        "v_lhende_kmh": round(v_lhende * 3.6, 1),
+        "R_calibrado_m": round(R1, 2),
+        "R1_m": round(R1, 2),
+        "R2_m": round(R2, 2),
+        "R3_m": round(R3, 2),
+        "R4_m": round(R4, 2),
+        "R_tramo_bajo_m": round(R4, 2),
+        "calibracion": nota_r,
         "v_obs_syabrubesi_betrawati_mps": round(v_obs, 2),
         "v_obs_kmh": round(v_obs * 3.6, 1),
         "dist_syabrubesi_betrawati_km": round(dist_sb, 2),
@@ -773,6 +898,12 @@ def main():
         ),
         "cop30_offset_m": round(cop_offset, 2),
         "dhm_devghat": "15:20 NPT (frente, informe técnico DHM)",
+        "cita_geopera": (
+            "Tiempos y tirantes de pico de garganta alineados a geo-pera/"
+            "bhotekoshi-2026-reconstruction (métodos 1D; no se republican sus "
+            "vectores Planet/WV, CC BY-NC). ABC reimplementa el corredor hasta "
+            "Bharatpur con OSM / HMA / COP30 / EMSR927 / Sentinel."
+        ),
         "comunidades": comm,
         "frente_por_hora": frente,
         "curva_1km": curva,
@@ -790,7 +921,10 @@ def main():
         "features": [
             {
                 "type": "Feature",
-                "properties": {"name": "eje Bhote Koshi–Trishuli–Narayani", "km": summary["longitud_km"]},
+                "properties": {
+                    "name": "eje cicatriz Langtang–Lhende–Bhote Koshi–Trishuli–Narayani",
+                    "km": summary["longitud_km"],
+                },
                 "geometry": mapping(line),
             }
         ],
@@ -814,9 +948,48 @@ def main():
         for row in curva:
             f.write(",".join(str(row[c]) for c in cols) + "\n")
 
+    obs_path = os.path.join(OUT_DIR, "observaciones.csv")
+    with open(obs_path, "w", encoding="utf-8") as f:
+        f.write("fuente,hora_npt,tipo,lugar,valor,nota\n")
+        rows_obs = [
+            "USGS,08:37,sismo_colapso,Langtang,M5.2 landslide-type,28.271N 85.515E",
+            "ABC S2,08:37,cicatriz,flanco N Langtang,20.2 ha hielo,28.285N 85.513E km 0 del modelo",
+            "DHM,08:50,caida_radio,Syabrubesi,estacion deja de transmitir,no es la llegada del frente",
+            "Geopera/DHM,08:54,llegada_frente,Rasuwagadhi,~17 min desde colapso,pico Geopera 95.7 m",
+            "Geopera,09:09,llegada_frente,Syabrubesi,~32 min,pico ~40 m; dropout 08:50 es radio",
+            "DHM,09:16,SMS_masivo,Nepal,679295 mensajes,Kathmandu Post 27 ago 2026",
+            "DHM,09:20,caida_radio,Betrawati,estacion deja de transmitir,no es la llegada del frente",
+            "Geopera,09:40,llegada_frente,Betrawati,~63 min,pico ~20 m",
+            "DHM/Geopera,11:02,llegada_frente,Galchhi,9 m durante ~30 min,ancla de valle medio",
+            "DHM,15:20,llegada_frente,Devghat Chitwan,frente,pico ~16:00; ABC mantiene esta ancla",
+            "Suhora/Satellogic,27 ago 04:22 UTC,lago_escombros,Lhende,20.25 ha,28.29417N 85.51081E",
+            "ABC S2 SCL,27 ago,lago_escombros,Lhende,3.72 ha agua nueva,28.293N 85.511E",
+            "ABC S1 RTC,28 ago 12:21 UTC,lago_residual,Lhende,-10.2 dB en Suhora,no es agua abierta; ~2.3 ha al sur",
+            "Geopera,metodo,hidraulica_1D,garganta,Saint-Venant ~20 hm3,ABC usa Manning cinematico n 0.10/0.05/0.04 hasta Bharatpur",
+        ]
+        f.write("\n".join(rows_obs) + "\n")
+
     print("Escrito", json_path)
-    print("Longitud", summary["longitud_km"], "km  desnivel", summary["desnivel_m"], "m")
-    print("R", summary["R_calibrado_m"], "m")
+    print("Observaciones", obs_path)
+    print(
+        "Longitud",
+        summary["longitud_km"],
+        "km (corredor",
+        summary["longitud_corredor_km"],
+        "km) desnivel origen",
+        summary["desnivel_m"],
+        "m",
+    )
+    print(
+        "V Lhende / R1/R2/R3/R4",
+        summary["v_lhende_mps"],
+        "m/s ;",
+        summary["R1_m"],
+        summary["R2_m"],
+        summary["R3_m"],
+        summary["R4_m"],
+        "m",
+    )
     for c in comm:
         print(
             f"  {c['nombre']:28s} km {c['km']:5.1f}  {c['hora_llegada']}  "

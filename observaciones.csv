@@ -1,0 +1,15 @@
+fuente,hora_npt,tipo,lugar,valor,nota
+USGS,08:37,sismo_colapso,Langtang,M5.2 landslide-type,28.271N 85.515E
+ABC S2,08:37,cicatriz,flanco N Langtang,20.2 ha hielo,28.285N 85.513E km 0 del modelo
+DHM,08:50,caida_radio,Syabrubesi,estacion deja de transmitir,no es la llegada del frente
+Geopera/DHM,08:54,llegada_frente,Rasuwagadhi,~17 min desde colapso,pico Geopera 95.7 m
+Geopera,09:09,llegada_frente,Syabrubesi,~32 min,pico ~40 m; dropout 08:50 es radio
+DHM,09:16,SMS_masivo,Nepal,679295 mensajes,Kathmandu Post 27 ago 2026
+DHM,09:20,caida_radio,Betrawati,estacion deja de transmitir,no es la llegada del frente
+Geopera,09:40,llegada_frente,Betrawati,~63 min,pico ~20 m
+DHM/Geopera,11:02,llegada_frente,Galchhi,9 m durante ~30 min,ancla de valle medio
+DHM,15:20,llegada_frente,Devghat Chitwan,frente,pico ~16:00; ABC mantiene esta ancla
+Suhora/Satellogic,27 ago 04:22 UTC,lago_escombros,Lhende,20.25 ha,28.29417N 85.51081E
+ABC S2 SCL,27 ago,lago_escombros,Lhende,3.72 ha agua nueva,28.293N 85.511E
+ABC S1 RTC,28 ago 12:21 UTC,lago_residual,Lhende,-10.2 dB en Suhora,no es agua abierta; ~2.3 ha al sur
+Geopera,metodo,hidraulica_1D,garganta,Saint-Venant ~20 hm3,ABC usa Manning cinematico n 0.10/0.05/0.04 hasta Bharatpur

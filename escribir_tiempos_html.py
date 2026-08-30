@@ -11,23 +11,33 @@ comm = man["comunidades"]
 curva = man["curva_1km"]
 frente = man["frente_por_hora"]
 km_tot = man["longitud_km"]
-desnivel = man["desnivel_m"]
+desnivel = man.get("desnivel_corredor_m") or man["desnivel_m"]
 pend = man["pendiente_media_pct"]
-R1 = man["R_calibrado_m"]
-R2 = man.get("R_tramo_bajo_m", R1)
-n_m = man["n_manning"]
+R1 = man.get("R1_m") or man["R_calibrado_m"]
+R4 = man.get("R4_m") or man.get("R_tramo_bajo_m", R1)
+R2 = man.get("R2_m") or R4
+R3 = man.get("R3_m") or R4
+R_lhende = man.get("R_lhende_m")
+v_lhende = man.get("v_lhende_mps")
+if v_lhende is None:
+    v_lhende = 18.6
+n_g = man.get("n_garganta", 0.10)
+n_m = man.get("n_medio", man.get("n_manning", 0.05))
+n_v = man.get("n_valle", 0.040)
+km_ras = man.get("km_rasuwagadhi") or 0
 
 CHART_IDS = [
+    "origen",
     "rasuwagadhi",
     "timure",
     "syabrubesi",
-    "mailung",
     "betrawati",
-    "devighat",
     "galchhi",
-    "malekhu",
+    "devghat",
+    "bharatpur",
 ]
 LABEL = {
+    "origen": "Cicatriz",
     "rasuwagadhi": "Rasuwagadhi",
     "timure": "Timure",
     "syabrubesi": "Syabrubesi",
@@ -46,9 +56,11 @@ chart_comm = [by_id[i] for i in CHART_IDS if i in by_id]
 
 def row_class(c):
     h = c["hora_llegada"]
+    if c["id"] in ("origen", "rasuwagadhi", "timure"):
+        return "danger"
     if h < "09:16":
-        return "danger" if c["km"] < 10 else "warning"
-    if c["km"] < 50:
+        return "warning"
+    if c.get("km_corredor", c["km"] - km_ras) < 50:
         return "info"
     return "ok"
 
@@ -219,15 +231,21 @@ def line_svg(
         </svg>"""
 
 
-def h_hand_m(km):
-    """Tirante de valle usado en la mancha HAND (no es R de Manning)."""
-    if km < 20:
+def h_hand_m(p):
+    if p.get("h_hand_m") is not None:
+        return float(p["h_hand_m"])
+    kc = p.get("km_corredor")
+    if kc is None:
+        kc = float(p["km"]) - float(km_ras or 0)
+    if kc < 0:
+        return 0.0
+    if kc < 20:
         return 12.0
-    if km < 40:
+    if kc < 40:
         return 10.0
-    if km < 60:
+    if kc < 60:
         return 9.0
-    if km < 100:
+    if kc < 100:
         return 7.0
     return 5.0
 
@@ -240,6 +258,8 @@ for c in comm:
         f'<tr class="{row_class(c)}"><td>{c["nombre"]}</td>'
         f'<td>{c["km"]:.1f}</td><td>{c["z"]:.0f}</td>'
         f'<td>{c["hora_llegada"]}</td>'
+        f'<td>{c.get("h_pico_m", "—")}</td>'
+        f'<td>{c.get("h_hand_m", "—")}</td>'
         f'<td>{c["aviso_real_min"]:.0f} min</td>'
         f'<td>{c["aviso_potencial_min"]:.0f} min</td>'
         f'<td>{c["minutos_perdidos"]:.0f}</td></tr>'
@@ -268,14 +288,19 @@ if curva[-1] not in vel_u:
     vel_u.append(curva[-1])
 
 tramos = man.get("tramos") or []
-r_by_km = {round(float(t["km_ini"]), 2): float(t["R_m"]) for t in tramos if "R_m" in t}
+r_by_km = {
+    round(float(t["km_ini"]), 2): float(t["R_m"])
+    for t in tramos
+    if t.get("R_m") is not None
+}
 r_last = float(tramos[-1]["R_m"]) if tramos else R1
 
 def r_at(p):
+    if p.get("R_m") is not None:
+        return float(p["R_m"])
     k = round(float(p["km"]), 2)
     if k in r_by_km:
         return r_by_km[k]
-    # último punto del perfil (km no entero)
     nearest = min(r_by_km, key=lambda x: abs(x - k)) if r_by_km else None
     if nearest is not None and abs(nearest - k) < 0.8:
         return r_by_km[nearest]
@@ -291,23 +316,30 @@ svg_vel = line_svg(
     val_fmt="{:.1f}",
     xlabels2=[p["hora"] for p in vel_u],
 )
+pico_ys = [float(p.get("h_pico_m") or 0) for p in vel_u]
+hand_ys = [h_hand_m(p) for p in vel_u]
 svg_tirante = line_svg(
     [p["km"] for p in vel_u],
     None,
     [f"{p['km']:.0f}" for p in vel_u],
     "m",
-    y_max=22,
+    y_max=max(110, max(pico_ys) * 1.08 if pico_ys else 110),
     xlabels2=[p["hora"] for p in vel_u],
     series=[
+        {
+            "ys": pico_ys,
+            "color": "#b42318",
+            "fmt": "{:.0f}",
+        },
+        {
+            "ys": hand_ys,
+            "color": "#0f766e",
+            "fmt": "{:.0f}",
+        },
         {
             "ys": [r_at(p) for p in vel_u],
             "color": "#7c3aed",
             "fmt": "{:.1f}",
-        },
-        {
-            "ys": [h_hand_m(p["km"]) for p in vel_u],
-            "color": "#0f766e",
-            "fmt": "{:.0f}",
         },
     ],
 )
@@ -315,6 +347,10 @@ svg_tirante = line_svg(
 dev = by_id.get("devghat") or {}
 bha = by_id.get("bharatpur") or {}
 hep = by_id.get("devighat") or {}
+sya = by_id.get("syabrubesi") or {}
+rasu = by_id.get("rasuwagadhi") or {}
+betw = by_id.get("betrawati") or {}
+galc = by_id.get("galchhi") or {}
 
 html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -369,6 +405,7 @@ html = f"""<!DOCTYPE html>
     .sw-info::before {{ background: var(--info); }}
     .sw-tirante::before {{ background: #7c3aed; }}
     .sw-hand::before {{ background: #0f766e; }}
+    .sw-pico::before {{ background: #b42318; }}
     .cards {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }}
     .card {{ background: var(--card); border: 1px solid var(--line); padding: 16px; }}
     .card h3 {{ margin: 0 0 8px; font-size: 14px; }}
@@ -398,21 +435,23 @@ html = f"""<!DOCTYPE html>
       <p class="org">ABC Geomática Agrícola · Nepal · 26 agosto 2026</p>
       <h1>Minutos de alerta perdidos — Bhote Koshi a Bharatpur</h1>
       <p class="lead">
-        Manning cada 1 km, Rasuwagadhi → Bharatpur. Tramo alto (HMA 8 m) calibrado
-        a Syabrubesi 08:50 y Betrawati 09:20. Tramo bajo (Trishuli–Narayani) calibrado
-        a Devghat ~15:20 DHM. SMS 09:16. Alerta automática hipotética 08:38.
+        Manning cada 1 km desde la cicatriz Langtang (08:37) hasta Bharatpur.
+        n = {n_g:.2f} / {n_m:.2f} / {n_v:.3f}. Reloj: frontera 08:54, Syabrubesi 09:09,
+        Betrawati 09:40, Galchhi 11:02, Devghat ~15:20 DHM. Las caídas de estación
+        08:50 y 09:20 son corte de radio, no el frente. SMS 09:16. Alerta automática
+        hipotética 08:38.
       </p>
     </header>
 
     <div class="alert">
-      <strong>Cuando salieron los SMS el frente ya iba a Betrawati</strong>
+      <strong>A las 09:16 el frente iba entre Syabrubesi y Betrawati</strong>
       <p>
-        A las 09:16 el modelo sitúa el frente ~3.5 km aguas arriba de Betrawati.
-        Rasuwagadhi, Timure, Syabrubesi y Mailung ya habían sido alcanzados.
-        Aguas abajo de Devighat HEP el pulso sigue hasta Devghat (Chitwan) y
-        Bharatpur: el SMS llega {hep.get('aviso_real_min', 25):.0f}–{bha.get('aviso_real_min', 0):.0f}
-        min antes, pero se perdieron {hep.get('minutos_perdidos', 38):.0f} min fijos
-        respecto a una alerta a las 08:38.
+        Syabrubesi {sya.get('hora_llegada', '09:09')} (ya alcanzado). Betrawati
+        {betw.get('hora_llegada', '09:40')} aún no. Rasuwagadhi, Timure y la
+        cicatriz no tenían margen. Aguas abajo el SMS sí llega antes
+        ({hep.get('aviso_real_min', 25):.0f}–{bha.get('aviso_real_min', 0):.0f} min
+        en Devighat–Bharatpur), pero se perdieron 38 min fijos respecto a una
+        alerta a las 08:38 en todo lo que el agua alcanza después de las 09:16.
       </p>
     </div>
 
@@ -425,9 +464,9 @@ html = f"""<!DOCTYPE html>
     </p>
 
     <div class="stats">
-      <div class="stat"><div class="v">{km_tot:.1f} km</div><div class="l">Cauce HMA + COP30 + OSM</div></div>
-      <div class="stat"><div class="v">{desnivel:,.0f} m</div><div class="l">Desnivel ({pend:.2f} %)</div></div>
-      <div class="stat"><div class="v">{R1:.1f} / {R2:.1f} m</div><div class="l">R1 garganta / R2 valle (n = {n_m:.3f})</div></div>
+      <div class="stat"><div class="v">{km_tot:.1f} km</div><div class="l">Cicatriz → Bharatpur (Rasuwagadhi km {km_ras:.0f})</div></div>
+      <div class="stat"><div class="v">{desnivel:,.0f} m</div><div class="l">Desnivel corredor ({pend:.2f} % origen)</div></div>
+      <div class="stat"><div class="v">{n_g:.2f}/{n_m:.2f}/{n_v:.3f}</div><div class="l">n garganta / medio / valle · R {R1:.1f}–{R4:.1f} m</div></div>
       <div class="stat danger"><div class="v">38 min</div><div class="l">Retraso del SMS vs 08:38</div></div>
     </div>
 
@@ -449,6 +488,7 @@ html = f"""<!DOCTYPE html>
       <thead>
         <tr>
           <th>Lugar</th><th>km</th><th>z (m)</th><th>Llegada</th>
+          <th>Pico (m)</th><th>HAND (m)</th>
           <th>SMS 09:16</th><th>Auto 08:38</th><th>Perdidos</th>
         </tr>
       </thead>
@@ -459,21 +499,24 @@ html = f"""<!DOCTYPE html>
 
     <h2>Dónde estaba el frente a cada hora</h2>
     <p class="caption">
-      Eje X: hora NPT. Eje Y: km desde Rasuwagadhi. Garganta anclada a
-      Syabrubesi 08:50 y Betrawati 09:20; valle bajo a Devghat 15:20 (DHM).
+      Eje X: hora NPT. Eje Y: km desde la cicatriz (km 0). Rasuwagadhi ~km {km_ras:.0f}
+      a las 08:54. Caídas 08:50 / 09:20 = radio. Anclas de frente: 08:54, 09:09,
+      09:40, 11:02 y Devghat 15:20 (DHM).
     </p>
     <div class="chart">
       <div class="legend">
-        <span class="sw-danger">Frente (km desde Rasuwagadhi)</span>
+        <span class="sw-danger">Frente (km desde cicatriz)</span>
       </div>
       {svg_frente}
     </div>
 
     <h2>Velocidad Manning por tramo (cada 10 km)</h2>
     <p class="caption">
-      V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup>. R1 = {R1:.2f} m hasta Devighat HEP;
-      R2 = {R2:.2f} m después (con R1 el frente llegaría a Devghat ~18:19;
-      R2 adelanta el tramo bajo a la ancla DHM 15:20).
+      V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup> con n variable desde Rasuwagadhi.
+      Lhende (cicatriz→frontera): detritos a {v_lhende:.1f} m/s, no Manning.
+      R1 = {R1:.2f} m (n={n_g:.2f}) hasta Syabrubesi,
+      R2 = {R2:.2f} m (n={n_m:.2f}) hasta Betrawati, R3 = {R3:.2f} m hasta Galchhi,
+      R4 = {R4:.2f} m (n={n_v:.3f}) hasta Devghat/Bharatpur.
       Picos locales son ruido del DEM, no un segundo pulso.
       Segunda fila del eje X: hora NPT de llegada del frente a ese km.
     </p>
@@ -486,18 +529,17 @@ html = f"""<!DOCTYPE html>
 
     <h2>Tirante hidráulico en el cauce (mismos km / horas)</h2>
     <p class="caption">
-      Mismos puntos que el gráfico de velocidad (cada 10 km). Eje X inferior:
-      hora NPT en la que el frente llega a ese km.
-      En cauce ancho el radio hidráulico R ≈ tirante. R de Manning es constante
-      por tramo ({R1:.1f} m garganta, {R2:.1f} m valle) porque se calibra a tiempos
-      observados, no a aforos. El tirante HAND es la profundidad de valle de la
-      mancha (12→5 m), distinta de R: describe el relleno del valle, no el
-      radio usado en V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup>.
+      Tres magnitudes distintas. <b>Pico</b> (80–96 m en garganta, ~9 m en Galchhi):
+      tirante de cresta alineado a Geopera/DHM, no es la mancha del mapa.
+      <b>HAND</b> (12→5 m, solo desde Rasuwagadhi): ocupación de valle de la mancha naranja.
+      <b>R Manning</b> es el radio calibrado a tiempos, constante por tramo.
+      Eje X inferior: hora NPT en la que el frente llega a ese km.
     </p>
     <div class="chart">
       <div class="legend">
-        <span class="sw-tirante">R Manning ≈ tirante de cauce (m)</span>
-        <span class="sw-hand">Tirante HAND de valle (m)</span>
+        <span class="sw-pico">Tirante de pico (m)</span>
+        <span class="sw-hand">Ocupación HAND de valle (m)</span>
+        <span class="sw-tirante">R Manning (m)</span>
       </div>
       {svg_tirante}
     </div>
@@ -506,15 +548,16 @@ html = f"""<!DOCTYPE html>
       <div class="card">
         <h3>Zona alta: casi sin margen</h3>
         <p>
-          Rasuwagadhi cae ~08:36 en el modelo. Timure minutos después.
-          Syabrubesi 12 min si la alerta saliera a las 08:38; con el SMS de
-          las 09:16, cero. El tramo HAND original terminaba en Devighat HEP
-          ({hep.get('km', 58.7):.1f} km, {hep.get('hora_llegada', '09:40')}).
+          Rasuwagadhi {rasu.get('hora_llegada', '08:54')} NPT, {rasu.get('min_desde_sismo', 17):.0f} min
+          tras el colapso. Syabrubesi {sya.get('hora_llegada', '09:09')}:
+          {sya.get('aviso_potencial_min', 31):.0f} min si la alerta saliera a las 08:38;
+          con el SMS de las 09:16, cero. Pico ~{sya.get('h_pico_m', 40)} m; HAND 12 m.
         </p>
       </div>
       <div class="card">
         <h3>Tramo bajo: Devghat y Bharatpur</h3>
         <p>
+          Galchhi {galc.get('hora_llegada', '11:02')} (~9 m DHM).
           Devghat (Chitwan) {dev.get('hora_llegada', '15:20')} NPT (ancla DHM ~15:20).
           Bharatpur {bha.get('hora_llegada', '—')} NPT, km {bha.get('km', '—')}.
           Copernicus AOI04 sigue en espera. El retraso del SMS vs 08:38 permanece
@@ -525,9 +568,9 @@ html = f"""<!DOCTYPE html>
 
     <footer>
       {man.get('fuente_dem', '')}. {man.get('nota_devighat', '')}
-      {man.get('nota_r2', '')}
+      {man.get('calibracion', '')} {man.get('cita_geopera', '')}
       Delineacion satelital oficial: EMSR927 GRA AOI01–03; AOI04 Bharatpur pendiente
-      (Legion 29 ago). ABC Geomática Agrícola SRL, 29 ago 2026.
+      (Legion 29 ago). ABC Geomática Agrícola SRL, 30 ago 2026.
     </footer>
   </article>
 </body>

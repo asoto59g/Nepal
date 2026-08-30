@@ -31,7 +31,11 @@ WGS84 = "+proj=longlat +datum=WGS84 +no_defs"
 
 def main():
     with open(JSON_IN, encoding="utf-8") as f:
-        curva = json.load(f)["curva_1km"]
+        data = json.load(f)
+    km_rasuwa = float(data.get("km_rasuwagadhi") or 0)
+    curva = [p for p in data["curva_1km"] if p["km"] >= km_rasuwa - 0.3]
+    if len(curva) < 8:
+        curva = [p for p in data["curva_1km"] if p.get("z_m", 0) < 2200]
     tf_fwd = pyproj.Transformer.from_crs(WGS84, HMA_AEA, always_xy=True)
     tf_inv = pyproj.Transformer.from_crs(HMA_AEA, WGS84, always_xy=True)
     rx, ry = [], []

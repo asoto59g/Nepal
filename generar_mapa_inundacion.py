@@ -29,13 +29,14 @@ HMA_AEA = (
 )
 WGS84 = "+proj=longlat +datum=WGS84 +no_defs"
 
-# Profundidad / runup y semiancho maximo segun km (flujo de detritos en garganta;
-# pulso atenuado en el Trishuli medio y llanura del Narayani).
-def hw_arrays(km):
-    h_n = np.where(km < 20, 12.0, np.where(km < 40, 10.0, np.where(km < 60, 9.0, np.where(km < 100, 7.0, 5.0))))
-    h_r = np.where(km < 20, 40.0, np.where(km < 40, 30.0, np.where(km < 60, 22.0, np.where(km < 100, 16.0, 10.0))))
-    w_n = np.where(km < 20, 280.0, np.where(km < 40, 450.0, np.where(km < 60, 700.0, np.where(km < 100, 900.0, 1500.0))))
-    w_r = np.where(km < 20, 450.0, np.where(km < 40, 700.0, np.where(km < 60, 1100.0, np.where(km < 100, 1500.0, 2800.0))))
+# Profundidad / runup y semiancho maximo segun km desde Rasuwagadhi
+# (ocupación HAND del valle, no tirante de pico 80–96 m en garganta).
+def hw_arrays(km_corredor):
+    kc = km_corredor
+    h_n = np.where(kc < 20, 12.0, np.where(kc < 40, 10.0, np.where(kc < 60, 9.0, np.where(kc < 100, 7.0, 5.0))))
+    h_r = np.where(kc < 20, 40.0, np.where(kc < 40, 30.0, np.where(kc < 60, 22.0, np.where(kc < 100, 16.0, 10.0))))
+    w_n = np.where(kc < 20, 280.0, np.where(kc < 40, 450.0, np.where(kc < 60, 700.0, np.where(kc < 100, 900.0, 1500.0))))
+    w_r = np.where(kc < 20, 450.0, np.where(kc < 40, 700.0, np.where(kc < 60, 1100.0, np.where(kc < 100, 1500.0, 2800.0))))
     return h_n, h_r, w_n, w_r
 
 
@@ -44,17 +45,22 @@ def main():
         data = json.load(f)
     curva = data["curva_1km"]
     comm = data["comunidades"]
+    km_rasuwa = float(data.get("km_rasuwagadhi") or next(c["km"] for c in comm if c["id"] == "rasuwagadhi"))
+    # HAND solo Rasuwagadhi→Bharatpur: no pintar 12–40 m sobre el glaciar Lhende.
+    curva_hand = [p for p in curva if p["km"] >= km_rasuwa - 0.2]
+    if len(curva_hand) < 8:
+        curva_hand = curva
 
     tf_fwd = pyproj.Transformer.from_crs(WGS84, HMA_AEA, always_xy=True)
     tf_inv = pyproj.Transformer.from_crs(HMA_AEA, WGS84, always_xy=True)
 
     rx, ry, rz, rkm = [], [], [], []
-    for p in curva:
+    for p in curva_hand:
         x, y = tf_fwd.transform(p["lon"], p["lat"])
         rx.append(x)
         ry.append(y)
         rz.append(p["z_m"])
-        rkm.append(p["km"])
+        rkm.append(p["km"] - km_rasuwa)
     river_xy = np.column_stack([rx, ry])
     river_z = np.array(rz, dtype=float)
     river_km = np.array(rkm, dtype=float)
@@ -244,6 +250,8 @@ def main():
                     "km": c["km"],
                     "hora": c["hora_llegada"],
                     "perdidos": c["minutos_perdidos"],
+                    "h_pico_m": c.get("h_pico_m"),
+                    "h_hand_m": c.get("h_hand_m"),
                 },
                 "geometry": {
                     "type": "Point",
@@ -259,8 +267,10 @@ def main():
                 "clase": "limite_analizado",
                 "nombre": "Limite del tramo analizado (Bharatpur / Narayani)",
                 "nota": (
-                    "Eje Rasuwagadhi → Bharatpur. Devighat HEP (Nuwakot) es un "
-                    "punto intermedio. DHM situó el frente en Devghat (Chitwan) ~15:20. "
+                    "km 0 = cicatriz Langtang (S2). Rasuwagadhi ~km "
+                    f"{km_rasuwa:.0f}, frente 08:54. HAND (ocupación de valle) "
+                    "solo Rasuwagadhi→Bharatpur; no es el tirante de pico 80–96 m. "
+                    "DHM situó el frente en Devghat (Chitwan) ~15:20. "
                     "EMSR927 AOI04 Bharatpur seguía en espera al generar el mapa."
                 ),
             },

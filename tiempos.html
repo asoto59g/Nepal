@@ -51,6 +51,7 @@
     .sw-info::before { background: var(--info); }
     .sw-tirante::before { background: #7c3aed; }
     .sw-hand::before { background: #0f766e; }
+    .sw-pico::before { background: #b42318; }
     .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
     .card { background: var(--card); border: 1px solid var(--line); padding: 16px; }
     .card h3 { margin: 0 0 8px; font-size: 14px; }
@@ -80,21 +81,23 @@
       <p class="org">ABC Geomática Agrícola · Nepal · 26 agosto 2026</p>
       <h1>Minutos de alerta perdidos — Bhote Koshi a Bharatpur</h1>
       <p class="lead">
-        Manning cada 1 km, Rasuwagadhi → Bharatpur. Tramo alto (HMA 8 m) calibrado
-        a Syabrubesi 08:50 y Betrawati 09:20. Tramo bajo (Trishuli–Narayani) calibrado
-        a Devghat ~15:20 DHM. SMS 09:16. Alerta automática hipotética 08:38.
+        Manning cada 1 km desde la cicatriz Langtang (08:37) hasta Bharatpur.
+        n = 0.10 / 0.05 / 0.040. Reloj: frontera 08:54, Syabrubesi 09:09,
+        Betrawati 09:40, Galchhi 11:02, Devghat ~15:20 DHM. Las caídas de estación
+        08:50 y 09:20 son corte de radio, no el frente. SMS 09:16. Alerta automática
+        hipotética 08:38.
       </p>
     </header>
 
     <div class="alert">
-      <strong>Cuando salieron los SMS el frente ya iba a Betrawati</strong>
+      <strong>A las 09:16 el frente iba entre Syabrubesi y Betrawati</strong>
       <p>
-        A las 09:16 el modelo sitúa el frente ~3.5 km aguas arriba de Betrawati.
-        Rasuwagadhi, Timure, Syabrubesi y Mailung ya habían sido alcanzados.
-        Aguas abajo de Devighat HEP el pulso sigue hasta Devghat (Chitwan) y
-        Bharatpur: el SMS llega 24–377
-        min antes, pero se perdieron 38 min fijos
-        respecto a una alerta a las 08:38.
+        Syabrubesi 09:09 (ya alcanzado). Betrawati
+        09:40 aún no. Rasuwagadhi, Timure y la
+        cicatriz no tenían margen. Aguas abajo el SMS sí llega antes
+        (44–377 min
+        en Devighat–Bharatpur), pero se perdieron 38 min fijos respecto a una
+        alerta a las 08:38 en todo lo que el agua alcanza después de las 09:16.
       </p>
     </div>
 
@@ -107,9 +110,9 @@
     </p>
 
     <div class="stats">
-      <div class="stat"><div class="v">181.4 km</div><div class="l">Cauce HMA + COP30 + OSM</div></div>
-      <div class="stat"><div class="v">1,638 m</div><div class="l">Desnivel (0.90 %)</div></div>
-      <div class="stat"><div class="v">10.1 / 18.9 m</div><div class="l">R1 garganta / R2 valle (n = 0.040)</div></div>
+      <div class="stat"><div class="v">200.2 km</div><div class="l">Cicatriz → Bharatpur (Rasuwagadhi km 19)</div></div>
+      <div class="stat"><div class="v">1,628 m</div><div class="l">Desnivel corredor (1.90 % origen)</div></div>
+      <div class="stat"><div class="v">0.10/0.05/0.040</div><div class="l">n garganta / medio / valle · R 29.7–25.2 m</div></div>
       <div class="stat danger"><div class="v">38 min</div><div class="l">Retraso del SMS vs 08:38</div></div>
     </div>
 
@@ -127,71 +130,71 @@
       <svg viewBox="0 0 900 280" role="img" aria-label="Minutos de aviso real vs potencial">
 <g>
 <line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="220.0" x2="870" y2="220.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="192.0" x2="870" y2="192.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="164.0" x2="870" y2="164.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="136.0" x2="870" y2="136.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="108.0" x2="870" y2="108.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="80.0" x2="870" y2="80.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="52.0" x2="870" y2="52.0" />
-<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="24.0" x2="870" y2="24.0" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="191.6" x2="870" y2="191.6" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="163.1" x2="870" y2="163.1" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="134.7" x2="870" y2="134.7" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="106.2" x2="870" y2="106.2" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="77.8" x2="870" y2="77.8" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="49.3" x2="870" y2="49.3" />
+<line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="20.9" x2="870" y2="20.9" />
 <line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="20" x2="70" y2="220" />
 <line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="220" x2="870" y2="220" />
 </g>
 <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif">
 <text x="62" y="224" text-anchor="end">0</text>
-<text x="62" y="196" text-anchor="end">28</text>
-<text x="62" y="168" text-anchor="end">56</text>
-<text x="62" y="140" text-anchor="end">84</text>
-<text x="62" y="112" text-anchor="end">112</text>
-<text x="62" y="84" text-anchor="end">140</text>
-<text x="62" y="56" text-anchor="end">168</text>
-<text x="62" y="28" text-anchor="end">196</text>
+<text x="62" y="196" text-anchor="end">64</text>
+<text x="62" y="167" text-anchor="end">128</text>
+<text x="62" y="139" text-anchor="end">192</text>
+<text x="62" y="110" text-anchor="end">256</text>
+<text x="62" y="82" text-anchor="end">320</text>
+<text x="62" y="53" text-anchor="end">384</text>
+<text x="62" y="25" text-anchor="end">448</text>
 </g>
 <g>
 <rect x="96.0" y="220.0" width="22.0" height="0.0" fill="#b54708" />
 <rect x="122.0" y="220.0" width="22.0" height="0.0" fill="#067647" />
 <rect x="196.0" y="220.0" width="22.0" height="0.0" fill="#b54708" />
-<rect x="222.0" y="219.5" width="22.0" height="0.5" fill="#067647" />
+<rect x="222.0" y="212.9" width="22.0" height="7.1" fill="#067647" />
 <rect x="296.0" y="220.0" width="22.0" height="0.0" fill="#b54708" />
-<rect x="322.0" y="208.0" width="22.0" height="12.0" fill="#067647" />
+<rect x="322.0" y="211.6" width="22.0" height="8.4" fill="#067647" />
 <rect x="396.0" y="220.0" width="22.0" height="0.0" fill="#b54708" />
-<rect x="422.0" y="191.3" width="22.0" height="28.7" fill="#067647" />
-<rect x="496.0" y="216.0" width="22.0" height="4.0" fill="#b54708" />
-<rect x="522.0" y="178.0" width="22.0" height="42.0" fill="#067647" />
-<rect x="596.0" y="196.1" width="22.0" height="23.9" fill="#b54708" />
-<rect x="622.0" y="158.1" width="22.0" height="61.9" fill="#067647" />
-<rect x="696.0" y="160.2" width="22.0" height="59.8" fill="#b54708" />
-<rect x="722.0" y="122.2" width="22.0" height="97.8" fill="#067647" />
-<rect x="796.0" y="90.9" width="22.0" height="129.1" fill="#b54708" />
-<rect x="822.0" y="52.9" width="22.0" height="167.1" fill="#067647" />
+<rect x="422.0" y="206.2" width="22.0" height="13.8" fill="#067647" />
+<rect x="496.0" y="209.3" width="22.0" height="10.7" fill="#b54708" />
+<rect x="522.0" y="192.4" width="22.0" height="27.6" fill="#067647" />
+<rect x="596.0" y="172.9" width="22.0" height="47.1" fill="#b54708" />
+<rect x="622.0" y="156.0" width="22.0" height="64.0" fill="#067647" />
+<rect x="696.0" y="58.2" width="22.0" height="161.8" fill="#b54708" />
+<rect x="722.0" y="41.3" width="22.0" height="178.7" fill="#067647" />
+<rect x="796.0" y="52.6" width="22.0" height="167.4" fill="#b54708" />
+<rect x="822.0" y="35.7" width="22.0" height="184.3" fill="#067647" />
 </g>
 <g text-anchor="middle">
 <text class="val val-warn" x="107.0" y="216.0">0</text>
 <text class="val val-ok" x="133.0" y="216.0">0</text>
 <text class="val val-warn" x="207.0" y="216.0">0</text>
-<text class="val val-ok" x="233.0" y="216.0">0</text>
+<text class="val val-ok" x="233.0" y="216.0">16</text>
 <text class="val val-warn" x="307.0" y="216.0">0</text>
-<text class="val val-ok" x="333.0" y="205.0">12</text>
+<text class="val val-ok" x="333.0" y="208.6">19</text>
 <text class="val val-warn" x="407.0" y="216.0">0</text>
-<text class="val val-ok" x="433.0" y="188.3">29</text>
-<text class="val val-warn" x="507.0" y="216.0">4</text>
-<text class="val val-ok" x="533.0" y="175.0">42</text>
-<text class="val val-warn" x="607.0" y="193.1">24</text>
-<text class="val val-ok" x="633.0" y="155.1">62</text>
-<text class="val val-warn" x="707.0" y="157.2">60</text>
-<text class="val val-ok" x="733.0" y="119.2">98</text>
-<text class="val val-warn" x="807.0" y="87.9">129</text>
-<text class="val val-ok" x="833.0" y="49.9">167</text>
+<text class="val val-ok" x="433.0" y="203.2">31</text>
+<text class="val val-warn" x="507.0" y="206.3">24</text>
+<text class="val val-ok" x="533.0" y="189.4">62</text>
+<text class="val val-warn" x="607.0" y="169.9">106</text>
+<text class="val val-ok" x="633.0" y="153.0">144</text>
+<text class="val val-warn" x="707.0" y="55.2">364</text>
+<text class="val val-ok" x="733.0" y="38.3">402</text>
+<text class="val val-warn" x="807.0" y="49.6">377</text>
+<text class="val val-ok" x="833.0" y="32.7">415</text>
 </g>
 <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle">
-<text x="120.0" y="240">Rasuwagadhi</text>
-<text x="220.0" y="240">Timure</text>
-<text x="320.0" y="240">Syabrubesi</text>
-<text x="420.0" y="240">Mailung</text>
+<text x="120.0" y="240">Cicatriz</text>
+<text x="220.0" y="240">Rasuwagadhi</text>
+<text x="320.0" y="240">Timure</text>
+<text x="420.0" y="240">Syabrubesi</text>
 <text x="520.0" y="240">Betrawati</text>
-<text x="620.0" y="240">Devighat</text>
-<text x="720.0" y="240">Galchhi</text>
-<text x="820.0" y="240">Malekhu</text>
+<text x="620.0" y="240">Galchhi</text>
+<text x="720.0" y="240">Devghat</text>
+<text x="820.0" y="240">Bharatpur</text>
 </g>
 </svg>
     </div>
@@ -200,38 +203,42 @@
       <thead>
         <tr>
           <th>Lugar</th><th>km</th><th>z (m)</th><th>Llegada</th>
+          <th>Pico (m)</th><th>HAND (m)</th>
           <th>SMS 09:16</th><th>Auto 08:38</th><th>Perdidos</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="danger"><td>Rasuwagadhi</td><td>0.0</td><td>1767</td><td>08:36</td><td>0 min</td><td>0 min</td><td>0</td></tr><tr class="danger"><td>Timure</td><td>3.0</td><td>1660</td><td>08:38</td><td>0 min</td><td>0 min</td><td>0</td></tr><tr class="warning"><td>Syabrubesi</td><td>15.0</td><td>1374</td><td>08:50</td><td>0 min</td><td>12 min</td><td>12</td></tr><tr class="warning"><td>Mailung (confluencia)</td><td>32.0</td><td>858</td><td>09:06</td><td>0 min</td><td>29 min</td><td>29</td></tr><tr class="info"><td>Betrawati</td><td>45.0</td><td>562</td><td>09:20</td><td>4 min</td><td>42 min</td><td>38</td></tr><tr class="ok"><td>Trishuli HEP / Bazar</td><td>53.0</td><td>477</td><td>09:31</td><td>15 min</td><td>53 min</td><td>38</td></tr><tr class="ok"><td>Bidur</td><td>57.0</td><td>450</td><td>09:38</td><td>22 min</td><td>60 min</td><td>38</td></tr><tr class="ok"><td>Devighat HEP (Nuwakot)</td><td>58.0</td><td>443</td><td>09:39</td><td>24 min</td><td>62 min</td><td>38</td></tr><tr class="ok"><td>Galchhi</td><td>79.0</td><td>361</td><td>10:15</td><td>60 min</td><td>98 min</td><td>38</td></tr><tr class="ok"><td>Malekhu</td><td>105.0</td><td>286</td><td>11:25</td><td>129 min</td><td>167 min</td><td>38</td></tr><tr class="ok"><td>Muglin</td><td>144.0</td><td>179</td><td>13:21</td><td>246 min</td><td>284 min</td><td>38</td></tr><tr class="ok"><td>Devghat (Chitwan)</td><td>178.0</td><td>133</td><td>15:20</td><td>364 min</td><td>402 min</td><td>38</td></tr><tr class="ok"><td>Bharatpur (Narayani)</td><td>181.4</td><td>130</td><td>15:33</td><td>377 min</td><td>415 min</td><td>38</td></tr>
+        <tr class="danger"><td>Cicatriz Langtang (S2)</td><td>0.0</td><td>3947</td><td>08:37</td><td>80.0</td><td>0.0</td><td>0 min</td><td>0 min</td><td>0</td></tr><tr class="danger"><td>Rasuwagadhi</td><td>19.0</td><td>1762</td><td>08:54</td><td>95.7</td><td>12.0</td><td>0 min</td><td>16 min</td><td>16</td></tr><tr class="danger"><td>Timure</td><td>22.0</td><td>1655</td><td>08:56</td><td>72.7</td><td>12.0</td><td>0 min</td><td>19 min</td><td>19</td></tr><tr class="warning"><td>Syabrubesi</td><td>33.0</td><td>1380</td><td>09:09</td><td>39.9</td><td>12.0</td><td>0 min</td><td>31 min</td><td>31</td></tr><tr class="info"><td>Mailung (confluencia)</td><td>51.0</td><td>852</td><td>09:30</td><td>28.3</td><td>10.0</td><td>14 min</td><td>52 min</td><td>38</td></tr><tr class="info"><td>Betrawati</td><td>64.0</td><td>559</td><td>09:40</td><td>19.9</td><td>9.0</td><td>24 min</td><td>62 min</td><td>38</td></tr><tr class="ok"><td>Trishuli HEP / Bazar</td><td>72.0</td><td>476</td><td>09:51</td><td>17.3</td><td>9.0</td><td>35 min</td><td>73 min</td><td>38</td></tr><tr class="ok"><td>Bidur</td><td>76.0</td><td>448</td><td>09:57</td><td>16.1</td><td>9.0</td><td>42 min</td><td>80 min</td><td>38</td></tr><tr class="ok"><td>Devighat HEP (Nuwakot)</td><td>77.0</td><td>440</td><td>09:59</td><td>15.7</td><td>9.0</td><td>44 min</td><td>82 min</td><td>38</td></tr><tr class="ok"><td>Galchhi</td><td>98.0</td><td>360</td><td>11:02</td><td>9.0</td><td>7.0</td><td>106 min</td><td>144 min</td><td>38</td></tr><tr class="ok"><td>Malekhu</td><td>121.0</td><td>300</td><td>12:07</td><td>7.0</td><td>5.0</td><td>172 min</td><td>210 min</td><td>38</td></tr><tr class="ok"><td>Muglin</td><td>163.0</td><td>185</td><td>13:43</td><td>6.0</td><td>5.0</td><td>267 min</td><td>305 min</td><td>38</td></tr><tr class="ok"><td>Devghat (Chitwan)</td><td>196.0</td><td>138</td><td>15:20</td><td>5.0</td><td>5.0</td><td>364 min</td><td>402 min</td><td>38</td></tr><tr class="ok"><td>Bharatpur (Narayani)</td><td>200.2</td><td>135</td><td>15:32</td><td>5.0</td><td>5.0</td><td>377 min</td><td>415 min</td><td>38</td></tr>
       </tbody>
     </table>
 
     <h2>Dónde estaba el frente a cada hora</h2>
     <p class="caption">
-      Eje X: hora NPT. Eje Y: km desde Rasuwagadhi. Garganta anclada a
-      Syabrubesi 08:50 y Betrawati 09:20; valle bajo a Devghat 15:20 (DHM).
+      Eje X: hora NPT. Eje Y: km desde la cicatriz (km 0). Rasuwagadhi ~km 19
+      a las 08:54. Caídas 08:50 / 09:20 = radio. Anclas de frente: 08:54, 09:09,
+      09:40, 11:02 y Devghat 15:20 (DHM).
     </p>
     <div class="chart">
       <div class="legend">
-        <span class="sw-danger">Frente (km desde Rasuwagadhi)</span>
+        <span class="sw-danger">Frente (km desde cicatriz)</span>
       </div>
       <svg viewBox="0 0 900 268" role="img">
         <g>
         <line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="210.0" x2="870" y2="210.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="172.0" x2="870" y2="172.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="134.0" x2="870" y2="134.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="96.0" x2="870" y2="96.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="58.0" x2="870" y2="58.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="20.0" x2="870" y2="20.0" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="20" x2="70" y2="210" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="210" x2="870" y2="210" />
         </g>
-        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">40</text><text x="62" y="138" text-anchor="end">80</text><text x="62" y="100" text-anchor="end">120</text><text x="62" y="62" text-anchor="end">160</text><text x="62" y="24" text-anchor="end">186 km</text></g>
-        <polyline fill="rgba(180,35,24,0.10)" stroke="none" points="70.0,210 70.0,209.0 117.1,207.8 164.1,205.5 211.2,195.7 258.2,187.4 305.3,171.0 352.4,170.0 399.4,167.2 446.5,160.4 493.5,154.7 540.6,142.4 587.6,118.0 634.7,98.0 681.8,82.9 728.8,65.0 775.9,44.6 822.9,40.5 870.0,37.3 870.0,210" /><polyline fill="none" stroke="#b42318" stroke-width="2.5" points="70.0,209.0 117.1,207.8 164.1,205.5 211.2,195.7 258.2,187.4 305.3,171.0 352.4,170.0 399.4,167.2 446.5,160.4 493.5,154.7 540.6,142.4 587.6,118.0 634.7,98.0 681.8,82.9 728.8,65.0 775.9,44.6 822.9,40.5 870.0,37.3" /><g fill='#b42318'><circle cx="70.0" cy="209.0" r="3.5" /><circle cx="117.1" cy="207.8" r="3.5" /><circle cx="164.1" cy="205.5" r="3.5" /><circle cx="211.2" cy="195.7" r="3.5" /><circle cx="258.2" cy="187.4" r="3.5" /><circle cx="305.3" cy="171.0" r="3.5" /><circle cx="352.4" cy="170.0" r="3.5" /><circle cx="399.4" cy="167.2" r="3.5" /><circle cx="446.5" cy="160.4" r="3.5" /><circle cx="493.5" cy="154.7" r="3.5" /><circle cx="540.6" cy="142.4" r="3.5" /><circle cx="587.6" cy="118.0" r="3.5" /><circle cx="634.7" cy="98.0" r="3.5" /><circle cx="681.8" cy="82.9" r="3.5" /><circle cx="728.8" cy="65.0" r="3.5" /><circle cx="775.9" cy="44.6" r="3.5" /><circle cx="822.9" cy="40.5" r="3.5" /><circle cx="870.0" cy="37.3" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="201.0" fill="#b42318">1.0</text><text class="val" x="117.1" y="199.8" fill="#b42318">2.4</text><text class="val" x="164.1" y="197.5" fill="#b42318">4.7</text><text class="val" x="211.2" y="187.7" fill="#b42318">15.0</text><text class="val" x="258.2" y="179.4" fill="#b42318">23.7</text><text class="val" x="305.3" y="163.0" fill="#b42318">41.0</text><text class="val" x="352.4" y="162.0" fill="#b42318">42.0</text><text class="val" x="399.4" y="159.2" fill="#b42318">45.0</text><text class="val" x="446.5" y="152.4" fill="#b42318">52.1</text><text class="val" x="493.5" y="146.7" fill="#b42318">58.0</text><text class="val" x="540.6" y="134.4" fill="#b42318">71.0</text><text class="val" x="587.6" y="110.0" fill="#b42318">96.7</text><text class="val" x="634.7" y="90.0" fill="#b42318">117.6</text><text class="val" x="681.8" y="74.9" fill="#b42318">133.5</text><text class="val" x="728.8" y="57.0" fill="#b42318">152.3</text><text class="val" x="775.9" y="36.6" fill="#b42318">173.8</text><text class="val" x="822.9" y="32.5" fill="#b42318">178.0</text><text class="val" x="870.0" y="29.3" fill="#b42318">181.4</text></g>
-        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">08:37</text><text x="117.1" y="230">08:38</text><text x="164.1" y="230">08:40</text><text x="211.2" y="230">08:50</text><text x="258.2" y="230">09:00</text><text x="305.3" y="230">09:15</text><text x="352.4" y="230">09:16</text><text x="399.4" y="230">09:20</text><text x="446.5" y="230">09:30</text><text x="493.5" y="230">09:40</text><text x="540.6" y="230">10:00</text><text x="587.6" y="230">11:00</text><text x="634.7" y="230">12:00</text><text x="681.8" y="230">13:00</text><text x="728.8" y="230">14:00</text><text x="775.9" y="230">15:00</text><text x="822.9" y="230">15:20</text><text x="870.0" y="230">16:00</text></g>
+        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">44</text><text x="62" y="138" text-anchor="end">88</text><text x="62" y="100" text-anchor="end">132</text><text x="62" y="62" text-anchor="end">176</text><text x="62" y="24" text-anchor="end">205 km</text></g>
+        <polyline fill="rgba(180,35,24,0.10)" stroke="none" points="70.0,210 70.0,210.0 120.0,209.0 170.0,197.5 220.0,193.6 270.0,188.5 320.0,181.5 370.0,175.3 420.0,175.0 470.0,154.8 520.0,143.4 570.0,125.5 620.0,106.6 670.0,86.2 720.0,66.3 770.0,46.4 820.0,40.9 870.0,37.3 870.0,210" /><polyline fill="none" stroke="#b42318" stroke-width="2.5" points="70.0,210.0 120.0,209.0 170.0,197.5 220.0,193.6 270.0,188.5 320.0,181.5 370.0,175.3 420.0,175.0 470.0,154.8 520.0,143.4 570.0,125.5 620.0,106.6 670.0,86.2 720.0,66.3 770.0,46.4 820.0,40.9 870.0,37.3" /><g fill='#b42318'><circle cx="70.0" cy="210.0" r="3.5" /><circle cx="120.0" cy="209.0" r="3.5" /><circle cx="170.0" cy="197.5" r="3.5" /><circle cx="220.0" cy="193.6" r="3.5" /><circle cx="270.0" cy="188.5" r="3.5" /><circle cx="320.0" cy="181.5" r="3.5" /><circle cx="370.0" cy="175.3" r="3.5" /><circle cx="420.0" cy="175.0" r="3.5" /><circle cx="470.0" cy="154.8" r="3.5" /><circle cx="520.0" cy="143.4" r="3.5" /><circle cx="570.0" cy="125.5" r="3.5" /><circle cx="620.0" cy="106.6" r="3.5" /><circle cx="670.0" cy="86.2" r="3.5" /><circle cx="720.0" cy="66.3" r="3.5" /><circle cx="770.0" cy="46.4" r="3.5" /><circle cx="820.0" cy="40.9" r="3.5" /><circle cx="870.0" cy="37.3" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="202.0" fill="#b42318">0.0</text><text class="val" x="120.0" y="201.0" fill="#b42318">1.1</text><text class="val" x="170.0" y="189.5" fill="#b42318">14.5</text><text class="val" x="220.0" y="185.6" fill="#b42318">19.0</text><text class="val" x="270.0" y="180.5" fill="#b42318">25.0</text><text class="val" x="320.0" y="173.5" fill="#b42318">33.0</text><text class="val" x="370.0" y="167.3" fill="#b42318">40.2</text><text class="val" x="420.0" y="167.0" fill="#b42318">40.6</text><text class="val" x="470.0" y="146.8" fill="#b42318">64.0</text><text class="val" x="520.0" y="135.4" fill="#b42318">77.2</text><text class="val" x="570.0" y="117.5" fill="#b42318">98.0</text><text class="val" x="620.0" y="98.6" fill="#b42318">119.9</text><text class="val" x="670.0" y="78.2" fill="#b42318">143.6</text><text class="val" x="720.0" y="58.3" fill="#b42318">166.6</text><text class="val" x="770.0" y="38.4" fill="#b42318">189.6</text><text class="val" x="820.0" y="32.9" fill="#b42318">196.0</text><text class="val" x="870.0" y="29.3" fill="#b42318">200.2</text></g>
+        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">08:37</text><text x="120.0" y="230">08:38</text><text x="170.0" y="230">08:50</text><text x="220.0" y="230">08:54</text><text x="270.0" y="230">09:00</text><text x="320.0" y="230">09:09</text><text x="370.0" y="230">09:16</text><text x="420.0" y="230">09:20</text><text x="470.0" y="230">09:40</text><text x="520.0" y="230">10:00</text><text x="570.0" y="230">11:02</text><text x="620.0" y="230">12:00</text><text x="670.0" y="230">13:00</text><text x="720.0" y="230">14:00</text><text x="770.0" y="230">15:00</text><text x="820.0" y="230">15:20</text><text x="870.0" y="230">16:00</text></g>
         </svg>
     </div>
 
     <h2>Velocidad Manning por tramo (cada 10 km)</h2>
     <p class="caption">
-      V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup>. R1 = 10.05 m hasta Devighat HEP;
-      R2 = 18.95 m después (con R1 el frente llegaría a Devghat ~18:19;
-      R2 adelanta el tramo bajo a la ancla DHM 15:20).
+      V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup> con n variable desde Rasuwagadhi.
+      Lhende (cicatriz→frontera): detritos a 18.6 m/s, no Manning.
+      R1 = 29.68 m (n=0.10) hasta Syabrubesi,
+      R2 = 22.43 m (n=0.05) hasta Betrawati, R3 = 10.33 m hasta Galchhi,
+      R4 = 25.24 m (n=0.040) hasta Devghat/Bharatpur.
       Picos locales son ruido del DEM, no un segundo pulso.
       Segunda fila del eje X: hora NPT de llegada del frente a ese km.
     </p>
@@ -243,34 +250,33 @@
         <g>
         <line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="210.0" x2="870" y2="210.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="172.0" x2="870" y2="172.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="134.0" x2="870" y2="134.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="96.0" x2="870" y2="96.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="58.0" x2="870" y2="58.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="20.0" x2="870" y2="20.0" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="20" x2="70" y2="210" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="210" x2="870" y2="210" />
         </g>
-        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">7</text><text x="62" y="138" text-anchor="end">15</text><text x="62" y="100" text-anchor="end">22</text><text x="62" y="62" text-anchor="end">29</text><text x="62" y="24" text-anchor="end">m/s</text></g>
-        <polyline fill="rgba(23,92,211,0.10)" stroke="none" points="70.0,210 70.0,89.6 112.1,103.9 154.2,44.8 196.3,62.0 238.4,123.6 280.5,149.4 322.6,155.6 364.7,147.0 406.8,132.3 448.9,178.9 491.1,173.5 533.2,200.7 575.3,177.8 617.4,176.3 659.5,180.7 701.6,200.7 743.7,170.7 785.8,174.1 827.9,180.7 870.0,200.7 870.0,210" /><polyline fill="none" stroke="#175cd3" stroke-width="2.5" points="70.0,89.6 112.1,103.9 154.2,44.8 196.3,62.0 238.4,123.6 280.5,149.4 322.6,155.6 364.7,147.0 406.8,132.3 448.9,178.9 491.1,173.5 533.2,200.7 575.3,177.8 617.4,176.3 659.5,180.7 701.6,200.7 743.7,170.7 785.8,174.1 827.9,180.7 870.0,200.7" /><g fill='#175cd3'><circle cx="70.0" cy="89.6" r="3.5" /><circle cx="112.1" cy="103.9" r="3.5" /><circle cx="154.2" cy="44.8" r="3.5" /><circle cx="196.3" cy="62.0" r="3.5" /><circle cx="238.4" cy="123.6" r="3.5" /><circle cx="280.5" cy="149.4" r="3.5" /><circle cx="322.6" cy="155.6" r="3.5" /><circle cx="364.7" cy="147.0" r="3.5" /><circle cx="406.8" cy="132.3" r="3.5" /><circle cx="448.9" cy="178.9" r="3.5" /><circle cx="491.1" cy="173.5" r="3.5" /><circle cx="533.2" cy="200.7" r="3.5" /><circle cx="575.3" cy="177.8" r="3.5" /><circle cx="617.4" cy="176.3" r="3.5" /><circle cx="659.5" cy="180.7" r="3.5" /><circle cx="701.6" cy="200.7" r="3.5" /><circle cx="743.7" cy="170.7" r="3.5" /><circle cx="785.8" cy="174.1" r="3.5" /><circle cx="827.9" cy="180.7" r="3.5" /><circle cx="870.0" cy="200.7" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="81.6" fill="#175cd3">23.1</text><text class="val" x="112.1" y="95.9" fill="#175cd3">20.3</text><text class="val" x="154.2" y="36.8" fill="#175cd3">31.6</text><text class="val" x="196.3" y="54.0" fill="#175cd3">28.4</text><text class="val" x="238.4" y="115.6" fill="#175cd3">16.6</text><text class="val" x="280.5" y="141.4" fill="#175cd3">11.6</text><text class="val" x="322.6" y="147.6" fill="#175cd3">10.4</text><text class="val" x="364.7" y="139.0" fill="#175cd3">12.1</text><text class="val" x="406.8" y="124.3" fill="#175cd3">14.9</text><text class="val" x="448.9" y="170.9" fill="#175cd3">6.0</text><text class="val" x="491.1" y="165.5" fill="#175cd3">7.0</text><text class="val" x="533.2" y="192.7" fill="#175cd3">1.8</text><text class="val" x="575.3" y="169.8" fill="#175cd3">6.2</text><text class="val" x="617.4" y="168.3" fill="#175cd3">6.5</text><text class="val" x="659.5" y="172.7" fill="#175cd3">5.6</text><text class="val" x="701.6" y="192.7" fill="#175cd3">1.8</text><text class="val" x="743.7" y="162.7" fill="#175cd3">7.5</text><text class="val" x="785.8" y="166.1" fill="#175cd3">6.9</text><text class="val" x="827.9" y="172.7" fill="#175cd3">5.6</text><text class="val" x="870.0" y="192.7" fill="#175cd3">1.8</text></g>
-        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">0</text><text x="112.1" y="230">10</text><text x="154.2" y="230">20</text><text x="196.3" y="230">30</text><text x="238.4" y="230">40</text><text x="280.5" y="230">50</text><text x="322.6" y="230">60</text><text x="364.7" y="230">70</text><text x="406.8" y="230">80</text><text x="448.9" y="230">90</text><text x="491.1" y="230">100</text><text x="533.2" y="230">110</text><text x="575.3" y="230">120</text><text x="617.4" y="230">130</text><text x="659.5" y="230">140</text><text x="701.6" y="230">150</text><text x="743.7" y="230">160</text><text x="785.8" y="230">170</text><text x="827.9" y="230">180</text><text x="870.0" y="230">181</text></g><g fill="#71717a" font-size="9" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="244">08:36</text><text x="112.1" y="244">08:44</text><text x="154.2" y="244">08:55</text><text x="196.3" y="244">09:05</text><text x="238.4" y="244">09:14</text><text x="280.5" y="244">09:27</text><text x="322.6" y="244">09:42</text><text x="364.7" y="244">09:58</text><text x="406.8" y="244">10:16</text><text x="448.9" y="244">10:38</text><text x="491.1" y="244">11:09</text><text x="533.2" y="244">11:32</text><text x="575.3" y="244">12:06</text><text x="617.4" y="244">12:52</text><text x="659.5" y="244">13:13</text><text x="701.6" y="244">13:48</text><text x="743.7" y="244">14:18</text><text x="785.8" y="244">14:50</text><text x="827.9" y="244">15:25</text><text x="870.0" y="244">15:33</text></g>
+        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">7</text><text x="62" y="138" text-anchor="end">14</text><text x="62" y="100" text-anchor="end">21</text><text x="62" y="62" text-anchor="end">28</text><text x="62" y="24" text-anchor="end">m/s</text></g>
+        <polyline fill="rgba(23,92,211,0.10)" stroke="none" points="70.0,210 70.0,109.1 108.1,109.1 146.2,110.4 184.3,138.5 222.4,201.4 260.5,44.8 298.6,84.1 336.7,138.9 374.8,156.8 412.9,169.9 451.0,150.8 489.0,164.9 527.1,198.4 565.2,162.0 603.3,130.7 641.4,114.6 679.5,141.1 717.6,114.7 755.7,184.0 793.8,162.2 831.9,198.4 870.0,198.4 870.0,210" /><polyline fill="none" stroke="#175cd3" stroke-width="2.5" points="70.0,109.1 108.1,109.1 146.2,110.4 184.3,138.5 222.4,201.4 260.5,44.8 298.6,84.1 336.7,138.9 374.8,156.8 412.9,169.9 451.0,150.8 489.0,164.9 527.1,198.4 565.2,162.0 603.3,130.7 641.4,114.6 679.5,141.1 717.6,114.7 755.7,184.0 793.8,162.2 831.9,198.4 870.0,198.4" /><g fill='#175cd3'><circle cx="70.0" cy="109.1" r="3.5" /><circle cx="108.1" cy="109.1" r="3.5" /><circle cx="146.2" cy="110.4" r="3.5" /><circle cx="184.3" cy="138.5" r="3.5" /><circle cx="222.4" cy="201.4" r="3.5" /><circle cx="260.5" cy="44.8" r="3.5" /><circle cx="298.6" cy="84.1" r="3.5" /><circle cx="336.7" cy="138.9" r="3.5" /><circle cx="374.8" cy="156.8" r="3.5" /><circle cx="412.9" cy="169.9" r="3.5" /><circle cx="451.0" cy="150.8" r="3.5" /><circle cx="489.0" cy="164.9" r="3.5" /><circle cx="527.1" cy="198.4" r="3.5" /><circle cx="565.2" cy="162.0" r="3.5" /><circle cx="603.3" cy="130.7" r="3.5" /><circle cx="641.4" cy="114.6" r="3.5" /><circle cx="679.5" cy="141.1" r="3.5" /><circle cx="717.6" cy="114.7" r="3.5" /><circle cx="755.7" cy="184.0" r="3.5" /><circle cx="793.8" cy="162.2" r="3.5" /><circle cx="831.9" cy="198.4" r="3.5" /><circle cx="870.0" cy="198.4" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="101.1" fill="#175cd3">18.6</text><text class="val" x="108.1" y="101.1" fill="#175cd3">18.6</text><text class="val" x="146.2" y="102.4" fill="#175cd3">18.4</text><text class="val" x="184.3" y="130.5" fill="#175cd3">13.2</text><text class="val" x="222.4" y="193.4" fill="#175cd3">1.6</text><text class="val" x="260.5" y="36.8" fill="#175cd3">30.5</text><text class="val" x="298.6" y="76.1" fill="#175cd3">23.2</text><text class="val" x="336.7" y="130.9" fill="#175cd3">13.1</text><text class="val" x="374.8" y="148.8" fill="#175cd3">9.8</text><text class="val" x="412.9" y="161.9" fill="#175cd3">7.4</text><text class="val" x="451.0" y="142.8" fill="#175cd3">10.9</text><text class="val" x="489.0" y="156.9" fill="#175cd3">8.3</text><text class="val" x="527.1" y="190.4" fill="#175cd3">2.1</text><text class="val" x="565.2" y="154.0" fill="#175cd3">8.9</text><text class="val" x="603.3" y="122.7" fill="#175cd3">14.7</text><text class="val" x="641.4" y="106.6" fill="#175cd3">17.6</text><text class="val" x="679.5" y="133.1" fill="#175cd3">12.7</text><text class="val" x="717.6" y="106.7" fill="#175cd3">17.6</text><text class="val" x="755.7" y="176.0" fill="#175cd3">4.8</text><text class="val" x="793.8" y="154.2" fill="#175cd3">8.8</text><text class="val" x="831.9" y="190.4" fill="#175cd3">2.1</text><text class="val" x="870.0" y="190.4" fill="#175cd3">2.1</text></g>
+        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">0</text><text x="108.1" y="230">10</text><text x="146.2" y="230">20</text><text x="184.3" y="230">30</text><text x="222.4" y="230">40</text><text x="260.5" y="230">50</text><text x="298.6" y="230">60</text><text x="336.7" y="230">70</text><text x="374.8" y="230">80</text><text x="412.9" y="230">90</text><text x="451.0" y="230">100</text><text x="489.0" y="230">110</text><text x="527.1" y="230">120</text><text x="565.2" y="230">130</text><text x="603.3" y="230">140</text><text x="641.4" y="230">150</text><text x="679.5" y="230">160</text><text x="717.6" y="230">170</text><text x="755.7" y="230">180</text><text x="793.8" y="230">190</text><text x="831.9" y="230">200</text><text x="870.0" y="230">200</text></g><g fill="#71717a" font-size="9" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="244">08:37</text><text x="108.1" y="244">08:45</text><text x="146.2" y="244">08:54</text><text x="184.3" y="244">09:05</text><text x="222.4" y="244">09:13</text><text x="260.5" y="244">09:29</text><text x="298.6" y="244">09:36</text><text x="336.7" y="244">09:48</text><text x="374.8" y="244">10:05</text><text x="412.9" y="244">10:38</text><text x="451.0" y="244">11:04</text><text x="489.0" y="244">11:36</text><text x="527.1" y="244">12:00</text><text x="565.2" y="244">12:32</text><text x="603.3" y="244">12:49</text><text x="641.4" y="244">13:19</text><text x="679.5" y="244">13:38</text><text x="717.6" y="244">14:13</text><text x="755.7" y="244">14:31</text><text x="793.8" y="244">15:00</text><text x="831.9" y="244">15:30</text><text x="870.0" y="244">15:32</text></g>
         </svg>
     </div>
 
     <h2>Tirante hidráulico en el cauce (mismos km / horas)</h2>
     <p class="caption">
-      Mismos puntos que el gráfico de velocidad (cada 10 km). Eje X inferior:
-      hora NPT en la que el frente llega a ese km.
-      En cauce ancho el radio hidráulico R ≈ tirante. R de Manning es constante
-      por tramo (10.1 m garganta, 18.9 m valle) porque se calibra a tiempos
-      observados, no a aforos. El tirante HAND es la profundidad de valle de la
-      mancha (12→5 m), distinta de R: describe el relleno del valle, no el
-      radio usado en V = (1/n) R<sup>2/3</sup> S<sup>1/2</sup>.
+      Tres magnitudes distintas. <b>Pico</b> (80–96 m en garganta, ~9 m en Galchhi):
+      tirante de cresta alineado a Geopera/DHM, no es la mancha del mapa.
+      <b>HAND</b> (12→5 m, solo desde Rasuwagadhi): ocupación de valle de la mancha naranja.
+      <b>R Manning</b> es el radio calibrado a tiempos, constante por tramo.
+      Eje X inferior: hora NPT en la que el frente llega a ese km.
     </p>
     <div class="chart">
       <div class="legend">
-        <span class="sw-tirante">R Manning ≈ tirante de cauce (m)</span>
-        <span class="sw-hand">Tirante HAND de valle (m)</span>
+        <span class="sw-pico">Tirante de pico (m)</span>
+        <span class="sw-hand">Ocupación HAND de valle (m)</span>
+        <span class="sw-tirante">R Manning (m)</span>
       </div>
       <svg viewBox="0 0 900 290" role="img">
         <g>
         <line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="210.0" x2="870" y2="210.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="172.0" x2="870" y2="172.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="134.0" x2="870" y2="134.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="96.0" x2="870" y2="96.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="58.0" x2="870" y2="58.0" /><line class="grid-line" stroke="#c4c4cc" fill="none" x1="70" y1="20.0" x2="870" y2="20.0" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="20" x2="70" y2="210" /><line class="axis-line" stroke="#a1a1aa" fill="none" x1="70" y1="210" x2="870" y2="210" />
         </g>
-        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">4</text><text x="62" y="138" text-anchor="end">9</text><text x="62" y="100" text-anchor="end">13</text><text x="62" y="62" text-anchor="end">18</text><text x="62" y="24" text-anchor="end">m</text></g>
-        <polyline fill="rgba(124,58,237,0.10)" stroke="none" points="70.0,210 70.0,123.2 112.1,123.2 154.2,123.2 196.3,123.2 238.4,123.2 280.5,123.2 322.6,46.3 364.7,46.3 406.8,46.3 448.9,46.3 491.1,46.3 533.2,46.3 575.3,46.3 617.4,46.3 659.5,46.3 701.6,46.3 743.7,46.3 785.8,46.3 827.9,46.3 870.0,46.3 870.0,210" /><polyline fill="none" stroke="#7c3aed" stroke-width="2.5" points="70.0,123.2 112.1,123.2 154.2,123.2 196.3,123.2 238.4,123.2 280.5,123.2 322.6,46.3 364.7,46.3 406.8,46.3 448.9,46.3 491.1,46.3 533.2,46.3 575.3,46.3 617.4,46.3 659.5,46.3 701.6,46.3 743.7,46.3 785.8,46.3 827.9,46.3 870.0,46.3" /><g fill='#7c3aed'><circle cx="70.0" cy="123.2" r="3.5" /><circle cx="112.1" cy="123.2" r="3.5" /><circle cx="154.2" cy="123.2" r="3.5" /><circle cx="196.3" cy="123.2" r="3.5" /><circle cx="238.4" cy="123.2" r="3.5" /><circle cx="280.5" cy="123.2" r="3.5" /><circle cx="322.6" cy="46.3" r="3.5" /><circle cx="364.7" cy="46.3" r="3.5" /><circle cx="406.8" cy="46.3" r="3.5" /><circle cx="448.9" cy="46.3" r="3.5" /><circle cx="491.1" cy="46.3" r="3.5" /><circle cx="533.2" cy="46.3" r="3.5" /><circle cx="575.3" cy="46.3" r="3.5" /><circle cx="617.4" cy="46.3" r="3.5" /><circle cx="659.5" cy="46.3" r="3.5" /><circle cx="701.6" cy="46.3" r="3.5" /><circle cx="743.7" cy="46.3" r="3.5" /><circle cx="785.8" cy="46.3" r="3.5" /><circle cx="827.9" cy="46.3" r="3.5" /><circle cx="870.0" cy="46.3" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="112.1" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="154.2" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="196.3" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="238.4" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="280.5" y="115.2" fill="#7c3aed">10.1</text><text class="val" x="322.6" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="364.7" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="406.8" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="448.9" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="491.1" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="533.2" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="575.3" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="617.4" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="659.5" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="701.6" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="743.7" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="785.8" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="827.9" y="38.3" fill="#7c3aed">18.9</text><text class="val" x="870.0" y="38.3" fill="#7c3aed">18.9</text></g><polyline fill="rgba(15,118,110,0.10)" stroke="none" points="70.0,210 70.0,106.4 112.1,106.4 154.2,123.6 196.3,123.6 238.4,132.3 280.5,132.3 322.6,149.5 364.7,149.5 406.8,149.5 448.9,149.5 491.1,166.8 533.2,166.8 575.3,166.8 617.4,166.8 659.5,166.8 701.6,166.8 743.7,166.8 785.8,166.8 827.9,166.8 870.0,166.8 870.0,210" /><polyline fill="none" stroke="#0f766e" stroke-width="2.5" points="70.0,106.4 112.1,106.4 154.2,123.6 196.3,123.6 238.4,132.3 280.5,132.3 322.6,149.5 364.7,149.5 406.8,149.5 448.9,149.5 491.1,166.8 533.2,166.8 575.3,166.8 617.4,166.8 659.5,166.8 701.6,166.8 743.7,166.8 785.8,166.8 827.9,166.8 870.0,166.8" /><g fill='#0f766e'><circle cx="70.0" cy="106.4" r="3.5" /><circle cx="112.1" cy="106.4" r="3.5" /><circle cx="154.2" cy="123.6" r="3.5" /><circle cx="196.3" cy="123.6" r="3.5" /><circle cx="238.4" cy="132.3" r="3.5" /><circle cx="280.5" cy="132.3" r="3.5" /><circle cx="322.6" cy="149.5" r="3.5" /><circle cx="364.7" cy="149.5" r="3.5" /><circle cx="406.8" cy="149.5" r="3.5" /><circle cx="448.9" cy="149.5" r="3.5" /><circle cx="491.1" cy="166.8" r="3.5" /><circle cx="533.2" cy="166.8" r="3.5" /><circle cx="575.3" cy="166.8" r="3.5" /><circle cx="617.4" cy="166.8" r="3.5" /><circle cx="659.5" cy="166.8" r="3.5" /><circle cx="701.6" cy="166.8" r="3.5" /><circle cx="743.7" cy="166.8" r="3.5" /><circle cx="785.8" cy="166.8" r="3.5" /><circle cx="827.9" cy="166.8" r="3.5" /><circle cx="870.0" cy="166.8" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="120.4" fill="#0f766e">12</text><text class="val" x="112.1" y="120.4" fill="#0f766e">12</text><text class="val" x="154.2" y="137.6" fill="#0f766e">10</text><text class="val" x="196.3" y="137.6" fill="#0f766e">10</text><text class="val" x="238.4" y="146.3" fill="#0f766e">9</text><text class="val" x="280.5" y="146.3" fill="#0f766e">9</text><text class="val" x="322.6" y="163.5" fill="#0f766e">7</text><text class="val" x="364.7" y="163.5" fill="#0f766e">7</text><text class="val" x="406.8" y="163.5" fill="#0f766e">7</text><text class="val" x="448.9" y="163.5" fill="#0f766e">7</text><text class="val" x="491.1" y="180.8" fill="#0f766e">5</text><text class="val" x="533.2" y="180.8" fill="#0f766e">5</text><text class="val" x="575.3" y="180.8" fill="#0f766e">5</text><text class="val" x="617.4" y="180.8" fill="#0f766e">5</text><text class="val" x="659.5" y="180.8" fill="#0f766e">5</text><text class="val" x="701.6" y="180.8" fill="#0f766e">5</text><text class="val" x="743.7" y="180.8" fill="#0f766e">5</text><text class="val" x="785.8" y="180.8" fill="#0f766e">5</text><text class="val" x="827.9" y="180.8" fill="#0f766e">5</text><text class="val" x="870.0" y="180.8" fill="#0f766e">5</text></g>
-        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">0</text><text x="112.1" y="230">10</text><text x="154.2" y="230">20</text><text x="196.3" y="230">30</text><text x="238.4" y="230">40</text><text x="280.5" y="230">50</text><text x="322.6" y="230">60</text><text x="364.7" y="230">70</text><text x="406.8" y="230">80</text><text x="448.9" y="230">90</text><text x="491.1" y="230">100</text><text x="533.2" y="230">110</text><text x="575.3" y="230">120</text><text x="617.4" y="230">130</text><text x="659.5" y="230">140</text><text x="701.6" y="230">150</text><text x="743.7" y="230">160</text><text x="785.8" y="230">170</text><text x="827.9" y="230">180</text><text x="870.0" y="230">181</text></g><g fill="#71717a" font-size="9" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="244">08:36</text><text x="112.1" y="244">08:44</text><text x="154.2" y="244">08:55</text><text x="196.3" y="244">09:05</text><text x="238.4" y="244">09:14</text><text x="280.5" y="244">09:27</text><text x="322.6" y="244">09:42</text><text x="364.7" y="244">09:58</text><text x="406.8" y="244">10:16</text><text x="448.9" y="244">10:38</text><text x="491.1" y="244">11:09</text><text x="533.2" y="244">11:32</text><text x="575.3" y="244">12:06</text><text x="617.4" y="244">12:52</text><text x="659.5" y="244">13:13</text><text x="701.6" y="244">13:48</text><text x="743.7" y="244">14:18</text><text x="785.8" y="244">14:50</text><text x="827.9" y="244">15:25</text><text x="870.0" y="244">15:33</text></g>
+        <g fill="#52525b" font-size="11" font-family="Segoe UI, sans-serif"><text x="62" y="214" text-anchor="end">0</text><text x="62" y="176" text-anchor="end">22</text><text x="62" y="138" text-anchor="end">44</text><text x="62" y="100" text-anchor="end">66</text><text x="62" y="62" text-anchor="end">88</text><text x="62" y="24" text-anchor="end">m</text></g>
+        <polyline fill="rgba(180,35,24,0.10)" stroke="none" points="70.0,210 70.0,71.8 108.1,57.5 146.2,58.0 184.3,125.7 222.4,148.9 260.5,160.1 298.6,171.1 336.7,178.9 374.8,184.4 412.9,190.0 451.0,194.8 489.0,196.2 527.1,197.7 565.2,198.3 603.3,198.8 641.4,199.1 679.5,199.5 717.6,200.0 755.7,200.5 793.8,201.0 831.9,201.4 870.0,201.4 870.0,210" /><polyline fill="none" stroke="#b42318" stroke-width="2.5" points="70.0,71.8 108.1,57.5 146.2,58.0 184.3,125.7 222.4,148.9 260.5,160.1 298.6,171.1 336.7,178.9 374.8,184.4 412.9,190.0 451.0,194.8 489.0,196.2 527.1,197.7 565.2,198.3 603.3,198.8 641.4,199.1 679.5,199.5 717.6,200.0 755.7,200.5 793.8,201.0 831.9,201.4 870.0,201.4" /><g fill='#b42318'><circle cx="70.0" cy="71.8" r="3.5" /><circle cx="108.1" cy="57.5" r="3.5" /><circle cx="146.2" cy="58.0" r="3.5" /><circle cx="184.3" cy="125.7" r="3.5" /><circle cx="222.4" cy="148.9" r="3.5" /><circle cx="260.5" cy="160.1" r="3.5" /><circle cx="298.6" cy="171.1" r="3.5" /><circle cx="336.7" cy="178.9" r="3.5" /><circle cx="374.8" cy="184.4" r="3.5" /><circle cx="412.9" cy="190.0" r="3.5" /><circle cx="451.0" cy="194.8" r="3.5" /><circle cx="489.0" cy="196.2" r="3.5" /><circle cx="527.1" cy="197.7" r="3.5" /><circle cx="565.2" cy="198.3" r="3.5" /><circle cx="603.3" cy="198.8" r="3.5" /><circle cx="641.4" cy="199.1" r="3.5" /><circle cx="679.5" cy="199.5" r="3.5" /><circle cx="717.6" cy="200.0" r="3.5" /><circle cx="755.7" cy="200.5" r="3.5" /><circle cx="793.8" cy="201.0" r="3.5" /><circle cx="831.9" cy="201.4" r="3.5" /><circle cx="870.0" cy="201.4" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="63.8" fill="#b42318">80</text><text class="val" x="108.1" y="49.5" fill="#b42318">88</text><text class="val" x="146.2" y="50.0" fill="#b42318">88</text><text class="val" x="184.3" y="117.7" fill="#b42318">49</text><text class="val" x="222.4" y="140.9" fill="#b42318">35</text><text class="val" x="260.5" y="152.1" fill="#b42318">29</text><text class="val" x="298.6" y="163.1" fill="#b42318">22</text><text class="val" x="336.7" y="170.9" fill="#b42318">18</text><text class="val" x="374.8" y="176.4" fill="#b42318">15</text><text class="val" x="412.9" y="182.0" fill="#b42318">12</text><text class="val" x="451.0" y="186.8" fill="#b42318">9</text><text class="val" x="489.0" y="188.2" fill="#b42318">8</text><text class="val" x="527.1" y="189.7" fill="#b42318">7</text><text class="val" x="565.2" y="190.3" fill="#b42318">7</text><text class="val" x="603.3" y="190.8" fill="#b42318">6</text><text class="val" x="641.4" y="191.1" fill="#b42318">6</text><text class="val" x="679.5" y="191.5" fill="#b42318">6</text><text class="val" x="717.6" y="192.0" fill="#b42318">6</text><text class="val" x="755.7" y="192.5" fill="#b42318">6</text><text class="val" x="793.8" y="193.0" fill="#b42318">5</text><text class="val" x="831.9" y="193.4" fill="#b42318">5</text><text class="val" x="870.0" y="193.4" fill="#b42318">5</text></g><polyline fill="rgba(15,118,110,0.10)" stroke="none" points="70.0,210 70.0,210.0 108.1,210.0 146.2,189.3 184.3,189.3 222.4,192.7 260.5,192.7 298.6,194.5 336.7,194.5 374.8,197.9 412.9,197.9 451.0,197.9 489.0,197.9 527.1,201.4 565.2,201.4 603.3,201.4 641.4,201.4 679.5,201.4 717.6,201.4 755.7,201.4 793.8,201.4 831.9,201.4 870.0,201.4 870.0,210" /><polyline fill="none" stroke="#0f766e" stroke-width="2.5" points="70.0,210.0 108.1,210.0 146.2,189.3 184.3,189.3 222.4,192.7 260.5,192.7 298.6,194.5 336.7,194.5 374.8,197.9 412.9,197.9 451.0,197.9 489.0,197.9 527.1,201.4 565.2,201.4 603.3,201.4 641.4,201.4 679.5,201.4 717.6,201.4 755.7,201.4 793.8,201.4 831.9,201.4 870.0,201.4" /><g fill='#0f766e'><circle cx="70.0" cy="210.0" r="3.5" /><circle cx="108.1" cy="210.0" r="3.5" /><circle cx="146.2" cy="189.3" r="3.5" /><circle cx="184.3" cy="189.3" r="3.5" /><circle cx="222.4" cy="192.7" r="3.5" /><circle cx="260.5" cy="192.7" r="3.5" /><circle cx="298.6" cy="194.5" r="3.5" /><circle cx="336.7" cy="194.5" r="3.5" /><circle cx="374.8" cy="197.9" r="3.5" /><circle cx="412.9" cy="197.9" r="3.5" /><circle cx="451.0" cy="197.9" r="3.5" /><circle cx="489.0" cy="197.9" r="3.5" /><circle cx="527.1" cy="201.4" r="3.5" /><circle cx="565.2" cy="201.4" r="3.5" /><circle cx="603.3" cy="201.4" r="3.5" /><circle cx="641.4" cy="201.4" r="3.5" /><circle cx="679.5" cy="201.4" r="3.5" /><circle cx="717.6" cy="201.4" r="3.5" /><circle cx="755.7" cy="201.4" r="3.5" /><circle cx="793.8" cy="201.4" r="3.5" /><circle cx="831.9" cy="201.4" r="3.5" /><circle cx="870.0" cy="201.4" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="224.0" fill="#0f766e">0</text><text class="val" x="108.1" y="224.0" fill="#0f766e">0</text><text class="val" x="146.2" y="203.3" fill="#0f766e">12</text><text class="val" x="184.3" y="203.3" fill="#0f766e">12</text><text class="val" x="222.4" y="206.7" fill="#0f766e">10</text><text class="val" x="260.5" y="206.7" fill="#0f766e">10</text><text class="val" x="298.6" y="208.5" fill="#0f766e">9</text><text class="val" x="336.7" y="208.5" fill="#0f766e">9</text><text class="val" x="374.8" y="211.9" fill="#0f766e">7</text><text class="val" x="412.9" y="211.9" fill="#0f766e">7</text><text class="val" x="451.0" y="211.9" fill="#0f766e">7</text><text class="val" x="489.0" y="211.9" fill="#0f766e">7</text><text class="val" x="527.1" y="215.4" fill="#0f766e">5</text><text class="val" x="565.2" y="215.4" fill="#0f766e">5</text><text class="val" x="603.3" y="215.4" fill="#0f766e">5</text><text class="val" x="641.4" y="215.4" fill="#0f766e">5</text><text class="val" x="679.5" y="215.4" fill="#0f766e">5</text><text class="val" x="717.6" y="215.4" fill="#0f766e">5</text><text class="val" x="755.7" y="215.4" fill="#0f766e">5</text><text class="val" x="793.8" y="215.4" fill="#0f766e">5</text><text class="val" x="831.9" y="215.4" fill="#0f766e">5</text><text class="val" x="870.0" y="215.4" fill="#0f766e">5</text></g><polyline fill="rgba(124,58,237,0.10)" stroke="none" points="70.0,210 70.0,166.4 108.1,166.4 146.2,158.7 184.3,158.7 222.4,171.3 260.5,171.3 298.6,171.3 336.7,192.2 374.8,192.2 412.9,192.2 451.0,166.4 489.0,166.4 527.1,166.4 565.2,166.4 603.3,166.4 641.4,166.4 679.5,166.4 717.6,166.4 755.7,166.4 793.8,166.4 831.9,166.4 870.0,166.4 870.0,210" /><polyline fill="none" stroke="#7c3aed" stroke-width="2.5" points="70.0,166.4 108.1,166.4 146.2,158.7 184.3,158.7 222.4,171.3 260.5,171.3 298.6,171.3 336.7,192.2 374.8,192.2 412.9,192.2 451.0,166.4 489.0,166.4 527.1,166.4 565.2,166.4 603.3,166.4 641.4,166.4 679.5,166.4 717.6,166.4 755.7,166.4 793.8,166.4 831.9,166.4 870.0,166.4" /><g fill='#7c3aed'><circle cx="70.0" cy="166.4" r="3.5" /><circle cx="108.1" cy="166.4" r="3.5" /><circle cx="146.2" cy="158.7" r="3.5" /><circle cx="184.3" cy="158.7" r="3.5" /><circle cx="222.4" cy="171.3" r="3.5" /><circle cx="260.5" cy="171.3" r="3.5" /><circle cx="298.6" cy="171.3" r="3.5" /><circle cx="336.7" cy="192.2" r="3.5" /><circle cx="374.8" cy="192.2" r="3.5" /><circle cx="412.9" cy="192.2" r="3.5" /><circle cx="451.0" cy="166.4" r="3.5" /><circle cx="489.0" cy="166.4" r="3.5" /><circle cx="527.1" cy="166.4" r="3.5" /><circle cx="565.2" cy="166.4" r="3.5" /><circle cx="603.3" cy="166.4" r="3.5" /><circle cx="641.4" cy="166.4" r="3.5" /><circle cx="679.5" cy="166.4" r="3.5" /><circle cx="717.6" cy="166.4" r="3.5" /><circle cx="755.7" cy="166.4" r="3.5" /><circle cx="793.8" cy="166.4" r="3.5" /><circle cx="831.9" cy="166.4" r="3.5" /><circle cx="870.0" cy="166.4" r="3.5" /></g><g text-anchor="middle"><text class="val" x="70.0" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="108.1" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="146.2" y="172.7" fill="#7c3aed">29.7</text><text class="val" x="184.3" y="172.7" fill="#7c3aed">29.7</text><text class="val" x="222.4" y="185.3" fill="#7c3aed">22.4</text><text class="val" x="260.5" y="185.3" fill="#7c3aed">22.4</text><text class="val" x="298.6" y="185.3" fill="#7c3aed">22.4</text><text class="val" x="336.7" y="206.2" fill="#7c3aed">10.3</text><text class="val" x="374.8" y="206.2" fill="#7c3aed">10.3</text><text class="val" x="412.9" y="206.2" fill="#7c3aed">10.3</text><text class="val" x="451.0" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="489.0" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="527.1" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="565.2" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="603.3" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="641.4" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="679.5" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="717.6" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="755.7" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="793.8" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="831.9" y="180.4" fill="#7c3aed">25.2</text><text class="val" x="870.0" y="180.4" fill="#7c3aed">25.2</text></g>
+        <g fill="#52525b" font-size="10" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="230">0</text><text x="108.1" y="230">10</text><text x="146.2" y="230">20</text><text x="184.3" y="230">30</text><text x="222.4" y="230">40</text><text x="260.5" y="230">50</text><text x="298.6" y="230">60</text><text x="336.7" y="230">70</text><text x="374.8" y="230">80</text><text x="412.9" y="230">90</text><text x="451.0" y="230">100</text><text x="489.0" y="230">110</text><text x="527.1" y="230">120</text><text x="565.2" y="230">130</text><text x="603.3" y="230">140</text><text x="641.4" y="230">150</text><text x="679.5" y="230">160</text><text x="717.6" y="230">170</text><text x="755.7" y="230">180</text><text x="793.8" y="230">190</text><text x="831.9" y="230">200</text><text x="870.0" y="230">200</text></g><g fill="#71717a" font-size="9" font-family="Segoe UI, sans-serif" text-anchor="middle"><text x="70.0" y="244">08:37</text><text x="108.1" y="244">08:45</text><text x="146.2" y="244">08:54</text><text x="184.3" y="244">09:05</text><text x="222.4" y="244">09:13</text><text x="260.5" y="244">09:29</text><text x="298.6" y="244">09:36</text><text x="336.7" y="244">09:48</text><text x="374.8" y="244">10:05</text><text x="412.9" y="244">10:38</text><text x="451.0" y="244">11:04</text><text x="489.0" y="244">11:36</text><text x="527.1" y="244">12:00</text><text x="565.2" y="244">12:32</text><text x="603.3" y="244">12:49</text><text x="641.4" y="244">13:19</text><text x="679.5" y="244">13:38</text><text x="717.6" y="244">14:13</text><text x="755.7" y="244">14:31</text><text x="793.8" y="244">15:00</text><text x="831.9" y="244">15:30</text><text x="870.0" y="244">15:32</text></g>
         </svg>
     </div>
 
@@ -278,17 +284,18 @@
       <div class="card">
         <h3>Zona alta: casi sin margen</h3>
         <p>
-          Rasuwagadhi cae ~08:36 en el modelo. Timure minutos después.
-          Syabrubesi 12 min si la alerta saliera a las 08:38; con el SMS de
-          las 09:16, cero. El tramo HAND original terminaba en Devighat HEP
-          (58.0 km, 09:39).
+          Rasuwagadhi 08:54 NPT, 17 min
+          tras el colapso. Syabrubesi 09:09:
+          31 min si la alerta saliera a las 08:38;
+          con el SMS de las 09:16, cero. Pico ~39.9 m; HAND 12 m.
         </p>
       </div>
       <div class="card">
         <h3>Tramo bajo: Devghat y Bharatpur</h3>
         <p>
+          Galchhi 11:02 (~9 m DHM).
           Devghat (Chitwan) 15:20 NPT (ancla DHM ~15:20).
-          Bharatpur 15:33 NPT, km 181.44.
+          Bharatpur 15:32 NPT, km 200.25.
           Copernicus AOI04 sigue en espera. El retraso del SMS vs 08:38 permanece
           en 38 min en todo lo que el agua alcanza después de las 09:16.
         </p>
@@ -296,10 +303,10 @@
     </div>
 
     <footer>
-      NASA HMA 8 m tile-675 (elipsoide WGS84); COP30 N27E084 en el borde oeste (offset -48.9 m al datum HMA). Devighat HEP en Nuwakot (27.888°N, 85.134°E) es un punto intermedio. Devghat (Chitwan) es la confluencia Trishuli–Kali Gandaki; el DHM situó el frente ~15:20 y el pico ~16:00. Bharatpur (AOI04 EMSR927) queda ~5–8 km aguas abajo sobre el Narayani.
-      
+      NASA HMA 8 m tile-675 (elipsoide WGS84); COP30 N27E084 + N28E085 (offset -43.9 m al datum HMA; ref. Geopera HMA–GLO30 -35.5 m). Devighat HEP en Nuwakot (27.888°N, 85.134°E) es un punto intermedio. Devghat (Chitwan) es la confluencia Trishuli–Kali Gandaki; el DHM situó el frente ~15:20 y el pico ~16:00. Bharatpur (AOI04 EMSR927) queda ~5–8 km aguas abajo sobre el Narayani.
+      Lhende: avalancha de detritos a 18.6 m/s (67 km/h), no Manning (Geopera inyecta el hidrograma cerca de la confluencia). Desde Rasuwagadhi: n = 0.10 / 0.05 / 0.040. R1=29.68 m, R2=22.43 m, R3=10.33 m, R4=25.24 m. Caídas de estación 08:50 (Syabrubesi) y 09:20 (Betrawati) son corte de radio, no la llegada del frente (Geopera / DHM: frontera 08:54, Syabrubesi 09:09, Betrawati 09:40, Galchhi 11:02 ~9 m / 30 min). Ancla DHM Devghat ~15:20. Tiempos y tirantes de pico de garganta alineados a geo-pera/bhotekoshi-2026-reconstruction (métodos 1D; no se republican sus vectores Planet/WV, CC BY-NC). ABC reimplementa el corredor hasta Bharatpur con OSM / HMA / COP30 / EMSR927 / Sentinel.
       Delineacion satelital oficial: EMSR927 GRA AOI01–03; AOI04 Bharatpur pendiente
-      (Legion 29 ago). ABC Geomática Agrícola SRL, 29 ago 2026.
+      (Legion 29 ago). ABC Geomática Agrícola SRL, 30 ago 2026.
     </footer>
   </article>
 </body>

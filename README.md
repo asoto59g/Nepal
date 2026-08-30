@@ -1,7 +1,7 @@
 # Nepal — Bhote Koshi, 26 agosto 2026
 
 <img width="1024" height="512" alt="preview" src="https://github.com/user-attachments/assets/215d272c-fcc6-41a2-962a-456144608a05" />
-Análisis del pulso de detritos Rasuwagadhi → Bharatpur (Narayani) tras la avalancha de hielo y roca del 26 de agosto de 2026. (Análisis 29/08/26)
+Análisis del pulso de detritos **cicatriz Langtang → Bharatpur (Narayani)** tras la avalancha de hielo y roca del 26 de agosto de 2026. (Análisis 30/08/26)
 
 Sitio: https://asoto59g.github.io/Nepal/
 
@@ -9,8 +9,8 @@ Las dos piezas para presentar son HTML estático. No hay servidor ni base de dat
 
 | Página | Archivo | Qué muestra |
 | --- | --- | --- |
-| Inicio | [index.html](index.html) | Mapa: mancha HAND Rasuwagadhi–Bharatpur, curvas, EMSR927 al 29 ago 2026 |
-| Segunda | [tiempos.html](tiempos.html) | Curva x(t), Manning 1 km y minutos de alerta perdidos |
+| Inicio | [index.html](index.html) | Mapa: eje desde la cicatriz, mancha HAND Rasuwagadhi–Bharatpur, curvas, EMSR927 al 29 ago 2026 |
+| Segunda | [tiempos.html](tiempos.html) | Curva x(t), Manning 1 km, pico vs HAND, minutos de alerta perdidos |
 
 En cada página hay un enlace a la otra (Mapa / Tiempos de alerta).
 
@@ -23,12 +23,12 @@ Fuente de la página: este HTML (Leaflet 1.9, datos embebidos). No llama a una A
 
 **Qué se ve**
 
-- Núcleo de valle (~17.4 km²) y runup en ladera (~11.0 km²) entre Rasuwagadhi y Bharatpur, **181.4 km** de cauce. **Estimación HAND**, no es la delineación Copernicus. Capa encendible y apagable en el cajetín de capas (arriba a la derecha).
+- Núcleo de valle (~16.8 km²) y runup en ladera (~11.2 km²) **solo Rasuwagadhi → Bharatpur**. El eje del cauce empieza en la cicatriz Langtang (**km 0**, 08:37) y mide **200.3 km** hasta Bharatpur; Rasuwagadhi queda en **km 19 (08:54)**. La mancha naranja/roja es **ocupación HAND del valle** (12→5 m), **no** el tirante de pico (80–96 m en garganta). Capa encendible y apagable en el cajetín de capas (arriba a la derecha).
 - Barra de escala métrica en la esquina inferior izquierda, pegada al borde.
 - Polígonos y edificios de [Copernicus EMSR927](https://mapping.emergency.copernicus.eu/activations/EMSR927/) GRA **al 29 de agosto de 2026**: deslizamientos fotointerpretados en Syapru Besi, Timure y Bidur. Capas apagables en el control de la esquina.
 - Mapas GRA oficiales en el panel (AOI01, AOI02 y AOI03). Bharatpur (AOI04) sigue **en espera (W)**: Legion adquirido el 29 ago 04:01 UTC, entrega prevista **17:01 UTC** (mañana por la mañana en Costa Rica / tarde en Nepal). El recuadro azul discontinuo en el mapa es el AOI, sin polígonos GRA.
 - Eje del río, comunidades con hora de llegada (NPT) y minutos de alerta perdidos, hasta Bharatpur.
-- **Devighat HEP (Nuwakot, km 58, 09:39)** no es **Devghat (Chitwan, km 178, 15:20 DHM)**. El modelo de dos tramos llega a Bharatpur a las **15:33**.
+- **Devighat HEP (Nuwakot, km 77, 09:59)** no es **Devghat (Chitwan, km 196, 15:20 DHM)**. El modelo llega a Bharatpur a las **15:32**.
 - Curvas de nivel (10 m en garganta, 20 m bajo 400 m), capa encendible y apagable. Clic en una curva muestra la cota.
 
 **Copernicus EMSR927 (corte 29 ago 2026)**
@@ -52,9 +52,9 @@ En el repo: `emsr927_hasta_hoy.geojson` y JPEG en `media/`.
 
 **Cómo se construyó la mancha HAND**
 
-La mancha naranja/roja es un HAND aproximado sobre NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84) y Copernicus GLO-30 (N27E084) en el borde oeste del mosaico (~84.45°E), con offset vertical −49 m al datum HMA. No sustituye a EMSR927. El tile HMA cubre casi todo el corredor; Bharatpur ciudad queda ~2 km al oeste del borde.
+La mancha naranja/roja es un HAND aproximado sobre NASA HMA 8 m (`HMA_DEM8m_MOS_20170716_tile-675`, Shean 2017, cotas elipsoidales WGS84) y Copernicus GLO-30 (N27E084) en el borde oeste del mosaico (~84.45°E), con offset vertical **−43.9 m** al datum HMA (mediana del solape; Geopera reporta −35.5 m HMA–GLO30). No se pinta Lhende ni el glaciar: a 5600 m un HAND de 12–40 m sería basura. No sustituye a EMSR927.
 
-| Tramo | Núcleo (H / ancho) | Runup (H / ancho) |
+| Tramo (km desde Rasuwagadhi) | Núcleo (H / ancho) | Runup (H / ancho) |
 | --- | --- | --- |
 | Garganta km 0–20 | 12 m / 280 m | 40 m / 450 m |
 | Medio km 20–40 | 10 m / 450 m | 30 m / 700 m |
@@ -62,7 +62,7 @@ La mancha naranja/roja es un HAND aproximado sobre NASA HMA 8 m (`HMA_DEM8m_MOS_
 | Trishuli medio km 60–100 | 7 m / 900 m | 16 m / 1500 m |
 | Narayani km >100 | 5 m / 1500 m | 10 m / 2800 m |
 
-Áreas resultantes: núcleo **17.4 km²**, runup **11.0 km²** (el tramo bajo es valle abierto; no es comparable 1:1 con las 3.2 + 5.1 km² de solo la garganta).
+Áreas resultantes: núcleo **16.8 km²**, runup **11.2 km²**. El **tirante de pico** (80 m en la cicatriz, 96 m en Rasuwagadhi, 40 m en Syabrubesi, 20 m en Betrawati, 9 m en Galchhi) va en [tiempos.html](tiempos.html), no en la mancha.
 
 Curvas: 10 m en garganta, 20 m bajo 400 m, recortadas a ~1.2 km del cauce.
 
@@ -70,7 +70,7 @@ Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78
 
 **Scripts que regeneran esta página**
 
-1. `calcular_manning.py` → `resultado_manning.json` / `curva_1km.csv` (cauce OSM por hitos)
+1. `calcular_manning.py` → `resultado_manning.json` / `curva_1km.csv` / `observaciones.csv` (Lhende + OSM por hitos)
 2. `generar_mapa_inundacion.py` → `inundacion_bhote_koshi.geojson`
 3. `generar_curvas_10m.py` → `curvas_10m_hma.geojson`
 4. `preparar_emsr927.py` → `emsr927_hasta_hoy.geojson` + JPEG en `media/`
@@ -79,7 +79,7 @@ Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78
 7. `escribir_mapa_html.py` → `index.html`
 8. `escribir_tiempos_html.py` → `tiempos.html`
 
-El GeoTIFF HMA (~348 MB) y el COP30 N27E084 no van en el repositorio. Los zips GRA de CEMS tampoco.
+El GeoTIFF HMA (~348 MB), COP30 N27E084 y N28E085 no van en el repositorio. Los zips GRA de CEMS tampoco.
 
 ---
 
@@ -123,46 +123,62 @@ El GRD sin calibrar no sirve para umbral de agua (DN ~+18 dB). Hay que usar **se
 
 ## tiempos.html — minutos de alerta perdidos
 
-Fuente de la página: este HTML (tablas y SVG; sin Leaflet). Cifras tomadas de `resultado_manning.json` / `curva_1km.csv`.
+Fuente de la página: este HTML (tablas y SVG; sin Leaflet). Cifras tomadas de `resultado_manning.json` / `curva_1km.csv`. Observaciones (USGS, caídas de radio, DHM, Suhora, Geopera): `observaciones.csv`.
 
-**Reloj (NPT)**
+**Reloj (NPT)** — t = 0 en la cicatriz, 08:37. Las caídas de estación 08:50 / 09:20 son corte de radio, no el frente.
 
-- 08:37 sismo / avalancha (USGS).
+- 08:37 sismo / avalancha (USGS); km 0 = cicatriz S2 28.285°N 85.513°E.
 - 08:38 alerta automática hipotética (90 s después).
-- 08:50 Syabrubesi deja de transmitir (ancla del modelo).
+- 08:50 Syabrubesi deja de transmitir (radio).
+- 08:54 Rasuwagadhi (frontera, ~17 min).
+- 09:09 Syabrubesi (frente; pico ~40 m).
 - 09:16 SMS masivo DHM.
-- 09:20 Betrawati deja de transmitir (segunda ancla).
-
-- 09:39 Devighat HEP (Nuwakot), modelo (fin de la garganta).
+- 09:20 Betrawati deja de transmitir (radio).
+- 09:40 Betrawati (frente; pico ~20 m).
+- 09:59 Devighat HEP (Nuwakot).
+- 11:02 Galchhi (DHM ~9 m / 30 min).
 - 15:20 Devghat (Chitwan): frente DHM (ancla del tramo bajo).
-- 15:33 Bharatpur (Narayani), modelo.
+- 15:32 Bharatpur (Narayani), modelo.
 
-**Manning**
+**Manning y detritos**
 
-`V = (1/n) · R^(2/3) · S^(1/2)`, `n = 0.040`. **R1 = 10.05 m** calibrado para Syabrubesi → Betrawati = 30 min. **R2 = 18.95 m** aguas abajo de Devighat HEP para que Devghat coincida con DHM ~15:20 (con R1 solo el modelo llegaba ~18:19: el valle es más tendido). Eje OSM forzado por hitos (si no, el camino más corto se sale de la garganta). DEM: HMA 8 m + COP30 N27E084. Longitud **181.4 km**, desnivel 1638 m.
+Lhende (cicatriz → Rasuwagadhi, 19 km): **avalancha de detritos** a **18.6 m/s** (67 km/h), no Manning. A partir de Rasuwagadhi: `V = (1/n) · R^(2/3) · S^(1/2)` con **n = 0.10 / 0.05 / 0.040**.
 
-A las 09:16 el frente está ~km 42. Aguas abajo de ~km 42 los minutos perdidos son constantes: **38 min** (09:16 − 08:38).
+| Tramo | n | R | Ancla |
+| --- | --- | --- | --- |
+| Lhende | — (detritos) | — | 08:37 → 08:54 |
+| Rasuwagadhi → Syabrubesi | 0.10 | **R1 = 29.7 m** | 15 min |
+| Syabrubesi → Betrawati | 0.05 | **R2 = 22.4 m** | 31 min |
+| Betrawati → Galchhi | 0.040 | **R3 = 10.3 m** | 82 min |
+| Galchhi → Devghat / Bharatpur | 0.040 | **R4 = 25.2 m** | DHM 15:20 |
 
-| Lugar | km | Llegada | SMS 09:16 | Auto 08:38 | Perdidos |
-| --- | --- | --- | --- | --- | --- |
-| Rasuwagadhi | 0 | 08:36 | 0 | 0 | 0 |
-| Timure | 3 | 08:38 | 0 | 0 | 0 |
-| Syabrubesi | 15 | 08:50 | 0 | 12 | 12 |
-| Mailung | 32 | 09:06 | 0 | 29 | 29 |
-| Betrawati | 45 | 09:20 | 4 | 42 | **38** |
-| Trishuli HEP | 53 | 09:31 | 15 | 53 | **38** |
-| Devighat HEP | 58 | 09:39 | 24 | 62 | **38** |
-| Galchhi | 79 | 10:15 | 60 | 98 | **38** |
-| Malekhu | 105 | 11:25 | 129 | 167 | **38** |
-| Muglin | 144 | 13:21 | 246 | 284 | **38** |
-| Devghat (Chitwan) | 178 | 15:20 | 364 | 402 | **38** |
-| Bharatpur | 181.4 | 15:33 | 377 | 415 | **38** |
+DEM: HMA 8 m + COP30 N27E084 y N28E085 (offset −43.9 m). Longitud **200.3 km** (corredor 181.3 km), desnivel corredor 1628 m.
 
-Rasuwagadhi 08:36 queda ~1 min antes del sismo 08:37: el tramo alto es muy pendiente y el reloj está anclado en Syabrubesi 08:50. Manning de agua clara es de primer orden; el evento fue un flujo de detritos.
+A las 09:16 el frente está entre Syabrubesi (09:09) y Betrawati (09:40). Aguas abajo de Mailung (~km 51) los minutos perdidos son constantes: **38 min** (09:16 − 08:38).
 
-En [tiempos.html](tiempos.html) el gráfico de velocidad (cada 10 km) lleva la hora NPT de llegada del frente. Debajo, el **tirante hidráulico** en los mismos puntos: R de Manning (10.05 m / 18.95 m) y tirante HAND de valle (12→5 m).
+| Lugar | km | Llegada | Pico (m) | HAND (m) | SMS 09:16 | Auto 08:38 | Perdidos |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Cicatriz Langtang | 0 | 08:37 | 80 | 0 | 0 | 0 | 0 |
+| Rasuwagadhi | 19 | 08:54 | 96 | 12 | 0 | 16 | 16 |
+| Timure | 22 | 08:56 | 73 | 12 | 0 | 19 | 19 |
+| Syabrubesi | 33 | 09:09 | 40 | 12 | 0 | 31 | 31 |
+| Mailung | 51 | 09:30 | 28 | 10 | 14 | 52 | **38** |
+| Betrawati | 64 | 09:40 | 20 | 9 | 24 | 62 | **38** |
+| Trishuli HEP | 72 | 09:51 | 17 | 9 | 35 | 73 | **38** |
+| Devighat HEP | 77 | 09:59 | 16 | 9 | 44 | 82 | **38** |
+| Galchhi | 98 | 11:02 | 9 | 7 | 106 | 144 | **38** |
+| Malekhu | 121 | 12:07 | 7 | 5 | 172 | 210 | **38** |
+| Muglin | 163 | 13:43 | 6 | 5 | 267 | 305 | **38** |
+| Devghat (Chitwan) | 196 | 15:20 | 5 | 5 | 364 | 402 | **38** |
+| Bharatpur | 200.3 | 15:32 | 5 | 5 | 377 | 415 | **38** |
 
-**Scripts:** `calcular_manning.py` (cauce: `fetch_rios.py` / `rios_overpass.json`) y `escribir_tiempos_html.py`.
+El pico (Geopera/DHM) no es la mancha HAND. R de Manning se calibra a tiempos, no a aforos. Manning de agua clara es de primer orden; el evento fue un flujo de detritos.
+
+En [tiempos.html](tiempos.html) hay tres series de altura cada 10 km: **pico**, **HAND** y **R**, más velocidad y hora NPT.
+
+Tiempos y picos de garganta alineados a [geo-pera/bhotekoshi-2026-reconstruction](https://github.com/geo-pera/bhotekoshi-2026-reconstruction) (métodos 1D Saint-Venant). **No se copian** sus vectores Planet/WorldView (**CC BY-NC**; ABC es comercial). El corredor hasta Bharatpur, el SMS 09:16 vs 08:38 y EMSR927 siguen siendo objetivos ABC.
+
+**Scripts:** `calcular_manning.py` (cauce: Lhende + `rios_overpass.json`) y `escribir_tiempos_html.py`.
 
 ---
 

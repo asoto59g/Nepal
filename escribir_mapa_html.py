@@ -65,6 +65,10 @@ for f in gj.get("features", []):
         a_r = (f["properties"] or {}).get("area_km2") or 0
 km_tot = man.get("longitud_km", 0)
 ha_ems = (ems.get("properties") or {}).get("area_deslizamiento_ha", 829)
+km_ras = man.get("km_rasuwagadhi")
+if km_ras is None:
+    km_ras = next((c["km"] for c in man.get("comunidades") or [] if c.get("id") == "rasuwagadhi"), 0)
+ras = next((c for c in man.get("comunidades") or [] if c.get("id") == "rasuwagadhi"), {})
 
 html = """<!DOCTYPE html>
 <html lang="es">
@@ -136,8 +140,10 @@ html = """<!DOCTYPE html>
     <a href="tiempos.html">Tiempos de alerta</a>
   </nav>
   <h1>Hasta donde llego la avalancha</h1>
-  <p>Tramo analizado Rasuwagadhi → Bharatpur (Narayani), PANEL_KM km.
-  Mancha naranja/roja: estimacion HAND (HMA 8 m + COP30 al oeste). Garganta 9–12 m; valle medio y llanura mas bajo y ancho.</p>
+  <p>km 0 = cicatriz Langtang (S2). Rasuwagadhi ~km PANEL_KM_RASU, PANEL_HORA_RASU NPT.
+  Eje PANEL_KM km hasta Bharatpur. Mancha naranja/roja: ocupacion HAND del valle
+  (garganta 9–12 m), no el tirante de pico 80–96 m. HAND solo Rasuwagadhi→Bharatpur
+  (HMA 8 m + COP30 al oeste).</p>
   <p>Magenta: Copernicus <a href="https://mapping.emergency.copernicus.eu/activations/EMSR927/">EMSR927</a>
   GRA al 29 ago 2026. Fotointerpretacion 27 ago: Syapru Besi 111 ha (WorldView-3),
   Timure 129 ha (Legion) y Bidur 589 ha (BlackSky / Satellogic). Bharatpur (AOI04) en espera (Legion 29 ago, entrega prevista ~17:01 UTC).</p>
@@ -147,7 +153,7 @@ html = """<!DOCTYPE html>
     <a href="media/emsr927_aoi03_bidur.jpg"><img src="media/emsr927_aoi03_bidur_thumb.jpg" alt="Mapa GRA EMSR927 Bidur"/><span>AOI03 Bidur</span></a>
   </div>
   <ul class="legend">
-    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (PANEL_NUCLEO km²). Capa apagable.</li>
+    <li><span class="sw" style="background:#7f1d1d"></span>Nucleo del valle HAND (PANEL_NUCLEO km²). Ocupacion 12→5 m, no pico. Capa apagable.</li>
     <li><span class="sw" style="background:#f97316"></span>Runup en ladera HAND (PANEL_RUNUP km²). Capa apagable.</li>
     <li><span class="sw" style="background:#7c3aed"></span>EMSR927 deslizamiento (PANEL_HA ha, 3 AOI publicadas)</li>
     <li><span class="sw" style="background:#b91c1c"></span>Edificio destruido / dañado (CEMS)</li>
@@ -159,10 +165,11 @@ html = """<!DOCTYPE html>
     <li><span class="sw" style="background:#2563eb"></span>Lago S2 27 ago (SCL agua, 3.7 ha) · 28.293°N 85.511°E</li>
     <li><span class="sw" style="background:#1e3a8a"></span>Agua residual S1 RTC 28 ago (~2.3 ha, ya no las 20 ha)</li>
   </ul>
-  <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). El DHM situó el frente en Devghat ~15:20; el modelo de dos tramos ancla ese reloj. AOI04 Bharatpur es el recuadro azul discontinuo, sin polígonos GRA aún.
+  <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). Reloj: colapso 08:37 → Rasuwagadhi 08:54 → Syabrubesi 09:09 → Betrawati 09:40 → Galchhi 11:02 → Devghat ~15:20 DHM. Caidas de estacion 08:50 / 09:20 son corte de radio, no el frente. n Manning 0.10 / 0.05 / 0.04. AOI04 Bharatpur es el recuadro azul discontinuo, sin poligonos GRA aun.
   EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.
   El colapso de hielo/roca no está en el eje Rasuwagadhi–Trishuli: está ~13 km al este, flanco N de Langtang. Sentinel-2 (24 vs 27 ago) da el parche de 20 ha; Sentinel-1 (16 vs 28) confirma un cambio VV de −6 dB a 400 m. Nubes: 22 % el 24, 47 % el 27, 76 % el 29; no sustituyen a WV-3/Planet en el corredor.
-  Lago de escombros: Satellogic 27 ago 20.25 ha en 28.294°N 85.511°E. S2 SCL ve 3.7 ha de agua nueva ese día. S1 RTC del 28 ago (12:21 UTC) ya no oscurece ese punto (−10 dB): el desagüe había empezado. Quedan ~2.3 ha oscuras 400–600 m al sur. El punto Keystone (28.312°N 85.554°E) está nublado en S2 y no es agua en S1.</p>
+  Lago de escombros: Satellogic 27 ago 20.25 ha en 28.294°N 85.511°E. S2 SCL ve 3.7 ha de agua nueva ese día. S1 RTC del 28 ago (12:21 UTC) ya no oscurece ese punto (−10 dB): el desagüe había empezado. Quedan ~2.3 ha oscuras 400–600 m al sur. El punto Keystone (28.312°N 85.554°E) está nublado en S2 y no es agua en S1.
+  Tiempos y picos de garganta alineados a geo-pera/bhotekoshi-2026-reconstruction (metodos; no se copian vectores Planet/WV CC BY-NC).</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -345,6 +352,8 @@ map.fitBounds(handLayer.getBounds().extend(gj.getBounds()).extend(origenPts.getB
 </html>
 """
 html = (html
+  .replace("PANEL_KM_RASU", f"{float(km_ras):.0f}")
+  .replace("PANEL_HORA_RASU", str(ras.get("hora_llegada") or "08:54"))
   .replace("PANEL_KM", f"{km_tot:.1f}")
   .replace("PANEL_NUCLEO", f"{a_n:.1f}")
   .replace("PANEL_RUNUP", f"{a_r:.1f}")

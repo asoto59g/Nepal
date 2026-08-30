@@ -86,7 +86,7 @@ El GeoTIFF HMA (~348 MB), COP30 N27E084 y N28E085 no van en el repositorio. Los 
 
 ## Deslizamientos S1 al norte de Rasuwagadhi (2021–2026)
 
-Capa informativa en el mapa (ámbar, apagable). No sustituye a EMSR927.
+Capa informativa en el mapa (rojo, apagable). No sustituye a EMSR927.
 
 Par Sentinel-1 RTC VV, **órbita 85 ascendente**: 23 ago 2021 vs 28 ago 2026 (~**5 años**). Semicírculo de **50 km al norte** de Rasuwagadhi. Para que el cambio sea de cicatriz y no nieve/ruido: semilla |ΔVV| ≥ 6.5 dB, mediana |ΔVV| del polígono ≥ 5.5 dB, pendiente ≥ 10°, cota bajo 5200 m, área **0.5–20 km²**.
 

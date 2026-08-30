@@ -168,7 +168,7 @@ html = """<!DOCTYPE html>
     <li><span class="sw" style="background:#06b6d4"></span>Cicatriz S2 (hielo 24→27 ago) · 28.285°N 85.513°E</li>
     <li><span class="sw" style="background:#2563eb"></span>Lago S2 27 ago (SCL agua, 3.7 ha) · 28.293°N 85.511°E</li>
     <li><span class="sw" style="background:#1e3a8a"></span>Agua residual S1 RTC 28 ago (~2.3 ha, ya no las 20 ha)</li>
-    <li><span class="sw" style="background:#ca8a04"></span>Deslizamientos S1 RTC 2021–2026, 50 km al N de Rasuwagadhi (PANEL_S1_N parches ≥0.5 km², PANEL_S1_KM2 km²). Capa apagable.</li>
+    <li><span class="sw" style="background:#dc2626"></span>Deslizamientos S1 RTC 2021–2026, 50 km al N de Rasuwagadhi (PANEL_S1_N parches ≥0.5 km², PANEL_S1_KM2 km²). Capa apagable.</li>
   </ul>
   <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). Reloj: colapso 08:37 → Rasuwagadhi 08:54 → Syabrubesi 09:09 → Betrawati 09:40 → Galchhi 11:02 → Devghat ~15:20 DHM. Caidas de estacion 08:50 / 09:20 son corte de radio, no el frente. n Manning 0.10 / 0.05 / 0.04. AOI04 Bharatpur es el recuadro azul discontinuo, sin poligonos GRA aun.
   EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.
@@ -325,8 +325,8 @@ const lagoPts = L.geoJSON(LAGO, {
 const deslizLayer = L.geoJSON(DESLIZ, {
   style(f){
     const c = f.properties.clase;
-    if (c === "aoi_semicirculo") return {color:"#a16207", weight:2, dashArray:"6 4", fillOpacity:0};
-    return {color:"#a16207", weight:1.2, fillColor:"#ca8a04", fillOpacity:0.40};
+    if (c === "aoi_semicirculo") return {color:"#b91c1c", weight:2, dashArray:"6 4", fillOpacity:0};
+    return {color:"#991b1b", weight:1.2, fillColor:"#dc2626", fillOpacity:0.40};
   },
   onEachFeature(f, layer){
     const p = f.properties;

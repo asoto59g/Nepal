@@ -84,13 +84,13 @@ El GeoTIFF HMA (~348 MB), COP30 N27E084 y N28E085 no van en el repositorio. Los 
 
 ---
 
-## Deslizamientos S1 al norte de Rasuwagadhi (2023–2026)
+## Deslizamientos S1 al norte de Rasuwagadhi (2021–2026)
 
 Capa informativa en el mapa (ámbar, apagable). No sustituye a EMSR927.
 
-Par Sentinel-1 RTC VV, **órbita 85 ascendente**: 25 ago 2023 vs 28 ago 2026. Semicírculo de **20 km al norte** de Rasuwagadhi. Se vectorizan parches con |ΔVV| ≥ 5 dB, cota bajo 5200 m, pendiente ≥ 8° y área **≥ 0.5 km²**.
+Par Sentinel-1 RTC VV, **órbita 85 ascendente**: 23 ago 2021 vs 28 ago 2026 (~**5 años**). Semicírculo de **50 km al norte** de Rasuwagadhi. Para que el cambio sea de cicatriz y no nieve/ruido: semilla |ΔVV| ≥ 6.5 dB, mediana |ΔVV| del polígono ≥ 5.5 dB, pendiente ≥ 10°, cota bajo 5200 m, área **0.5–20 km²**.
 
-Resultado: **18 polígonos, 13.8 km²**. El más oscuro (1.05 km², −6.5 dB) cae junto a la cicatriz Langtang / lago de escombros. Tres años cubren más que el pulso del 26 ago 2026.
+Resultado: **11 polígonos, 7.1 km²**. Varios oscurecen 11–14 dB (típico de herida de ladera). El pulso del 26 ago 2026 queda dentro de esos cinco años.
 
 Script: `detectar_deslizamientos_s1.py`. Los GeoTIFF RTC locales no van al repo.
 

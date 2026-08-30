@@ -66,7 +66,7 @@ La mancha naranja/roja es un HAND aproximado sobre NASA HMA 8 m (`HMA_DEM8m_MOS_
 
 Curvas: 10 m en garganta, 20 m bajo 400 m, recortadas a ~1.2 km del cauce.
 
-Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78 % nubes) **no** delinean el corredor alto: el cambio S1 fiable es ~3 ha frente a la mancha HAND.
+Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78 % nubes) **no** delinean el corredor alto: el cambio S1 fiable es ~3 ha frente a la mancha HAND. En la **cabecera** sí hay señal (ver abajo).
 
 **Scripts que regeneran esta página**
 
@@ -74,10 +74,31 @@ Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78
 2. `generar_mapa_inundacion.py` → `inundacion_bhote_koshi.geojson`
 3. `generar_curvas_10m.py` → `curvas_10m_hma.geojson`
 4. `preparar_emsr927.py` → `emsr927_hasta_hoy.geojson` + JPEG en `media/`
-5. `escribir_mapa_html.py` → `index.html`
-6. `escribir_tiempos_html.py` → `tiempos.html`
+5. `detectar_origen_sentinel.py` → `origen_avalancha.geojson`
+6. `escribir_mapa_html.py` → `index.html`
+7. `escribir_tiempos_html.py` → `tiempos.html`
 
 El GeoTIFF HMA (~348 MB) y el COP30 N27E084 no van en el repositorio. Los zips GRA de CEMS tampoco.
+
+---
+
+## Origen del colapso (Sentinel-1 / Sentinel-2)
+
+El punto USGS (landslide-type M 5.2, 08:37 NPT) está en **28.271°N, 85.515°E**, ~13 km al este de Rasuwagadhi, flanco norte de Langtang — **fuera** del bbox del corredor que se usó antes (ese bbox cortaba en 85.42°E).
+
+| Fuente | Fecha | Qué se ve en 28.271 / 85.515 |
+| --- | --- | --- |
+| S2 45RUM | 24 ago | Nube 22 % en 2.5 km; pixel USGS = sombra de nube; 48 % hielo |
+| S2 45RUM | 27 ago | Nube 47 %; pixel USGS = nieve/hielo |
+| S2 45RUM | 29 ago | Nube 76 %; no usable |
+| S1 IW GRD ascendente | 16 vs 28 ago | Misma órbita; sí cubre la cabecera |
+
+**Punto de cicatriz (mejor estimación Sentinel):** **28.285°N, 85.513°E** (~1.6 km al norte del USGS).
+
+- Sentinel-2 SCL 24 vs 27 ago: parche de **20.2 ha** donde la clase nieve/hielo desaparece (sin nubes en ambos días). Total de pérdida de hielo en la ventana: 103 ha (incluye fusión/estacional y posible mala clasificación).
+- Sentinel-1 VV 16 vs 28 ago: parche de **3.8 ha** a 1.27 km del USGS, **−6.0 dB** (caída de backscatter, compatible con hielo que se va o superficie húmeda). A ~400 m del centroide S2. Hay más parches ±ΔVV a 1.6–1.9 km (escarpe rugoso / sombra).
+
+No hay escena S1 posterior al 28 ago (corte 30 ago). S2 no mapea el corredor fluvial (Geopera: cielo conjunto 2.1 %). La delineación de daños en garganta sigue siendo EMSR927 / HAND, no Sentinel.
 
 ---
 

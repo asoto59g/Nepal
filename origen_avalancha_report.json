@@ -1,0 +1,224 @@
+{
+  "usgs_landslide": {
+    "lon": 85.515,
+    "lat": 28.271,
+    "nota": "USGS M5.2 landslide-type 26 ago 2026 08:37 NPT; flanco N Langtang ~5600 m"
+  },
+  "rasuwagadhi": {
+    "lon": 85.378,
+    "lat": 28.278
+  },
+  "s2_scl_usgs": [
+    {
+      "id": "S2B_45RUM_20260824_0_L2A",
+      "pixel_centro": "sombra_nube",
+      "nube_pct_ventana": 22.3,
+      "hielo_pct_ventana": 48.4,
+      "hist": {
+        "sombra_oscura": 7.3,
+        "sombra_nube": 3.3,
+        "vegetacion": 3.8,
+        "no_vegetado": 16.0,
+        "agua": 1.9,
+        "sin_clasificar": 0.3,
+        "nube_media": 9.1,
+        "nube_alta": 9.9,
+        "nieve_hielo": 48.4
+      }
+    },
+    {
+      "id": "S2B_45RUM_20260827_0_L2A",
+      "pixel_centro": "nieve_hielo",
+      "nube_pct_ventana": 46.5,
+      "hielo_pct_ventana": 37.8,
+      "hist": {
+        "sombra_oscura": 6.7,
+        "sombra_nube": 0.2,
+        "vegetacion": 0.6,
+        "no_vegetado": 6.6,
+        "agua": 0.1,
+        "sin_clasificar": 1.7,
+        "nube_media": 11.1,
+        "nube_alta": 35.2,
+        "nieve_hielo": 37.8
+      }
+    },
+    {
+      "id": "S2C_45RUM_20260829_0_L2A",
+      "pixel_centro": "nube_media",
+      "nube_pct_ventana": 76.4,
+      "hielo_pct_ventana": 20.1,
+      "hist": {
+        "sombra_oscura": 0.1,
+        "sombra_nube": 7.9,
+        "no_vegetado": 3.2,
+        "agua": 0.2,
+        "sin_clasificar": 0.0,
+        "nube_media": 24.9,
+        "nube_alta": 43.6,
+        "nieve_hielo": 20.1
+      }
+    }
+  ],
+  "s2_scl_rasuwagadhi": [
+    {
+      "id": "S2B_45RUM_20260824_0_L2A",
+      "pixel_centro": "nodata",
+      "nube_pct_ventana": 0,
+      "hielo_pct_ventana": 0,
+      "hist": {
+        "nodata": 100.0
+      }
+    },
+    {
+      "id": "S2B_45RUM_20260827_0_L2A",
+      "pixel_centro": "sombra_oscura",
+      "nube_pct_ventana": 26.0,
+      "hielo_pct_ventana": 0.1,
+      "hist": {
+        "sombra_oscura": 2.9,
+        "sombra_nube": 2.2,
+        "vegetacion": 58.2,
+        "no_vegetado": 9.4,
+        "agua": 0.0,
+        "sin_clasificar": 3.4,
+        "nube_media": 15.3,
+        "nube_alta": 8.5,
+        "nieve_hielo": 0.1
+      }
+    },
+    {
+      "id": "S2C_45RUM_20260829_0_L2A",
+      "pixel_centro": "nodata",
+      "nube_pct_ventana": 2.9,
+      "hielo_pct_ventana": 0,
+      "hist": {
+        "nodata": 97.0,
+        "sombra_nube": 2.2,
+        "sin_clasificar": 0.0,
+        "nube_media": 0.5,
+        "nube_alta": 0.2
+      }
+    }
+  ],
+  "s1": {
+    "par": [
+      "S1D_IW_GRDH_1SDV_20260816T122141_20260816T122206_004151_007980",
+      "S1D_IW_GRDH_1SDV_20260828T122141_20260828T122206_004326_007FA4"
+    ],
+    "umbral_db": 3.5,
+    "n_parches": 45,
+    "area_ha": 67.16,
+    "mayor": {
+      "area_ha": 8.68,
+      "lon": 85.4981,
+      "lat": 28.32339,
+      "mean_db": 5.8,
+      "dist_km_usgs": 6.06
+    },
+    "cerca_usgs_3km": {
+      "area_ha": 3.8,
+      "lon": 85.51644,
+      "lat": 28.28232,
+      "mean_db": -6.01,
+      "dist_km_usgs": 1.27
+    },
+    "parches_cerca": [
+      {
+        "area_ha": 3.8,
+        "lon": 85.51644,
+        "lat": 28.28232,
+        "mean_db": -6.01,
+        "dist_km_usgs": 1.27
+      },
+      {
+        "area_ha": 0.44,
+        "lon": 85.51783,
+        "lat": 28.28494,
+        "mean_db": -4.87,
+        "dist_km_usgs": 1.57
+      },
+      {
+        "area_ha": 8.64,
+        "lon": 85.51977,
+        "lat": 28.28533,
+        "mean_db": 6.97,
+        "dist_km_usgs": 1.66
+      },
+      {
+        "area_ha": 0.68,
+        "lon": 85.51521,
+        "lat": 28.28648,
+        "mean_db": -4.45,
+        "dist_km_usgs": 1.72
+      },
+      {
+        "area_ha": 0.8,
+        "lon": 85.51827,
+        "lat": 28.28625,
+        "mean_db": -4.79,
+        "dist_km_usgs": 1.73
+      },
+      {
+        "area_ha": 0.52,
+        "lon": 85.50781,
+        "lat": 28.28622,
+        "mean_db": 4.95,
+        "dist_km_usgs": 1.83
+      },
+      {
+        "area_ha": 2.96,
+        "lon": 85.51518,
+        "lat": 28.28817,
+        "mean_db": -4.81,
+        "dist_km_usgs": 1.91
+      },
+      {
+        "area_ha": 0.8,
+        "lon": 85.50843,
+        "lat": 28.29013,
+        "mean_db": 4.31,
+        "dist_km_usgs": 2.22
+      },
+      {
+        "area_ha": 0.8,
+        "lon": 85.51389,
+        "lat": 28.29317,
+        "mean_db": 5.01,
+        "dist_km_usgs": 2.47
+      },
+      {
+        "area_ha": 1.16,
+        "lon": 85.5113,
+        "lat": 28.29614,
+        "mean_db": 4.57,
+        "dist_km_usgs": 2.82
+      },
+      {
+        "area_ha": 0.48,
+        "lon": 85.49069,
+        "lat": 28.25687,
+        "mean_db": 4.23,
+        "dist_km_usgs": 2.85
+      },
+      {
+        "area_ha": 0.4,
+        "lon": 85.50995,
+        "lat": 28.29784,
+        "mean_db": 4.23,
+        "dist_km_usgs": 3.02
+      }
+    ],
+    "geojson": "origen_avalancha.geojson"
+  },
+  "s2_ice_loss_24_27": {
+    "area_ha": 102.84,
+    "pixeles": 2571,
+    "mayor": {
+      "area_ha": 20.2,
+      "lon": 85.51282,
+      "lat": 28.28508,
+      "dist_km_usgs": 1.58
+    }
+  }
+}

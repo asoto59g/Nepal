@@ -51,6 +51,8 @@ if not have_aoi4:
         print("AOI04 no se pudo añadir:", ex)
 
 ems_blob = json.dumps(ems, separators=(",", ":"), ensure_ascii=False)
+origen = json.loads((here / "origen_avalancha.geojson").read_text(encoding="utf-8"))
+origen_blob = json.dumps(origen, separators=(",", ":"), ensure_ascii=False)
 
 a_n = a_r = 0.0
 for f in gj.get("features", []):
@@ -151,15 +153,19 @@ html = """<!DOCTYPE html>
     <li><span class="sw" style="background:#111"></span>Comunidades y hora de llegada</li>
     <li><span class="sw" style="background:#b91c1c"></span>Fin del eje (Bharatpur / Narayani)</li>
     <li><span class="sw" style="background:#92400e;height:2px;width:18px"></span>Curvas de nivel (10 m garganta, 20 m valle bajo). Capa apagable.</li>
+    <li><span class="sw" style="background:#06b6d4"></span>Cicatriz S2 (hielo 24→27 ago) · 28.285°N 85.513°E</li>
+    <li><span class="sw" style="background:#eab308"></span>USGS M5.2 (08:37 NPT) · 28.271°N 85.515°E</li>
   </ul>
   <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). El DHM situó el frente en Devghat ~15:20; el modelo de dos tramos ancla ese reloj. AOI04 Bharatpur es el recuadro azul discontinuo, sin polígonos GRA aún.
-  EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.</p>
+  EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.
+  El colapso de hielo/roca no está en el eje Rasuwagadhi–Trishuli: está ~13 km al este, flanco N de Langtang. Sentinel-2 (24 vs 27 ago) da el parche de 20 ha; Sentinel-1 (16 vs 28) confirma un cambio VV de −6 dB a 400 m. Nubes: 22 % el 24, 47 % el 27, 76 % el 29; no sustituyen a WV-3/Planet en el corredor.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const DATA = PLACEHOLDER;
 const CURVAS = CURVAS_PLACEHOLDER;
 const EMS = EMS_PLACEHOLDER;
+const ORIGEN = ORIGEN_PLACEHOLDER;
 const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 18, attribution: "&copy; OpenStreetMap"
 });
@@ -250,6 +256,31 @@ const emsAoi = L.geoJSON(EMS, {
     layer.bindPopup("<b>AOI0"+p.aoi_n+" "+p.locality+"</b><br>EMSR927 "+p.map_type+"<br>"+p.estado);
   }
 });
+const origenPoly = L.geoJSON(ORIGEN, {
+  filter(f){ return f.properties.clase === "cicatriz_s2"; },
+  style(){ return {color:"#0e7490", weight:2, fillColor:"#06b6d4", fillOpacity:0.45}; },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    layer.bindPopup("<b>"+p.nombre+"</b><br>"+p.area_ha+" ha · Sentinel-2 SCL 24 vs 27 ago");
+  }
+}).addTo(map);
+const origenPts = L.geoJSON(ORIGEN, {
+  filter(f){ return f.geometry && f.geometry.type === "Point"; },
+  pointToLayer(f, latlng){
+    const c = f.properties.clase;
+    const fill = c === "origen_usgs" ? "#eab308" : (c === "origen_s1" ? "#84cc16" : "#06b6d4");
+    const r = c === "origen_s2" ? 9 : 7;
+    return L.circleMarker(latlng, {radius:r, color:"#fff", weight:2, fillColor:fill, fillOpacity:1});
+  },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    let extra = "";
+    if (p.area_ha) extra += "<br>"+p.area_ha+" ha";
+    if (p.mean_db != null) extra += "<br>ΔVV "+p.mean_db+" dB";
+    if (p.dist_km_usgs != null) extra += "<br>"+p.dist_km_usgs+" km del USGS";
+    layer.bindPopup("<b>"+p.nombre+"</b>"+extra);
+  }
+}).addTo(map);
 L.control.layers(
   {OSM: osm, Satelite: sat},
   {
@@ -257,7 +288,9 @@ L.control.layers(
     "Curvas 10 m (HMA)": curvasLayer,
     "EMSR927 deslizamientos": emsSlide,
     "EMSR927 edificios": emsBuild,
-    "EMSR927 AOI (hasta hoy)": emsAoi
+    "EMSR927 AOI (hasta hoy)": emsAoi,
+    "Origen hielo/roca (S1/S2)": origenPoly,
+    "Puntos origen USGS/S1/S2": origenPts
   }
 ).addTo(map);
 L.control.scale({
@@ -266,7 +299,7 @@ L.control.scale({
   imperial: false,
   maxWidth: 140
 }).addTo(map);
-map.fitBounds(handLayer.getBounds().extend(gj.getBounds()).pad(0.08));
+map.fitBounds(handLayer.getBounds().extend(gj.getBounds()).extend(origenPts.getBounds()).pad(0.08));
 (function(){
   const panel = document.getElementById("leyenda");
   const openBtn = document.getElementById("panelToggle");
@@ -289,6 +322,7 @@ html = (html
   .replace("PANEL_HA", f"{float(ha_ems):.0f}")
   .replace("EMS_PLACEHOLDER", ems_blob)
   .replace("CURVAS_PLACEHOLDER", curvas_blob)
+  .replace("ORIGEN_PLACEHOLDER", origen_blob)
   .replace("PLACEHOLDER", blob))
 dest = here / "index.html"
 dest.write_text(html, encoding="utf-8")

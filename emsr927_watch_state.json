@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:BlackSky,Satellogic|4:GRA:v1:W:noz:Legion",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:Satellogic,BlackSky|3:GRA:v1:W:noz:|4:GRA:v1:W:noz:Legion",
   "aois": [
     {
       "number": 1,
@@ -52,18 +52,31 @@
         {
           "type": "GRA",
           "version": 1,
+          "status": "W",
+          "deliveryTime": null,
+          "expectedDelivery": "2026-08-31T07:00:00",
+          "download": false,
+          "downloadPath": "",
+          "sensors": [],
+          "acquisition": [
+            "2026-08-30T18:00:00"
+          ]
+        },
+        {
+          "type": "GRA",
+          "version": 1,
           "status": "F",
           "deliveryTime": "2026-08-29T02:57:09.641898",
           "expectedDelivery": "2026-08-28T19:30:00",
           "download": true,
           "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI03/GRA_PRODUCT/EMSR927_AOI03_GRA_PRODUCT_v1.zip",
           "sensors": [
-            "BlackSky",
-            "Satellogic"
+            "Satellogic",
+            "BlackSky"
           ],
           "acquisition": [
-            "2026-08-27T12:09:00",
-            "2026-08-27T04:22:00"
+            "2026-08-27T04:22:00",
+            "2026-08-27T12:09:00"
           ]
         }
       ]
@@ -84,7 +97,7 @@
             "Legion"
           ],
           "acquisition": [
-            "2026-08-29T04:01:00"
+            "2026-08-31T07:16:00"
           ]
         }
       ]

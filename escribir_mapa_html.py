@@ -55,6 +55,10 @@ origen = json.loads((here / "origen_avalancha.geojson").read_text(encoding="utf-
 origen_blob = json.dumps(origen, separators=(",", ":"), ensure_ascii=False)
 lago = json.loads((here / "lago_escombros.geojson").read_text(encoding="utf-8"))
 lago_blob = json.dumps(lago, separators=(",", ":"), ensure_ascii=False)
+desliz = json.loads((here / "deslizamientos_s1_norte.geojson").read_text(encoding="utf-8"))
+desliz_blob = json.dumps(desliz, separators=(",", ":"), ensure_ascii=False)
+n_s1 = int((desliz.get("properties") or {}).get("n") or 0)
+km2_s1 = float((desliz.get("properties") or {}).get("area_km2") or 0)
 
 a_n = a_r = 0.0
 for f in gj.get("features", []):
@@ -164,12 +168,14 @@ html = """<!DOCTYPE html>
     <li><span class="sw" style="background:#06b6d4"></span>Cicatriz S2 (hielo 24→27 ago) · 28.285°N 85.513°E</li>
     <li><span class="sw" style="background:#2563eb"></span>Lago S2 27 ago (SCL agua, 3.7 ha) · 28.293°N 85.511°E</li>
     <li><span class="sw" style="background:#1e3a8a"></span>Agua residual S1 RTC 28 ago (~2.3 ha, ya no las 20 ha)</li>
+    <li><span class="sw" style="background:#ca8a04"></span>Deslizamientos S1 RTC 2023–2026, N de Rasuwagadhi (PANEL_S1_N parches ≥0.5 km², PANEL_S1_KM2 km²). Capa apagable.</li>
   </ul>
   <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). Reloj: colapso 08:37 → Rasuwagadhi 08:54 → Syabrubesi 09:09 → Betrawati 09:40 → Galchhi 11:02 → Devghat ~15:20 DHM. Caidas de estacion 08:50 / 09:20 son corte de radio, no el frente. n Manning 0.10 / 0.05 / 0.04. AOI04 Bharatpur es el recuadro azul discontinuo, sin poligonos GRA aun.
   EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.
   El colapso de hielo/roca no está en el eje Rasuwagadhi–Trishuli: está ~13 km al este, flanco N de Langtang. Sentinel-2 (24 vs 27 ago) da el parche de 20 ha; Sentinel-1 (16 vs 28) confirma un cambio VV de −6 dB a 400 m. Nubes: 22 % el 24, 47 % el 27, 76 % el 29; no sustituyen a WV-3/Planet en el corredor.
   Lago de escombros: Satellogic 27 ago 20.25 ha en 28.294°N 85.511°E. S2 SCL ve 3.7 ha de agua nueva ese día. S1 RTC del 28 ago (12:21 UTC) ya no oscurece ese punto (−10 dB): el desagüe había empezado. Quedan ~2.3 ha oscuras 400–600 m al sur. El punto Keystone (28.312°N 85.554°E) está nublado en S2 y no es agua en S1.
-  Tiempos y picos de garganta alineados a geo-pera/bhotekoshi-2026-reconstruction (metodos; no se copian vectores Planet/WV CC BY-NC).</p>
+  Tiempos y picos de garganta alineados a geo-pera/bhotekoshi-2026-reconstruction (metodos; no se copian vectores Planet/WV CC BY-NC).
+  Deslizamientos S1: cambio RTC VV 25 ago 2023 vs 28 ago 2026 (orbita 85), semicirculo de 20 km al norte de Rasuwagadhi, |ΔVV| ≥ 5 dB, ≥0.5 km². No es EMSR927; tres años cubren mas que el pulso del 26 ago.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -178,6 +184,7 @@ const CURVAS = CURVAS_PLACEHOLDER;
 const EMS = EMS_PLACEHOLDER;
 const ORIGEN = ORIGEN_PLACEHOLDER;
 const LAGO = LAGO_PLACEHOLDER;
+const DESLIZ = DESLIZ_PLACEHOLDER;
 const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 18, attribution: "&copy; OpenStreetMap"
 });
@@ -315,6 +322,25 @@ const lagoPts = L.geoJSON(LAGO, {
     layer.bindPopup("<b>"+f.properties.nombre+"</b>");
   }
 }).addTo(map);
+const deslizLayer = L.geoJSON(DESLIZ, {
+  style(f){
+    const c = f.properties.clase;
+    if (c === "aoi_semicirculo") return {color:"#a16207", weight:2, dashArray:"6 4", fillOpacity:0};
+    return {color:"#a16207", weight:1.2, fillColor:"#ca8a04", fillOpacity:0.40};
+  },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    if (p.clase === "aoi_semicirculo") {
+      layer.bindPopup("<b>"+p.nombre+"</b><br>radio "+p.radio_km+" km");
+      return;
+    }
+    const sent = p.sentido || "";
+    layer.bindPopup(
+      "<b>Cambio S1 RTC "+(p.area_km2||"?")+" km²</b><br>ΔVV "+p.delta_vv_db+" dB ("+sent+")<br>"+
+      (p.par||"2023 vs 2026")+" · órbita "+(p.orbita||85)+"<br>informativo; no es EMSR927"
+    );
+  }
+}).addTo(map);
 L.control.layers(
   {OSM: osm, Satelite: sat},
   {
@@ -326,7 +352,8 @@ L.control.layers(
     "Origen hielo/roca (S1/S2)": origenPoly,
     "Puntos origen USGS/S1/S2": origenPts,
     "Lago de escombros (S1/S2)": lagoPoly,
-    "Puntos lago reportados": lagoPts
+    "Puntos lago reportados": lagoPts,
+    "Deslizamientos S1 2023–2026 (N Rasuwagadhi)": deslizLayer
   }
 ).addTo(map);
 L.control.scale({
@@ -362,6 +389,9 @@ html = (html
   .replace("CURVAS_PLACEHOLDER", curvas_blob)
   .replace("ORIGEN_PLACEHOLDER", origen_blob)
   .replace("LAGO_PLACEHOLDER", lago_blob)
+  .replace("DESLIZ_PLACEHOLDER", desliz_blob)
+  .replace("PANEL_S1_N", str(n_s1))
+  .replace("PANEL_S1_KM2", f"{km2_s1:.1f}")
   .replace("PLACEHOLDER", blob))
 dest = here / "index.html"
 dest.write_text(html, encoding="utf-8")

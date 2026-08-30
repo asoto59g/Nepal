@@ -76,10 +76,23 @@ Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78
 4. `preparar_emsr927.py` → `emsr927_hasta_hoy.geojson` + JPEG en `media/`
 5. `detectar_origen_sentinel.py` → `origen_avalancha.geojson`
 6. `detectar_lago_s1.py` → `lago_escombros.geojson`
-7. `escribir_mapa_html.py` → `index.html`
-8. `escribir_tiempos_html.py` → `tiempos.html`
+7. `detectar_deslizamientos_s1.py` → `deslizamientos_s1_norte.geojson`
+8. `escribir_mapa_html.py` → `index.html`
+9. `escribir_tiempos_html.py` → `tiempos.html`
 
 El GeoTIFF HMA (~348 MB), COP30 N27E084 y N28E085 no van en el repositorio. Los zips GRA de CEMS tampoco.
+
+---
+
+## Deslizamientos S1 al norte de Rasuwagadhi (2023–2026)
+
+Capa informativa en el mapa (ámbar, apagable). No sustituye a EMSR927.
+
+Par Sentinel-1 RTC VV, **órbita 85 ascendente**: 25 ago 2023 vs 28 ago 2026. Semicírculo de **20 km al norte** de Rasuwagadhi. Se vectorizan parches con |ΔVV| ≥ 5 dB, cota bajo 5200 m, pendiente ≥ 8° y área **≥ 0.5 km²**.
+
+Resultado: **18 polígonos, 13.8 km²**. El más oscuro (1.05 km², −6.5 dB) cae junto a la cicatriz Langtang / lago de escombros. Tres años cubren más que el pulso del 26 ago 2026.
+
+Script: `detectar_deslizamientos_s1.py`. Los GeoTIFF RTC locales no van al repo.
 
 ---
 

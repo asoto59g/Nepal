@@ -1,0 +1,225 @@
+{
+  "par": {
+    "antes": "S1A_IW_GRDH_1SDV_20230825T122239_20230825T122304_050032_060502_rtc",
+    "despues": "S1D_IW_GRDH_1SDV_20260828T122141_20260828T122206_004326_007FA4_rtc",
+    "orbita": 85,
+    "sentido": "ascending"
+  },
+  "aoi": {
+    "centro": {
+      "lon": 85.3777789,
+      "lat": 28.2777749
+    },
+    "radio_km": 20,
+    "mitad": "norte"
+  },
+  "filtros": {
+    "abs_delta_vv_db": 5.0,
+    "min_km2": 0.5,
+    "z_max_m": 5200.0,
+    "slope_min_deg": 8.0
+  },
+  "n_poligonos": 18,
+  "area_km2": 13.76,
+  "parches": [
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 1.18,
+      "lon": 85.51263,
+      "lat": 28.36637,
+      "delta_vv_db": 0.58,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 1.17,
+      "lon": 85.4888,
+      "lat": 28.34851,
+      "delta_vv_db": -0.11,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 1.1,
+      "lon": 85.5394,
+      "lat": 28.36364,
+      "delta_vv_db": -2.57,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 1.05,
+      "lon": 85.51849,
+      "lat": 28.29006,
+      "delta_vv_db": -6.55,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.96,
+      "lon": 85.31042,
+      "lat": 28.3317,
+      "delta_vv_db": -2.24,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.83,
+      "lon": 85.53382,
+      "lat": 28.34892,
+      "delta_vv_db": -2.76,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.81,
+      "lon": 85.40747,
+      "lat": 28.43971,
+      "delta_vv_db": -1.94,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.79,
+      "lon": 85.46291,
+      "lat": 28.28672,
+      "delta_vv_db": -2.52,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.71,
+      "lon": 85.56966,
+      "lat": 28.30538,
+      "delta_vv_db": -7.21,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.65,
+      "lon": 85.46677,
+      "lat": 28.35596,
+      "delta_vv_db": 0.83,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.64,
+      "lon": 85.41106,
+      "lat": 28.2824,
+      "delta_vv_db": -2.12,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.61,
+      "lon": 85.29692,
+      "lat": 28.42698,
+      "delta_vv_db": -5.32,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.58,
+      "lon": 85.31086,
+      "lat": 28.35526,
+      "delta_vv_db": -1.57,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.57,
+      "lon": 85.41489,
+      "lat": 28.42585,
+      "delta_vv_db": 1.46,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.54,
+      "lon": 85.41891,
+      "lat": 28.35142,
+      "delta_vv_db": 1.18,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.54,
+      "lon": 85.39135,
+      "lat": 28.28271,
+      "delta_vv_db": 1.43,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.52,
+      "lon": 85.40339,
+      "lat": 28.34761,
+      "delta_vv_db": 0.6,
+      "sentido": "aclara",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    },
+    {
+      "clase": "deslizamiento_s1",
+      "area_km2": 0.51,
+      "lon": 85.25764,
+      "lat": 28.34301,
+      "delta_vv_db": -0.7,
+      "sentido": "oscurece",
+      "par": "2023-08-25 vs 2026-08-28",
+      "orbita": 85,
+      "fuente": "Sentinel-1 RTC VV (Planetary Computer)"
+    }
+  ],
+  "nota": "Cambio Sentinel-1 RTC VV, 25 ago 2023 vs 28 ago 2026, órbita 85 ascendente. Semicírculo de 20 km al norte de Rasuwagadhi. Se quedan parches ≥ 0.5 km² con |ΔVV| ≥ 5 dB, cota < 5200 m y pendiente ≥ 8°. No es delineación Copernicus; 3 años incluyen más que el pulso del 26 ago 2026."
+}

@@ -75,8 +75,9 @@ Sentinel-1 (par 16 vs 28 ago, misma órbita) y Sentinel-2 (24 vs 27 ago, 54–78
 3. `generar_curvas_10m.py` → `curvas_10m_hma.geojson`
 4. `preparar_emsr927.py` → `emsr927_hasta_hoy.geojson` + JPEG en `media/`
 5. `detectar_origen_sentinel.py` → `origen_avalancha.geojson`
-6. `escribir_mapa_html.py` → `index.html`
-7. `escribir_tiempos_html.py` → `tiempos.html`
+6. `detectar_lago_s1.py` → `lago_escombros.geojson`
+7. `escribir_mapa_html.py` → `index.html`
+8. `escribir_tiempos_html.py` → `tiempos.html`
 
 El GeoTIFF HMA (~348 MB) y el COP30 N27E084 no van en el repositorio. Los zips GRA de CEMS tampoco.
 
@@ -99,6 +100,24 @@ El punto USGS (landslide-type M 5.2, 08:37 NPT) está en **28.271°N, 85.515°E*
 - Sentinel-1 VV 16 vs 28 ago: parche de **3.8 ha** a 1.27 km del USGS, **−6.0 dB** (caída de backscatter, compatible con hielo que se va o superficie húmeda). A ~400 m del centroide S2. Hay más parches ±ΔVV a 1.6–1.9 km (escarpe rugoso / sombra).
 
 No hay escena S1 posterior al 28 ago (corte 30 ago). S2 no mapea el corredor fluvial (Geopera: cielo conjunto 2.1 %). La delineación de daños en garganta sigue siendo EMSR927 / HAND, no Sentinel.
+
+---
+
+## Lago de escombros (S1 RTC / S2 SCL)
+
+Dos lagos nuevos se reportaron tras el colapso (NDMA: 19.80 ha y 7.28 ha). Suhora/Satellogic (27 ago 04:22 UTC, 70 cm) sitúa uno de **20.25 ha** en **28°17′39.0″N, 85°30′38.9″E** (28.29417°N, 85.51081°E). Un segundo punto (Keystone, confianza media) está en 28.312°N, 85.554°E (confluencia Chhochen/Purepu). China informó el 30 ago que el lago bajo se vació y el alto perdió más de la mitad.
+
+**Sentinel-1 no reconstruye el polígono de 20 ha.** No hay pasada el 27. El RTC VV del 28 ago 12:21 UTC, en el punto Suhora, pasa de −11.3 a **−10.2 dB** (no es agua abierta; agua calma suele ir < −17 dB). Encaja con el desbordamiento reportado esa mañana: para la tarde el espejo principal ya no está.
+
+Lo que sí se vectoriza:
+
+| Capa | Fecha | Área | Centro | Notas |
+| --- | --- | --- | --- | --- |
+| S2 SCL clase agua (nueva vs 24 ago) | 27 ago | **3.72 ha** | 28.29313°N, 85.51058°E | 120 m del punto Suhora. Pixel centro: suelo el 24, **agua el 27**, suelo otra vez el 29. SCL subestima vs 20 ha óptico (nubes/hielo en superficie). |
+| S1 RTC VV oscuro y caída ≥3.5 dB | 16 vs 28 ago | **2.3 ha** (3 parches) | ~28.290°N, 85.512°E | 370–620 m al sur de Suhora. Agua residual o lecho húmedo, no el lago del 27. |
+| Keystone | 27–29 ago | — | 28.312°N, 85.554°E | S2 nubes altas. S1 −6.4 → −9.9 dB: no es agua. |
+
+El GRD sin calibrar no sirve para umbral de agua (DN ~+18 dB). Hay que usar **sentinel-1-rtc**. Script: `detectar_lago_s1.py` → `lago_escombros.geojson`.
 
 ---
 

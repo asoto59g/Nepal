@@ -1,0 +1,217 @@
+{
+  "puntos": {
+    "suhora_satellogic": {
+      "lon": 85.510806,
+      "lat": 28.294167,
+      "ha_reportada": 20.25,
+      "fecha_optica": "2026-08-27T04:22:00Z"
+    },
+    "keystone_inferido": {
+      "lon": 85.55406,
+      "lat": 28.31249,
+      "nota": "confluencia Chhochen/Purepu, confianza media"
+    }
+  },
+  "nota": "S1 28 ago 12:21 UTC: el lago bajo ya desbordaba ese dia; China dice vaciado el 30 ago. Buscamos agua nueva (VV oscuro) que no lo era el 16 ago.",
+  "s2_scl": {
+    "suhora": [
+      {
+        "id": "S2B_45RUM_20260824_0_L2A",
+        "pixel_centro": "no_vegetado",
+        "nube_pct_ventana": 14.2,
+        "hielo_pct_ventana": 4.2,
+        "hist": {
+          "sombra_oscura": 13.2,
+          "sombra_nube": 0.7,
+          "vegetacion": 23.5,
+          "no_vegetado": 45.0,
+          "sin_clasificar": 0.0,
+          "nube_media": 6.1,
+          "nube_alta": 7.4,
+          "nieve_hielo": 4.2
+        }
+      },
+      {
+        "id": "S2B_45RUM_20260827_0_L2A",
+        "pixel_centro": "agua",
+        "nube_pct_ventana": 55.9,
+        "hielo_pct_ventana": 3.2,
+        "hist": {
+          "sombra_oscura": 11.3,
+          "sombra_nube": 0.4,
+          "vegetacion": 2.9,
+          "no_vegetado": 14.7,
+          "agua": 0.4,
+          "sin_clasificar": 11.8,
+          "nube_media": 25.3,
+          "nube_alta": 30.2,
+          "nieve_hielo": 3.2
+        }
+      },
+      {
+        "id": "S2C_45RUM_20260829_0_L2A",
+        "pixel_centro": "no_vegetado",
+        "nube_pct_ventana": 94.0,
+        "hielo_pct_ventana": 0.2,
+        "hist": {
+          "sombra_oscura": 0.1,
+          "sombra_nube": 16.0,
+          "no_vegetado": 5.1,
+          "agua": 0.4,
+          "sin_clasificar": 0.1,
+          "nube_media": 18.6,
+          "nube_alta": 59.4,
+          "nieve_hielo": 0.2
+        }
+      }
+    ],
+    "keystone": [
+      {
+        "id": "S2B_45RUM_20260824_0_L2A",
+        "pixel_centro": "no_vegetado",
+        "nube_pct_ventana": 24.0,
+        "hielo_pct_ventana": 0,
+        "hist": {
+          "sombra_oscura": 1.8,
+          "sombra_nube": 4.6,
+          "vegetacion": 60.1,
+          "no_vegetado": 13.8,
+          "sin_clasificar": 0.2,
+          "nube_media": 8.1,
+          "nube_alta": 11.3
+        }
+      },
+      {
+        "id": "S2B_45RUM_20260827_0_L2A",
+        "pixel_centro": "nube_alta",
+        "nube_pct_ventana": 80.5,
+        "hielo_pct_ventana": 0,
+        "hist": {
+          "sombra_oscura": 3.1,
+          "sombra_nube": 0.6,
+          "vegetacion": 12.8,
+          "no_vegetado": 2.1,
+          "sin_clasificar": 1.5,
+          "nube_media": 13.6,
+          "nube_alta": 66.3
+        }
+      },
+      {
+        "id": "S2C_45RUM_20260829_0_L2A",
+        "pixel_centro": "nube_alta",
+        "nube_pct_ventana": 99.1,
+        "hielo_pct_ventana": 0,
+        "hist": {
+          "sombra_oscura": 0.2,
+          "sombra_nube": 5.2,
+          "vegetacion": 0.4,
+          "no_vegetado": 0.3,
+          "sin_clasificar": 0.1,
+          "nube_media": 20.5,
+          "nube_alta": 73.4
+        }
+      }
+    ]
+  },
+  "s2_agua_nueva_ha": 4.0,
+  "s2_parches": [
+    {
+      "area_ha": 3.72,
+      "lon": 85.51058,
+      "lat": 28.29313,
+      "dist_km_suhora": 0.12,
+      "dist_km_keystone": 4.77
+    }
+  ],
+  "s1_muestras": {
+    "suhora": {
+      "vv_16db": -11.32,
+      "vv_28db": -10.2
+    },
+    "keystone": {
+      "vv_16db": -6.4,
+      "vv_28db": -9.87
+    }
+  },
+  "s1_parches": [
+    {
+      "area_ha": 3.91,
+      "lon": 85.51937,
+      "lat": 28.28521,
+      "dist_km_suhora": 1.3,
+      "dist_km_keystone": 4.55
+    },
+    {
+      "area_ha": 2.01,
+      "lon": 85.48577,
+      "lat": 28.33394,
+      "dist_km_suhora": 5.06,
+      "dist_km_keystone": 7.1
+    },
+    {
+      "area_ha": 1.39,
+      "lon": 85.52995,
+      "lat": 28.28675,
+      "dist_km_suhora": 2.05,
+      "dist_km_keystone": 3.71
+    },
+    {
+      "area_ha": 1.3,
+      "lon": 85.5729,
+      "lat": 28.26899,
+      "dist_km_suhora": 6.69,
+      "dist_km_keystone": 5.18
+    },
+    {
+      "area_ha": 0.85,
+      "lon": 85.51123,
+      "lat": 28.29087,
+      "dist_km_suhora": 0.37,
+      "dist_km_keystone": 4.83
+    },
+    {
+      "area_ha": 0.76,
+      "lon": 85.51188,
+      "lat": 28.28941,
+      "dist_km_suhora": 0.54,
+      "dist_km_keystone": 4.86
+    },
+    {
+      "area_ha": 0.73,
+      "lon": 85.57037,
+      "lat": 28.26689,
+      "dist_km_suhora": 6.57,
+      "dist_km_keystone": 5.32
+    },
+    {
+      "area_ha": 0.68,
+      "lon": 85.51332,
+      "lat": 28.28908,
+      "dist_km_suhora": 0.62,
+      "dist_km_keystone": 4.76
+    },
+    {
+      "area_ha": 0.56,
+      "lon": 85.56979,
+      "lat": 28.26927,
+      "dist_km_suhora": 6.41,
+      "dist_km_keystone": 5.05
+    },
+    {
+      "area_ha": 0.53,
+      "lon": 85.47972,
+      "lat": 28.32563,
+      "dist_km_suhora": 4.64,
+      "dist_km_keystone": 7.42
+    },
+    {
+      "area_ha": 0.51,
+      "lon": 85.57219,
+      "lat": 28.26843,
+      "dist_km_suhora": 6.66,
+      "dist_km_keystone": 5.21
+    }
+  ],
+  "s1_n_parches": 11,
+  "s1_area_ha": 13.23
+}

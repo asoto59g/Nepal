@@ -53,6 +53,8 @@ if not have_aoi4:
 ems_blob = json.dumps(ems, separators=(",", ":"), ensure_ascii=False)
 origen = json.loads((here / "origen_avalancha.geojson").read_text(encoding="utf-8"))
 origen_blob = json.dumps(origen, separators=(",", ":"), ensure_ascii=False)
+lago = json.loads((here / "lago_escombros.geojson").read_text(encoding="utf-8"))
+lago_blob = json.dumps(lago, separators=(",", ":"), ensure_ascii=False)
 
 a_n = a_r = 0.0
 for f in gj.get("features", []):
@@ -154,11 +156,13 @@ html = """<!DOCTYPE html>
     <li><span class="sw" style="background:#b91c1c"></span>Fin del eje (Bharatpur / Narayani)</li>
     <li><span class="sw" style="background:#92400e;height:2px;width:18px"></span>Curvas de nivel (10 m garganta, 20 m valle bajo). Capa apagable.</li>
     <li><span class="sw" style="background:#06b6d4"></span>Cicatriz S2 (hielo 24→27 ago) · 28.285°N 85.513°E</li>
-    <li><span class="sw" style="background:#eab308"></span>USGS M5.2 (08:37 NPT) · 28.271°N 85.515°E</li>
+    <li><span class="sw" style="background:#2563eb"></span>Lago S2 27 ago (SCL agua, 3.7 ha) · 28.293°N 85.511°E</li>
+    <li><span class="sw" style="background:#1e3a8a"></span>Agua residual S1 RTC 28 ago (~2.3 ha, ya no las 20 ha)</li>
   </ul>
   <p class="note">Devighat HEP (Nuwakot) no es Devghat (Chitwan). El DHM situó el frente en Devghat ~15:20; el modelo de dos tramos ancla ese reloj. AOI04 Bharatpur es el recuadro azul discontinuo, sin polígonos GRA aún.
   EMSR927 clasifica el daño como mass movement / landslide. Corte: 29 ago 2026.
-  El colapso de hielo/roca no está en el eje Rasuwagadhi–Trishuli: está ~13 km al este, flanco N de Langtang. Sentinel-2 (24 vs 27 ago) da el parche de 20 ha; Sentinel-1 (16 vs 28) confirma un cambio VV de −6 dB a 400 m. Nubes: 22 % el 24, 47 % el 27, 76 % el 29; no sustituyen a WV-3/Planet en el corredor.</p>
+  El colapso de hielo/roca no está en el eje Rasuwagadhi–Trishuli: está ~13 km al este, flanco N de Langtang. Sentinel-2 (24 vs 27 ago) da el parche de 20 ha; Sentinel-1 (16 vs 28) confirma un cambio VV de −6 dB a 400 m. Nubes: 22 % el 24, 47 % el 27, 76 % el 29; no sustituyen a WV-3/Planet en el corredor.
+  Lago de escombros: Satellogic 27 ago 20.25 ha en 28.294°N 85.511°E. S2 SCL ve 3.7 ha de agua nueva ese día. S1 RTC del 28 ago (12:21 UTC) ya no oscurece ese punto (−10 dB): el desagüe había empezado. Quedan ~2.3 ha oscuras 400–600 m al sur. El punto Keystone (28.312°N 85.554°E) está nublado en S2 y no es agua en S1.</p>
 </aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -166,6 +170,7 @@ const DATA = PLACEHOLDER;
 const CURVAS = CURVAS_PLACEHOLDER;
 const EMS = EMS_PLACEHOLDER;
 const ORIGEN = ORIGEN_PLACEHOLDER;
+const LAGO = LAGO_PLACEHOLDER;
 const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 18, attribution: "&copy; OpenStreetMap"
 });
@@ -281,6 +286,28 @@ const origenPts = L.geoJSON(ORIGEN, {
     layer.bindPopup("<b>"+p.nombre+"</b>"+extra);
   }
 }).addTo(map);
+const lagoPoly = L.geoJSON(LAGO, {
+  filter(f){ return f.geometry && f.geometry.type !== "Point"; },
+  style(f){
+    const c = f.properties.clase;
+    if (c === "lago_s2_scl") return {color:"#1d4ed8", weight:2, fillColor:"#2563eb", fillOpacity:0.55};
+    return {color:"#1e3a8a", weight:1.5, fillColor:"#1e40af", fillOpacity:0.5};
+  },
+  onEachFeature(f, layer){
+    const p = f.properties;
+    const src = p.clase === "lago_s2_scl" ? "Sentinel-2 SCL 24→27 ago (agua nueva)" : "Sentinel-1 RTC VV 16 vs 28 ago (oscuro)";
+    layer.bindPopup("<b>Agua "+(p.area_ha||"?")+" ha</b><br>"+src);
+  }
+}).addTo(map);
+const lagoPts = L.geoJSON(LAGO, {
+  filter(f){ return f.geometry && f.geometry.type === "Point"; },
+  pointToLayer(f, latlng){
+    return L.circleMarker(latlng, {radius:8, color:"#fff", weight:2, fillColor:"#3b82f6", fillOpacity:1});
+  },
+  onEachFeature(f, layer){
+    layer.bindPopup("<b>"+f.properties.nombre+"</b>");
+  }
+}).addTo(map);
 L.control.layers(
   {OSM: osm, Satelite: sat},
   {
@@ -290,7 +317,9 @@ L.control.layers(
     "EMSR927 edificios": emsBuild,
     "EMSR927 AOI (hasta hoy)": emsAoi,
     "Origen hielo/roca (S1/S2)": origenPoly,
-    "Puntos origen USGS/S1/S2": origenPts
+    "Puntos origen USGS/S1/S2": origenPts,
+    "Lago de escombros (S1/S2)": lagoPoly,
+    "Puntos lago reportados": lagoPts
   }
 ).addTo(map);
 L.control.scale({
@@ -323,6 +352,7 @@ html = (html
   .replace("EMS_PLACEHOLDER", ems_blob)
   .replace("CURVAS_PLACEHOLDER", curvas_blob)
   .replace("ORIGEN_PLACEHOLDER", origen_blob)
+  .replace("LAGO_PLACEHOLDER", lago_blob)
   .replace("PLACEHOLDER", blob))
 dest = here / "index.html"
 dest.write_text(html, encoding="utf-8")

@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:Legion",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:Legion|5:GRA:v1:W:noz:|6:GRA:v1:W:noz:",
   "aois": [
     {
       "number": 1,
@@ -103,6 +103,40 @@
           "acquisition": [
             "2026-09-02T05:24:00"
           ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Phosretar",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "W",
+          "deliveryTime": null,
+          "expectedDelivery": null,
+          "download": false,
+          "downloadPath": "",
+          "sensors": [],
+          "acquisition": []
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Kyundi",
+      "products": [
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "W",
+          "deliveryTime": null,
+          "expectedDelivery": null,
+          "download": false,
+          "downloadPath": "",
+          "sensors": [],
+          "acquisition": []
         }
       ]
     }

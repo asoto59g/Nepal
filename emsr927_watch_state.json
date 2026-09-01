@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:Satellogic,BlackSky|3:GRA:v1:W:noz:|4:GRA:v1:W:noz:Legion",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:Legion",
   "aois": [
     {
       "number": 1,
@@ -52,14 +52,18 @@
         {
           "type": "GRA",
           "version": 1,
-          "status": "W",
-          "deliveryTime": null,
-          "expectedDelivery": "2026-08-31T07:00:00",
-          "download": false,
-          "downloadPath": "",
-          "sensors": [],
+          "status": "F",
+          "deliveryTime": "2026-08-31T01:07:28.157651",
+          "expectedDelivery": "2026-08-31T02:50:00",
+          "download": true,
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI03/GRA_MONIT01/EMSR927_AOI03_GRA_MONIT01_v1.zip",
+          "sensors": [
+            "PeruSAT-1",
+            "Resurs-P"
+          ],
           "acquisition": [
-            "2026-08-30T18:00:00"
+            "2026-08-27T04:47:00",
+            "2026-08-28T08:29:00"
           ]
         },
         {
@@ -90,14 +94,14 @@
           "version": 1,
           "status": "W",
           "deliveryTime": null,
-          "expectedDelivery": "2026-08-29T17:01:00",
+          "expectedDelivery": "2026-09-02T18:24:00",
           "download": false,
           "downloadPath": "",
           "sensors": [
             "Legion"
           ],
           "acquisition": [
-            "2026-08-31T07:16:00"
+            "2026-09-02T05:24:00"
           ]
         }
       ]

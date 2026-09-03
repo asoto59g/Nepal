@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:Legion|5:GRA:v1:F:zip:Pleiades,Pleiades Neo|5:GRA:v1:W:noz:|6:GRA:v1:W:noz:",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:Legion|5:GRA:v1:W:noz:|5:GRA:v2:F:zip:Pleiades,Pleiades Neo|6:GRA:v1:W:noz:",
   "aois": [
     {
       "number": 1,
@@ -94,14 +94,14 @@
           "version": 1,
           "status": "W",
           "deliveryTime": null,
-          "expectedDelivery": "2026-09-02T18:24:00",
+          "expectedDelivery": "2026-09-04T18:09:00",
           "download": false,
           "downloadPath": "",
           "sensors": [
             "Legion"
           ],
           "acquisition": [
-            "2026-09-02T05:24:00"
+            "2026-09-04T05:09:00"
           ]
         }
       ]
@@ -112,23 +112,12 @@
       "products": [
         {
           "type": "GRA",
-          "version": 1,
-          "status": "W",
-          "deliveryTime": null,
-          "expectedDelivery": null,
-          "download": false,
-          "downloadPath": "",
-          "sensors": [],
-          "acquisition": []
-        },
-        {
-          "type": "GRA",
-          "version": 1,
+          "version": 2,
           "status": "F",
-          "deliveryTime": "2026-09-02T03:21:15.731426",
+          "deliveryTime": "2026-09-03T19:20:47.881898",
           "expectedDelivery": "2026-09-02T06:57:00",
           "download": true,
-          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI05/GRA_PRODUCT/EMSR927_AOI05_GRA_PRODUCT_v1.zip",
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI05/GRA_PRODUCT/EMSR927_AOI05_GRA_PRODUCT_v2.zip",
           "sensors": [
             "Pleiades",
             "Pleiades Neo"
@@ -137,6 +126,17 @@
             "2026-08-31T05:27:00",
             "2026-08-31T05:01:00"
           ]
+        },
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "W",
+          "deliveryTime": null,
+          "expectedDelivery": null,
+          "download": false,
+          "downloadPath": "",
+          "sensors": [],
+          "acquisition": []
         }
       ]
     },

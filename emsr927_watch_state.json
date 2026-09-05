@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
   "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:|5:GRA:v1:I:noz:Pleiades Neo,Legion|5:GRA:v3:F:zip:Pleiades,Pleiades Neo|6:GRA:v1:W:noz:",
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:|5:GRA:v1:F:zip:Legion,Pleiades Neo|5:GRA:v3:F:zip:Pleiades,Pleiades Neo|6:GRA:v1:W:noz:",
   "aois": [
     {
       "number": 1,
@@ -110,23 +110,6 @@
       "products": [
         {
           "type": "GRA",
-          "version": 1,
-          "status": "I",
-          "deliveryTime": null,
-          "expectedDelivery": "2026-09-05T18:50:00",
-          "download": false,
-          "downloadPath": "",
-          "sensors": [
-            "Pleiades Neo",
-            "Legion"
-          ],
-          "acquisition": [
-            "2026-09-05T04:57:00",
-            "2026-09-05T06:32:00"
-          ]
-        },
-        {
-          "type": "GRA",
           "version": 3,
           "status": "F",
           "deliveryTime": "2026-09-04T10:42:28.740545",
@@ -140,6 +123,23 @@
           "acquisition": [
             "2026-08-31T05:27:00",
             "2026-08-31T05:01:00"
+          ]
+        },
+        {
+          "type": "GRA",
+          "version": 1,
+          "status": "F",
+          "deliveryTime": "2026-09-05T18:44:27.353081",
+          "expectedDelivery": "2026-09-05T18:50:00",
+          "download": true,
+          "downloadPath": "https://rapidmapping.emergency.copernicus.eu/backend/EMSR927/AOI05/GRA_MONIT01/EMSR927_AOI05_GRA_MONIT01_v1.zip",
+          "sensors": [
+            "Legion",
+            "Pleiades Neo"
+          ],
+          "acquisition": [
+            "2026-09-05T06:32:00",
+            "2026-09-05T04:57:00"
           ]
         }
       ]

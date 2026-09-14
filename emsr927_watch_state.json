@@ -1,7 +1,7 @@
 {
   "code": "EMSR927",
-  "closed": false,
-  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:W:noz:|5:GRA:v2:F:zip:Legion,Pleiades Neo|5:GRA:v3:F:zip:Pleiades,Pleiades Neo|6:GRA:v1:W:noz:",
+  "closed": true,
+  "fingerprint": "1:GRA:v1:F:zip:WorldView-3|2:GRA:v2:F:zip:Legion|3:GRA:v1:F:zip:PeruSAT-1,Resurs-P|3:GRA:v1:F:zip:Satellogic,BlackSky|4:GRA:v1:N:noz:|5:GRA:v2:F:zip:Legion,Pleiades Neo|5:GRA:v3:F:zip:Pleiades,Pleiades Neo|6:GRA:v1:N:noz:",
   "aois": [
     {
       "number": 1,
@@ -92,8 +92,8 @@
         {
           "type": "GRA",
           "version": 1,
-          "status": "W",
-          "deliveryTime": null,
+          "status": "N",
+          "deliveryTime": "2026-09-14T09:06:00",
           "expectedDelivery": null,
           "download": false,
           "downloadPath": "",
@@ -149,8 +149,8 @@
         {
           "type": "GRA",
           "version": 1,
-          "status": "W",
-          "deliveryTime": null,
+          "status": "N",
+          "deliveryTime": "2026-09-14T09:10:00",
           "expectedDelivery": null,
           "download": false,
           "downloadPath": "",
